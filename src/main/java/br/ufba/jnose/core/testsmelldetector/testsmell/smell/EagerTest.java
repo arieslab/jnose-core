@@ -68,9 +68,9 @@ public class EagerTest extends AbstractSmell {
         private List<String> productionVariables = new ArrayList<>();
         private List<String> calledMethods = new ArrayList<>();
         private String fileType;
-//        ArrayList<String> rangeLines = new ArrayList<>();
+        ArrayList<String> rangeLines = new ArrayList<>();
 
-        private String rangeLines = "";
+//        private String rangeLines = "";
 
         public ClassVisitor(String type) {
             fileType = type;
@@ -107,15 +107,15 @@ public class EagerTest extends AbstractSmell {
                     super.visit(n, arg);
 
                     if(calledMethods.size()> 1){
-                        instanceEager.add(new MethodUsage(currentMethod.getNameAsString(),rangeLines));
+                        instanceEager.add(new MethodUsage(currentMethod.getNameAsString(),"",rangeLines.toString()));
                     }
 
                     //reset values for next method
                     currentMethod = null;
                     eagerCount = 0;
-                    productionVariables = new ArrayList<>();
-                    calledMethods = new ArrayList<>();
-                    rangeLines = "";
+                    productionVariables.clear();
+                    calledMethods.clear();
+                    rangeLines.clear();
                 }
             } else { //collect a list of all public/protected members of the production class
                 for (Modifier modifier : n.getModifiers()) {
@@ -147,8 +147,8 @@ public class EagerTest extends AbstractSmell {
                     if(!calledMethods.contains(n.getNameAsString())){
                         eagerCount++;
                         calledMethods.add(n.getNameAsString());
-//                        rangeLines.add(String.valueOf(n.getRange().get().begin.line));
-                        rangeLines = rangeLines + " - " + n.getRange().get();
+                        rangeLines.add(String.valueOf(n.getRange().get().begin.line));
+//                        rangeLines = rangeLines + " - " + n.getRange().get();
                     }
                 } else {
                     if (n.getScope().isPresent()) {
@@ -170,8 +170,8 @@ public class EagerTest extends AbstractSmell {
                                 if (!calledMethods.contains(n.getNameAsString())) {
                                     eagerCount++;
                                     calledMethods.add(n.getNameAsString());
-//                                    rangeLines.add(String.valueOf(n.getRange().get().begin.line));
-                                    rangeLines = rangeLines + n.getRange().get();
+                                    rangeLines.add(String.valueOf(n.getRange().get().begin.line));
+//                                    rangeLines = rangeLines + n.getRange().get();
                                 }
                             }
                         }
