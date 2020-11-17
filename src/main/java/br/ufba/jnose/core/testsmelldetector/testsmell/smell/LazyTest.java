@@ -65,7 +65,7 @@ public class LazyTest extends AbstractSmell {
             }
             if(!productionChecked.contains(method.getProductionMethodName ())){
                 productionChecked.add (method.getProductionMethodName ());
-                instanceLazy.add (new MethodUsage(String.join(", ", methodsList), range));
+                instanceLazy.add (new MethodUsage(String.join(", ", methodsList),"",range));
             }
         }
 
@@ -151,7 +151,7 @@ public class LazyTest extends AbstractSmell {
             if (currentMethod != null) {
                 if (productionMethods.stream().anyMatch(i -> i.getNameAsString().equals(n.getNameAsString()) &&
                         i.getParameters().size() == n.getArguments().size())) {
-                    calledProductionMethods.add(new MethodUsage(currentMethod.getNameAsString(), n.getNameAsString(),(n.getRange().toString())));
+                    calledProductionMethods.add(new MethodUsage(currentMethod.getNameAsString(), n.getNameAsString(),n.getRange().toString()));
                     } else {
                     if (n.getScope().isPresent()) {
                         if (n.getScope().get() instanceof NameExpr) {
@@ -160,7 +160,7 @@ public class LazyTest extends AbstractSmell {
                             ///if the scope matches a variable which, in turn, is of type of the production class
                             if (((NameExpr) n.getScope().get()).getNameAsString().equals(productionClassName) ||
                                     productionVariables.contains(((NameExpr) n.getScope().get()).getNameAsString())) {
-                                calledProductionMethods.add(new MethodUsage(currentMethod.getNameAsString(), n.getNameAsString(),(n.getRange().toString())));
+                                calledProductionMethods.add(new MethodUsage(currentMethod.getNameAsString(), n.getNameAsString(), n.getRange().toString()));
 
                             }
                         }
