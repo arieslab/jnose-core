@@ -1,0 +1,11 @@
+.classpath
+.project
+.idea
+.settings
+.vscode
+jnose.iml
+target
+reports
+projects
+db
+/bin/
