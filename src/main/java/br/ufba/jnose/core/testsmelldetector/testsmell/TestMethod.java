@@ -1,9 +1,5 @@
 package br.ufba.jnose.core.testsmelldetector.testsmell;
 
-import br.ufba.jnose.dto.TestSmell;
-
-import java.util.List;
-
 public class TestMethod extends SmellyElement {
 
     private String methodName;

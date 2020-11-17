@@ -25,10 +25,119 @@ public class JNoseCore {
 
     private final static Logger LOGGER = Logger.getLogger(JNoseCore.class.getName());
 
+    private Config config;
+
     public static void main(String[] args) throws IOException {
         String directoryPath = "/home/tassio/.jnose_projects/jnose-tests/";
 
-        JNoseCore jNoseCore = new JNoseCore();
+        Config conf = new Config() {
+            @Override
+            public Boolean assertionRoulette() {
+                return true;
+            }
+
+            @Override
+            public Boolean conditionalTestLogic() {
+                return true;
+            }
+
+            @Override
+            public Boolean constructorInitialization() {
+                return true;
+            }
+
+            @Override
+            public Boolean defaultTest() {
+                return true;
+            }
+
+            @Override
+            public Boolean dependentTest() {
+                return true;
+            }
+
+            @Override
+            public Boolean duplicateAssert() {
+                return true;
+            }
+
+            @Override
+            public Boolean eagerTest() {
+                return true;
+            }
+
+            @Override
+            public Boolean emptyTest() {
+                return true;
+            }
+
+            @Override
+            public Boolean exceptionCatchingThrowing() {
+                return true;
+            }
+
+            @Override
+            public Boolean generalFixture() {
+                return true;
+            }
+
+            @Override
+            public Boolean mysteryGuest() {
+                return true;
+            }
+
+            @Override
+            public Boolean printStatement() {
+                return true;
+            }
+
+            @Override
+            public Boolean redundantAssertion() {
+                return true;
+            }
+
+            @Override
+            public Boolean sensitiveEquality() {
+                return true;
+            }
+
+            @Override
+            public Boolean verboseTest() {
+                return true;
+            }
+
+            @Override
+            public Boolean sleepyTest() {
+                return true;
+            }
+
+            @Override
+            public Boolean lazyTest() {
+                return true;
+            }
+
+            @Override
+            public Boolean unknownTest() {
+                return true;
+            }
+
+            @Override
+            public Boolean ignoredTest() {
+                return true;
+            }
+
+            @Override
+            public Boolean resourceOptimism() {
+                return true;
+            }
+
+            @Override
+            public Boolean magicNumberTest() {
+                return true;
+            }
+        };
+
+        JNoseCore jNoseCore = new JNoseCore(conf);
 
         List<TestClass> lista = jNoseCore.getFilesTest(directoryPath);
 
@@ -42,6 +151,9 @@ public class JNoseCore {
 
     }
 
+    public JNoseCore(Config config) {
+        this.config = config;
+    }
 
     public List<TestClass> getFilesTest(String directoryPath) throws IOException {
         LOGGER.log(Level.INFO, "getFilesTest: start");
@@ -162,7 +274,8 @@ public class JNoseCore {
     public void getTestSmells(TestClass testClass) {
         LOGGER.log(Level.INFO, "getTestSmells: start");
 
-        TestSmellDetector testSmellDetector = TestSmellDetector.createTestSmellDetector();
+        TestSmellDetector testSmellDetector = TestSmellDetector.createTestSmellDetector(config);
+
         TestFile testFile = new TestFile(testClass.getProjectName(), testClass.getPathFile().toString(), testClass.getProductionFile(), testClass.getNumberLine(), testClass.getNumberMethods());
 
         try {
