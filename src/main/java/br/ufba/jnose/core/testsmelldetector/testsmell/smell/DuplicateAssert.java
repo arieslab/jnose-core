@@ -81,15 +81,15 @@ public class DuplicateAssert extends AbstractSmell {
         List<String> assertMessage = new ArrayList<>();
         List<String> assertMethod = new ArrayList<>();
         List<DuplicateAssertStructure> assertMethodDA = new ArrayList<>();
-//        ArrayList<String> rangeLines = new ArrayList<>();
-        String rangeLines = "";
+        ArrayList<String> rangeLines = new ArrayList<>();
+//        String rangeLines = "";
 
         // examine all methods in the test class
         @Override
         public void visit(MethodDeclaration n, Void arg) {
             if (Util.isValidTestMethod(n)) {
                 currentMethod = n;
-                rangeLines = "";
+//                rangeLines = "";
                 super.visit(n, arg);
 
                 /* *
@@ -103,18 +103,19 @@ public class DuplicateAssert extends AbstractSmell {
                             //Só compara com outros asserts, caso o objeto ainda não tenha sido identificado como outro DA
                             if ((!teste.get(j).isChecked()) && (teste.get(i).text.equals(teste.get(j).text))) {
                                 if (!hasSmell) {
-//                                    rangeLines.add(String.valueOf(teste.get(i).line));
-                                    rangeLines = rangeLines + " , " + teste.get(i).line;
+                                    rangeLines.add(String.valueOf(teste.get(i).line));
+//                                    rangeLines = rangeLines + " , " + teste.get(i).line;
                                     teste.get(i).setChecked(true);
                                 }
-//                                rangeLines.add(String.valueOf(teste.get(j).line));
-                                rangeLines = rangeLines + " , " + teste.get(i).line;
+                                rangeLines.add(String.valueOf(teste.get(j).line));
+//                                rangeLines = rangeLines + " , " + teste.get(i).line;
                                 teste.get(j).setChecked(true);
                                 hasSmell = true;
                             }
                         }
                         if (hasSmell) {
-                            instanceDuplicate.add (new MethodUsage(currentMethod.getNameAsString(), rangeLines));
+                            instanceDuplicate.add (new MethodUsage(currentMethod.getNameAsString(),"", rangeLines.toString()));
+                            rangeLines.clear();
                         }
                     }
                 }

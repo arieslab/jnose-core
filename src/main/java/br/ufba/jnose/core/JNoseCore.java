@@ -13,6 +13,8 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,7 +23,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class JNoseCore {
+public class JNoseCore implements PropertyChangeListener {
 
     private final static Logger LOGGER = Logger.getLogger(JNoseCore.class.getName());
 
@@ -298,5 +300,9 @@ public class JNoseCore {
     }
 
 
+    @Override
+    public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+
+    }
 }
 

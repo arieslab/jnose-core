@@ -25,6 +25,7 @@ public class MethodUsage {
     public String getProductionMethodName() {
         return productionMethodName;
     }
+
     public String getTestMethodName() {
         return testMethodName;
     }
