@@ -234,6 +234,36 @@ public class JNoseCore implements PropertyChangeListener {
         }
     }
 
+    public TestClass.JunitVersion getJUnitVersion(String directoryPath) {
+        String projectName = directoryPath.substring(directoryPath.lastIndexOf(File.separatorChar) + 1, directoryPath.length());
+
+        final br.ufba.jnose.dto.TestClass.JunitVersion[] jUnitVersion = new br.ufba.jnose.dto.TestClass.JunitVersion[1];
+
+        List<br.ufba.jnose.dto.TestClass> files = new ArrayList<>();
+        Path startDir = Paths.get(directoryPath);
+        try {
+            Files.walk(startDir)
+                    .filter(Files::isRegularFile)
+                    .forEach(filePath -> {
+                        if (filePath.getFileName().toString().lastIndexOf(".") != -1) {
+                            String fileNameWithoutExtension = filePath.getFileName().toString().substring(0, filePath.getFileName().toString().lastIndexOf(".")).toLowerCase();
+                            if (filePath.toString().toLowerCase().endsWith(".java") && fileNameWithoutExtension.matches("^.*test\\d*$")) {
+                                br.ufba.jnose.dto.TestClass testClass = new br.ufba.jnose.dto.TestClass();
+                                testClass.setProjectName(projectName);
+                                testClass.setPathFile(filePath.toString());
+                                if (isTestFile(testClass)) {
+                                    jUnitVersion[0] = testClass.getJunitVersion();
+
+                                }
+                            }
+                        }
+                    });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return jUnitVersion[0];
+    }
+
     private Boolean flowClass(NodeList<?> nodeList, TestClass testClass) {
         LOGGER.log(Level.INFO, "flowClass: start -> " + nodeList.toString());
         boolean isTestClass = false;
