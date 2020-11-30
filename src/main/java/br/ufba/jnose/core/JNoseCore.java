@@ -201,7 +201,7 @@ public class JNoseCore implements PropertyChangeListener {
     }
 
 
-    private Boolean isTestFile(TestClass testClass) {
+    public Boolean isTestFile(TestClass testClass) {
         LOGGER.log(Level.INFO, "isTestFile: start");
 
         Boolean isTestFile = false;
@@ -221,7 +221,7 @@ public class JNoseCore implements PropertyChangeListener {
         return isTestFile;
     }
 
-    private void detectJUnitVersion(NodeList<ImportDeclaration> nodeList, TestClass testClass) {
+    public void detectJUnitVersion(NodeList<ImportDeclaration> nodeList, TestClass testClass) {
         LOGGER.log(Level.INFO, "detectJUnitVersion: start");
         for (ImportDeclaration node : nodeList) {
             if (node.getNameAsString().contains("org.junit.jupiter")) {
