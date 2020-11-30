@@ -57,7 +57,7 @@ public class ExceptionCatchingThrowing extends AbstractSmell {
 
         @Override
         public void visit(TryStmt n, Void arg) {
-            methodExceptions.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().toString()));
+            methodExceptions.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
         }
     }
 }

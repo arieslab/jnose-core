@@ -107,7 +107,7 @@ public class EagerTest extends AbstractSmell {
                     super.visit(n, arg);
 
                     if(calledMethods.size()> 1){
-                        instanceEager.add(new MethodUsage(currentMethod.getNameAsString(),"",rangeLines.toString()));
+                        instanceEager.add(new MethodUsage(currentMethod.getNameAsString(),"",rangeLines.toString().replace("[","").replace("]","")));
                     }
 
                     //reset values for next method

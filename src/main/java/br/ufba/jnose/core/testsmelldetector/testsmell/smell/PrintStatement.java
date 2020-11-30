@@ -83,7 +83,7 @@ public class PrintStatement extends AbstractSmell {
                                 ((NameExpr) f1.getScope()).getNameAsString().equals("System"))) {
                             //a print statement exists in the method body
                             countPrint++;
-                            methodPrints.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().toString()));
+                            methodPrints.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line+""));
                         }
                     }
                 }

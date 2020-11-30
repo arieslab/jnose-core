@@ -62,7 +62,7 @@ public class ConstructorInitialization extends AbstractSmell {
             // This check is needed to handle java files that have multiple classes
             if(n.getNameAsString().equals(testFileName)) {
                 if(!constructorAllowed) {
-                    instanceConstructor.add(new MethodUsage(n.getNameAsString(), "",n.getRange().toString()));
+                    instanceConstructor.add(new MethodUsage(n.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
                 }
             }
         }

@@ -58,7 +58,7 @@ public class EmptyTest extends AbstractSmell {
                     if (n.getBody().isPresent()) {
                         //get the total number of statements contained in the method
                         if (n.getBody().get().getStatements().size() == 0) {
-                            instanceEmpty.add(new MethodUsage(n.getNameAsString(),"",n.getRange().toString()));
+                            instanceEmpty.add(new MethodUsage(n.getNameAsString(),"",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
                         }
                     }
                 }

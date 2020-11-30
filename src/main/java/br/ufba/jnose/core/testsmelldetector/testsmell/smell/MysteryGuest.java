@@ -140,7 +140,7 @@ public class MysteryGuest extends AbstractSmell {
                         }
                         // variable is not mocked, hence it's a smell
                         mysteryCount++;
-                        mysteryInstance.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().toString()));
+                        mysteryInstance.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line+""));
                     }
                 }
             }
