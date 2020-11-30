@@ -70,7 +70,7 @@ public class SleepyTest extends AbstractSmell {
                         //proceed only if the scope is "Thread"
                         if ((((NameExpr) n.getScope().get()).getNameAsString().equals("Thread"))) {
                             sleepCount++;
-                            spleepyInstance.add(new MethodUsage(currentMethod.getNameAsString(), "", n.getRange().toString()));
+                            spleepyInstance.add(new MethodUsage(currentMethod.getNameAsString(), "", n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
                         }
                     }
                 }

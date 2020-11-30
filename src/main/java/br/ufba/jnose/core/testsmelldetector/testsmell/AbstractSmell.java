@@ -10,7 +10,7 @@ import java.util.List;
 public abstract class AbstractSmell {
     private String smellName;
     protected List<SmellyElement> smellyElementList;
-    protected VoidVisitorAdapter classVisitor;
+    protected VoidVisitorAdapter<Void> classVisitor;
 
     public AbstractSmell(String smellName) {
         this.smellName = smellName;

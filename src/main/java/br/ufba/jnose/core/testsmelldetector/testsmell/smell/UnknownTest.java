@@ -33,7 +33,7 @@ public class UnknownTest extends AbstractSmell {
 
         for (MethodUsage method : instanceUnkNown) {
             TestMethod testClass = new TestMethod(method.getTestMethodName());
-            testClass.setRange(method.getRange());
+            testClass.setRange(method.getBlock());
 //            testClass.addDataItem("begin", method.getBlock ());
 //            testClass.addDataItem("end", method.getBlock ()); // [Remover]
             testClass.setHasSmell(true);
@@ -69,7 +69,7 @@ public class UnknownTest extends AbstractSmell {
 
                 // if there are duplicate messages, then the smell exists
                 if (!hasAssert && !hasExceptionAnnotation)
-                    instanceUnkNown.add(new MethodUsage(n.getNameAsString(), "",n.getRange().toString()));
+                    instanceUnkNown.add(new MethodUsage(n.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
 
                 //reset values for next method
                 currentMethod = null;

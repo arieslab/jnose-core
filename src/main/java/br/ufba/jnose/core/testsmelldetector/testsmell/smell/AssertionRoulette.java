@@ -1,6 +1,5 @@
 package br.ufba.jnose.core.testsmelldetector.testsmell.smell;
 
-import br.ufba.jnose.dto.TestSmell;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -112,7 +111,7 @@ public class AssertionRoulette extends AbstractSmell {
                 if (hasMissingExplanation) {
                     testMethod = new TestMethod(methodName);
 
-                    testMethod.setRange(n.getRange().toString());
+                    testMethod.setRange(n.getRange().get().begin.line + "-" + n.getRange().get().end.line);
 
 //                    testMethod.setBegin(n.getRange().get().begin.line);
 //                    testMethod.setEnd(n.getRange().get().end.line);

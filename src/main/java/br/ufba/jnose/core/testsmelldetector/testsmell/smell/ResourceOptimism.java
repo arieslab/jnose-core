@@ -58,7 +58,7 @@ public class ResourceOptimism extends AbstractSmell {
                 super.visit(n, arg);
 
                 if(methodVariables.size() >= 1 || hasSmell==true){
-                    instanceResource.add(new MethodUsage (n.getNameAsString ( ), "",n.getRange().toString()));
+                    instanceResource.add(new MethodUsage (n.getNameAsString ( ), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
                 }
 
                 //reset values for next method

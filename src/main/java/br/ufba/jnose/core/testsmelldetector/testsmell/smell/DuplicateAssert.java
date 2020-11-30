@@ -114,7 +114,7 @@ public class DuplicateAssert extends AbstractSmell {
                             }
                         }
                         if (hasSmell) {
-                            instanceDuplicate.add (new MethodUsage(currentMethod.getNameAsString(),"", rangeLines.toString()));
+                            instanceDuplicate.add (new MethodUsage(currentMethod.getNameAsString(),"", rangeLines.toString().replace("[","").replace("]","")));
                             rangeLines.clear();
                         }
                     }

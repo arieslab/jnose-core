@@ -5,10 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestFile {
-    private String app, testFilePath, productionFilePath;
+    private String testFilePath, productionFilePath;
     private List<AbstractSmell> testSmells;
     private Integer loc;
     private Integer qtdMethods;
+    private String app;
 
 
     public String getProductionFilePath() {

@@ -69,7 +69,7 @@ public class IgnoredTest extends AbstractSmell {
             //check if test method has Ignore annotation
             if (n.getAnnotationByName("Test").isPresent()) {
                 if (n.getAnnotationByName("Ignore").isPresent() || flag) {
-                    instanceIgnored.add(new MethodUsage(n.getNameAsString(), "",n.getRange().toString()));
+                    instanceIgnored.add(new MethodUsage(n.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
                     return;
                 }
             }
@@ -78,7 +78,7 @@ public class IgnoredTest extends AbstractSmell {
             //check if test method is not public
             if (n.getNameAsString().toLowerCase().startsWith("test")) {
                 if (!n.getModifiers().contains(Modifier.PUBLIC)) {
-                    instanceIgnored.add(new MethodUsage(n.getNameAsString(), "",n.getRange().toString()));
+                    instanceIgnored.add(new MethodUsage(n.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
                     return;
                 }
             }

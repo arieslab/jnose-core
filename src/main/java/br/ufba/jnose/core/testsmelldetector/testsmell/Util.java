@@ -40,18 +40,16 @@ public class Util {
 
     public static boolean isInt(String s) {
         try {
-            int i = Integer.parseInt(s);
+            Integer.parseInt(s);
             return true;
-        }
-
-        catch (NumberFormatException er) {
+        }catch (NumberFormatException er) {
             return false;
         }
     }
 
     public static boolean isNumber(String str) {
         try {
-            double v = Double.parseDouble(str);
+            Double.parseDouble(str);
             return true;
         } catch (NumberFormatException nfe) {
         }

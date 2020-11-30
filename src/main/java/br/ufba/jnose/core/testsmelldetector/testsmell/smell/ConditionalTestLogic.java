@@ -89,7 +89,7 @@ public class ConditionalTestLogic extends AbstractSmell {
 //                methodConditional.add(new MethodUsage(currentMethod.getNameAsString(), "",
 //                        String.valueOf(n.getRange().get().begin.line),
 //                        String.valueOf(n.getRange().get().end.line)));
-                methodConditional.add(new MethodUsage(currentMethod.getNameAsString(), "", n.getRange().toString()));
+                methodConditional.add(new MethodUsage(currentMethod.getNameAsString(), "", n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
             }
         }
 
@@ -98,7 +98,7 @@ public class ConditionalTestLogic extends AbstractSmell {
             super.visit(n, arg);
             if (currentMethod != null) {
                 switchCount++;
-                methodConditional.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().toString()));
+                methodConditional.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
             }
         }
 
@@ -107,7 +107,7 @@ public class ConditionalTestLogic extends AbstractSmell {
             super.visit(n, arg);
             if (currentMethod != null) {
                 conditionCount++;
-                methodConditional.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().toString()));
+                methodConditional.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
             }
         }
 
@@ -117,7 +117,7 @@ public class ConditionalTestLogic extends AbstractSmell {
             super.visit(n, arg);
             if (currentMethod != null) {
                 forCount++;
-                methodConditional.add(new MethodUsage(currentMethod.getNameAsString(), "", n.getRange().toString()));
+                methodConditional.add(new MethodUsage(currentMethod.getNameAsString(), "", n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
             }
         }
 
@@ -126,7 +126,7 @@ public class ConditionalTestLogic extends AbstractSmell {
             super.visit(n, arg);
             if (currentMethod != null) {
                 foreachCount++;
-                methodConditional.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().toString()));
+                methodConditional.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
             }
         }
 
@@ -135,7 +135,7 @@ public class ConditionalTestLogic extends AbstractSmell {
             super.visit(n, arg);
             if (currentMethod != null) {
                 whileCount++;
-                methodConditional.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().toString()));
+                methodConditional.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
             }
         }
 
@@ -144,7 +144,7 @@ public class ConditionalTestLogic extends AbstractSmell {
             super.visit(n, arg);
             if (currentMethod != null) {
                 doCount++;
-                methodConditional.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().toString()));
+                methodConditional.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
             }
         }
     }

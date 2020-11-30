@@ -212,7 +212,7 @@ public class JNoseCore implements PropertyChangeListener {
             testClass.setNumberLine(compilationUnit.getRange().get().end.line);
             detectJUnitVersion(compilationUnit.getImports(), testClass);
             List<NodeList<?>> nodeList = compilationUnit.getNodeLists();
-            for (NodeList node : nodeList) {
+            for (NodeList<?> node : nodeList) {
                 isTestFile = flowClass(node, testClass);
             }
         } catch (Exception e) {

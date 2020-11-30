@@ -110,7 +110,7 @@ public class MagicNumberTest extends AbstractSmell{
 
         private boolean checkNumber(MethodCallExpr n, boolean flag){
             if (!flag) {
-                instances.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().toString()));
+                instances.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line+""));
                 flag = true;
             }
             return flag;

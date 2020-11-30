@@ -111,13 +111,13 @@ public class RedundantAssertion extends AbstractSmell {
                             if (n.getArguments().size() == 2) { //e.g. assertArrayEquals(byte[] expecteds, byte[] actuals); assertEquals(long expected, long actual);
                                 if (n.getArgument(0).equals(n.getArgument(1))) {
                                     redundantCount++;
-                                    methodPrints.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().toString()));
+                                    methodPrints.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
                                 }
                             }
                             if (n.getArguments().size() == 3) { //e.g. assertArrayEquals(java.lang.String message, byte[] expecteds, byte[] actuals); assertEquals(java.lang.String message, long expected, long actual)
                                 if (n.getArgument(1).equals(n.getArgument(2))) {
                                     redundantCount++;
-                                    methodPrints.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().toString()));
+                                    methodPrints.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
                                 }
                             }
                         }

@@ -67,7 +67,7 @@ public class SensitiveEquality extends AbstractSmell {
                     for (Expression argument : n.getArguments()) {
                         if (argument.toString().contains("toString")) {
                             sensitiveCount++;
-                            methodSensitiveEquality.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().toString()));
+                            methodSensitiveEquality.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
                         }
                     }
                 }
@@ -78,7 +78,7 @@ public class SensitiveEquality extends AbstractSmell {
                     for (Expression argument : n.getArguments()) {
                         if (argument.toString().contains("toString")) {
                             sensitiveCount++;
-                            methodSensitiveEquality.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().toString()));
+                            methodSensitiveEquality.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
                         }
                     }
                 }
