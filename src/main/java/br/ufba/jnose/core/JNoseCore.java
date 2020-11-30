@@ -234,6 +234,7 @@ public class JNoseCore implements PropertyChangeListener {
         }
     }
 
+    
     public TestClass.JunitVersion getJUnitVersion(String directoryPath) {
         String projectName = directoryPath.substring(directoryPath.lastIndexOf(File.separatorChar) + 1, directoryPath.length());
 
