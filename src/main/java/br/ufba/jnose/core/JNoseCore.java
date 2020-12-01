@@ -340,6 +340,13 @@ public class JNoseCore implements PropertyChangeListener {
 
         List<TestSmell> listTestSmells = testClass.getListTestSmell();
 
+        String[] lista = {"Unknown Test","IgnoredTest","Resource Optimism","Magic Number Test","Redundant Assertion","Sensitive Equality","Verbose Test","Sleepy Test","Lazy Test","Duplicate Assert","Eager Test","Assertion Roulette","Conditional Test Logic","Constructor Initialization","Default Test","EmptyTest","Exception Catching Throwing","General Fixture","Mystery Guest","Print Statement","Dependent Test"};
+        for(String testsmellsName : lista){
+            if(mapaSoma.get(testsmellsName) == null){
+                mapaSoma.put(testsmellsName,0);
+            }
+        }
+
         for(TestSmell testsmells : listTestSmells){
             if(mapaSoma.get(testsmells.getName()) == null){
                 mapaSoma.put(testsmells.getName(),0);
