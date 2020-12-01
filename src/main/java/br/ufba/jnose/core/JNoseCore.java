@@ -149,6 +149,8 @@ public class JNoseCore implements PropertyChangeListener {
             for (TestSmell testSmell : testClass.getListTestSmell()){
                 System.out.println(testSmell.getName() + " - " + testSmell.getMethod() + " - " + testSmell.getRange());
             }
+
+            System.out.println(testClass.getLineSumTestSmells());
         }
 
     }
@@ -234,7 +236,7 @@ public class JNoseCore implements PropertyChangeListener {
         }
     }
 
-    
+
     public TestClass.JunitVersion getJUnitVersion(String directoryPath) {
         String projectName = directoryPath.substring(directoryPath.lastIndexOf(File.separatorChar) + 1, directoryPath.length());
 
@@ -309,7 +311,7 @@ public class JNoseCore implements PropertyChangeListener {
 
         TestSmellDetector testSmellDetector = TestSmellDetector.createTestSmellDetector(config);
 
-        TestFile testFile = new TestFile(testClass.getProjectName(), testClass.getPathFile().toString(), testClass.getProductionFile(), testClass.getNumberLine(), testClass.getNumberMethods());
+        TestFile testFile = new TestFile(testClass.getProjectName(), testClass.getPathFile(), testClass.getProductionFile(), testClass.getNumberLine(), testClass.getNumberMethods());
 
         try {
             TestFile tempFile = testSmellDetector.detectSmells(testFile);
@@ -328,6 +330,26 @@ public class JNoseCore implements PropertyChangeListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        setLineSumTestSmells(testClass);
+    }
+
+    private void setLineSumTestSmells(TestClass testClass){
+
+        Map<String,Integer> mapaSoma = new HashMap<>();
+
+        List<TestSmell> listTestSmells = testClass.getListTestSmell();
+
+        for(TestSmell testsmells : listTestSmells){
+            if(mapaSoma.get(testsmells.getName()) == null){
+                mapaSoma.put(testsmells.getName(),0);
+            }
+
+            Integer valorAtual = mapaSoma.get(testsmells.getName());
+            mapaSoma.put(testsmells.getName(),valorAtual+1);
+        }
+
+        testClass.setLineSumTestSmells(mapaSoma);
     }
 
 

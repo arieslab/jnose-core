@@ -3,6 +3,7 @@ package br.ufba.jnose.dto;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class TestClass implements Serializable {
     private static final long serialVersionUID = 1L;
@@ -15,9 +16,17 @@ public class TestClass implements Serializable {
     private String productionFile;
     private List<TestSmell> listTestSmell = new ArrayList<>();
     private JunitVersion junitVersion;
+    private Map<String,Integer> lineSumTestSmells;
 
     public enum JunitVersion{JUnit3, JUnit4, JUnit5}
 
+    public Map<String, Integer> getLineSumTestSmells() {
+        return lineSumTestSmells;
+    }
+
+    public void setLineSumTestSmells(Map<String, Integer> lineSumTestSmells) {
+        this.lineSumTestSmells = lineSumTestSmells;
+    }
 
     public String getProjectName() {
         return projectName;
