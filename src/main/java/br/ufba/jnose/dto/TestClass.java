@@ -18,7 +18,7 @@ public class TestClass implements Serializable {
     private JunitVersion junitVersion;
     private Map<String,Integer> lineSumTestSmells;
 
-    public enum JunitVersion{JUnit3, JUnit4, JUnit5}
+    public enum JunitVersion{None, JUnit3, JUnit4, JUnit5}
 
     public Map<String, Integer> getLineSumTestSmells() {
         return lineSumTestSmells;
