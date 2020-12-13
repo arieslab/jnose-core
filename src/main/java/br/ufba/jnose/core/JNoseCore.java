@@ -244,6 +244,8 @@ public class JNoseCore implements PropertyChangeListener {
 
         final br.ufba.jnose.dto.TestClass.JunitVersion[] jUnitVersion = new br.ufba.jnose.dto.TestClass.JunitVersion[1];
 
+        jUnitVersion[0] = TestClass.JunitVersion.None;
+
         List<br.ufba.jnose.dto.TestClass> files = new ArrayList<>();
         Path startDir = Paths.get(directoryPath);
         try {
