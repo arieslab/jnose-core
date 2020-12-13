@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <groupId>br.ufba.jnose</groupId>
+  <artifactId>jnose-core</artifactId>
+  <versioning>
+    <versions>
+      <version>0.7-SNAPSHOT</version>
+    </versions>
+    <lastUpdated>20201213025025</lastUpdated>
+  </versioning>
+</metadata>
