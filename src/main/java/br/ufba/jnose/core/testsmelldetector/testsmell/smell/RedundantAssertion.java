@@ -88,7 +88,7 @@ public class RedundantAssertion extends AbstractSmell {
 
                         if (argumentValue != null && (argumentValue.toLowerCase().equals("true") || argumentValue.toLowerCase().equals("false"))) {
                             redundantCount++;
-                            methodPrints.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().toString()));
+                            methodPrints.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
                         }
                     break;
 
@@ -102,7 +102,7 @@ public class RedundantAssertion extends AbstractSmell {
 
                         if (argumentValue != null && (argumentValue.toLowerCase().equals("null"))) {
                             redundantCount++;
-                            methodPrints.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().toString()));
+                            methodPrints.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
                         }
                     break;
 
