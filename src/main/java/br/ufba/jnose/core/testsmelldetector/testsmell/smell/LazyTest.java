@@ -71,7 +71,12 @@ public class LazyTest extends AbstractSmell {
 
         for (MethodUsage method : instanceLazy) {
             TestMethod testClass = new TestMethod(method.getTestMethodName());
-            testClass.setRange(method.getRange());
+            if(method.getRange().charAt(0) == ','){
+                testClass.setRange(method.getRange().replaceFirst(",",""));
+            }else{
+                testClass.setRange(method.getRange());
+            }
+
 //            testClass.addDataItem("begin", method.getRange());
 //            testClass.addDataItem("end", method.getRange()); // [Remover]
             testClass.setHasSmell(true);
