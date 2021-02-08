@@ -49,7 +49,7 @@ public class DefaultTest extends AbstractSmell {
         @Override
         public void visit(ClassOrInterfaceDeclaration n, Void arg) {
             if (n.getNameAsString().equals("ExampleUnitTest") || n.getNameAsString().equals("ExampleInstrumentedTest")) {
-                instanceDefault.add(new MethodUsage(n.getNameAsString(), "",n.getRange().toString()));
+                instanceDefault.add(new MethodUsage(n.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
             }
             super.visit(n, arg);
         }
