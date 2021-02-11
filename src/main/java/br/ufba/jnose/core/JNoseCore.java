@@ -177,14 +177,14 @@ public class JNoseCore implements PropertyChangeListener {
                         if (filePath.toString().toLowerCase().endsWith(".java") && (
                                 fileNameWithoutExtension.matches("^.*test\\d*$") ||
                                         fileNameWithoutExtension.matches("^.*tests\\d*$") ||
-                                        fileNameWithoutExtension.matches("^test") ||
-                                        fileNameWithoutExtension.matches("^tests"))) {
+                                        fileNameWithoutExtension.matches("^test.*") ||
+                                        fileNameWithoutExtension.matches("^tests.*"))) {
 
                             Boolean testTrueFinal = fileNameWithoutExtension.matches("^.*test\\d*$");
                             Boolean testsTrueFinal = fileNameWithoutExtension.matches("^.*tests\\d*$");
 
-                            Boolean testTrueInicio = fileNameWithoutExtension.matches("^test");
-                            Boolean testsTrueInicio = fileNameWithoutExtension.matches("^tests");
+                            Boolean testTrueInicio = fileNameWithoutExtension.matches("^test.*");
+                            Boolean testsTrueInicio = fileNameWithoutExtension.matches("^tests.*");
 
 
 
