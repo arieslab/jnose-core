@@ -51,37 +51,57 @@ public class LazyTest extends AbstractSmell {
         ArrayList<String> productionChecked = new ArrayList<> ();
 
         for (MethodUsage method : calledProductionMethods) {
-            ArrayList<String> methodsList = new ArrayList<>();
             List<MethodUsage> s = calledProductionMethods.stream().filter(x -> x.getProductionMethodName().equals(method.getProductionMethodName())).collect(Collectors.toList());
+            if (s.size() > 1) {
+                if (s.stream().filter(y -> y.getTestMethodName().equals(method.getTestMethodName())).count() != s.size()) {
+                    // If counts don not match, this production method is used by multiple test methods. Hence, there is a Lazy Test smell.
+                    // If the counts were equal it means that the production method is only used (called from) inside one test method
+                    TestMethod testClass = new TestMethod(method.getTestMethodName());
+                    testClass.setHasSmell(true);
 
-            String range = "";
+                    if (method.getRange().charAt(0) == ',') {
+                        testClass.setRange(method.getRange().replaceFirst(",", ""));
+                    } else {
+                        testClass.setRange(method.getRange());
+                    }
 
-            for(MethodUsage teste : s){
-                range = range + " , " + teste.getRange();
-
-                if(!methodsList.contains(teste.getTestMethodName())){
-                    methodsList.add(teste.getTestMethodName());
+                    smellyElementList.add(testClass);
                 }
             }
-            if(!productionChecked.contains(method.getProductionMethodName ())){
-                productionChecked.add (method.getProductionMethodName ());
-                instanceLazy.add (new MethodUsage(String.join(", ", methodsList),"",range));
-            }
         }
 
-        for (MethodUsage method : instanceLazy) {
-            TestMethod testClass = new TestMethod(method.getTestMethodName());
-            if(method.getRange().charAt(0) == ','){
-                testClass.setRange(method.getRange().replaceFirst(",",""));
-            }else{
-                testClass.setRange(method.getRange());
-            }
+//        for (MethodUsage method : calledProductionMethods) {
+//            ArrayList<String> methodsList = new ArrayList<>();
+//            List<MethodUsage> s = calledProductionMethods.stream().filter(x -> x.getProductionMethodName().equals(method.getProductionMethodName())).collect(Collectors.toList());
+//
+//            String range = "";
+//
+//            for(MethodUsage teste : s){
+//                range = range + " , " + teste.getRange();
+//
+//                if(!methodsList.contains(teste.getTestMethodName())){
+//                    methodsList.add(teste.getTestMethodName());
+//                }
+//            }
+//            if(!productionChecked.contains(method.getProductionMethodName ())){
+//                productionChecked.add (method.getProductionMethodName ());
+//                instanceLazy.add (new MethodUsage(String.join(", ", methodsList),"",range));
+//            }
+//        }
 
-//            testClass.addDataItem("begin", method.getRange());
-//            testClass.addDataItem("end", method.getRange()); // [Remover]
-            testClass.setHasSmell(true);
-            smellyElementList.add(testClass);
-        }
+//        for (MethodUsage method : instanceLazy) {
+//            TestMethod testClass = new TestMethod(method.getTestMethodName());
+//            if(method.getRange().charAt(0) == ','){
+//                testClass.setRange(method.getRange().replaceFirst(",",""));
+//            }else{
+//                testClass.setRange(method.getRange());
+//            }
+//
+////            testClass.addDataItem("begin", method.getRange());
+////            testClass.addDataItem("end", method.getRange()); // [Remover]
+//            testClass.setHasSmell(true);
+//            smellyElementList.add(testClass);
+//        }
     }
 
     /**
