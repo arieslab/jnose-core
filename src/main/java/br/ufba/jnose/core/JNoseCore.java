@@ -174,7 +174,10 @@ public class JNoseCore implements PropertyChangeListener {
                     if (filePath.getFileName().toString().lastIndexOf(".") != -1) {
                         String fileNameWithoutExtension = filePath.getFileName().toString().substring(0, filePath.getFileName().toString().lastIndexOf(".")).toLowerCase();
 
-                        if (filePath.toString().toLowerCase().endsWith(".java") && fileNameWithoutExtension.matches("^.*test\\d*$")) {
+                        if (filePath.toString().toLowerCase().endsWith(".java") && (fileNameWithoutExtension.matches("^.*test\\d*$") || fileNameWithoutExtension.matches("^.*tests\\d*$"))) {
+
+                            Boolean testTrue = fileNameWithoutExtension.matches("^.*test\\d*$");
+                            Boolean testsTrue = fileNameWithoutExtension.matches("^.*tests\\d*$");
 
                             TestClass testClass = new TestClass();
                             testClass.setProjectName(projectName);
@@ -185,9 +188,20 @@ public class JNoseCore implements PropertyChangeListener {
                                 LOGGER.log(Level.INFO, "getFilesTest: " + testClass.getPathFile());
 
                                 String productionFileName = "";
-                                int index = testClass.getName().toLowerCase().lastIndexOf("test");
+
+                                int index = 0;
+
+                                if(testTrue)
+                                    index = testClass.getName().toLowerCase().lastIndexOf("test");
+
+                                if(testsTrue)
+                                    index = testClass.getName().toLowerCase().lastIndexOf("tests");
+
                                 if (index > 0) {
-                                    productionFileName = testClass.getName().substring(0, testClass.getName().toLowerCase().lastIndexOf("test")) + ".java";
+                                    if(testTrue)
+                                        productionFileName = testClass.getName().substring(0, testClass.getName().toLowerCase().lastIndexOf("test")) + ".java";
+                                    if(testsTrue)
+                                        productionFileName = testClass.getName().substring(0, testClass.getName().toLowerCase().lastIndexOf("tests")) + ".java";
                                 }
                                 testClass.setProductionFile(getFileProduction(startDir.toString(), productionFileName));
 
