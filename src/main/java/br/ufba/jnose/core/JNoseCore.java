@@ -200,17 +200,18 @@ public class JNoseCore implements PropertyChangeListener {
 
                                 int index = 0;
 
+                                if(testTrueInicio)
+                                    index = 0;
+
+                                if(testsTrueInicio)
+                                    index = 0;
+
                                 if(testTrueFinal)
                                     index = testClass.getName().toLowerCase().lastIndexOf("test");
 
                                 if(testsTrueFinal)
                                     index = testClass.getName().toLowerCase().lastIndexOf("tests");
 
-                                if(testTrueInicio)
-                                    index = 0;
-
-                                if(testsTrueInicio)
-                                    index = 0;
 
                                 if (index > 0) {
                                     if(testTrueFinal)
@@ -219,9 +220,9 @@ public class JNoseCore implements PropertyChangeListener {
                                         productionFileName = testClass.getName().substring(0, testClass.getName().toLowerCase().lastIndexOf("tests")) + ".java";
                                 }else{
                                     if(testTrueInicio)
-                                        productionFileName = testClass.getName().substring(3, testClass.getName().length()-1) + ".java";
+                                        productionFileName = testClass.getName().substring(4, testClass.getName().length()) + ".java";
                                     if(testsTrueInicio)
-                                        productionFileName = testClass.getName().substring(4, testClass.getName().length()-1) + ".java";
+                                        productionFileName = testClass.getName().substring(5, testClass.getName().length()) + ".java";
                                 }
                                 testClass.setProductionFile(getFileProduction(startDir.toString(), productionFileName));
 
