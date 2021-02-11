@@ -207,10 +207,10 @@ public class JNoseCore implements PropertyChangeListener {
                                     index = testClass.getName().toLowerCase().lastIndexOf("tests");
 
                                 if(testTrueInicio)
-                                    index = testClass.getName().toLowerCase().lastIndexOf("test");
+                                    index = 0;
 
                                 if(testsTrueInicio)
-                                    index = testClass.getName().toLowerCase().lastIndexOf("tests");
+                                    index = 0;
 
                                 if (index > 0) {
                                     if(testTrueFinal)
