@@ -137,6 +137,11 @@ public class JNoseCore implements PropertyChangeListener {
             public Boolean magicNumberTest() {
                 return true;
             }
+
+            @Override
+            public Integer maxStatements() {
+                return 30;
+            }
         };
 
         JNoseCore jNoseCore = new JNoseCore(conf);

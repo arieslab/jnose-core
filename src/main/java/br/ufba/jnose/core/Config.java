@@ -22,4 +22,5 @@ public interface Config {
     Boolean ignoredTest();
     Boolean resourceOptimism();
     Boolean magicNumberTest();
+    Integer maxStatements();
 }
