@@ -1,5 +1,6 @@
 package br.ufba.jnose.core;
 
+import br.ufba.jnose.core.testsmelldetector.testsmell.smell.VerboseTest;
 import br.ufba.jnose.dto.*;
 import br.ufba.jnose.core.testsmelldetector.testsmell.AbstractSmell;
 import br.ufba.jnose.core.testsmelldetector.testsmell.SmellyElement;
@@ -162,6 +163,7 @@ public class JNoseCore implements PropertyChangeListener {
 
     public JNoseCore(Config config) {
         this.config = config;
+        VerboseTest.MAX_STATEMENTS = config.maxStatements();
     }
 
     public List<TestClass> getFilesTest(String directoryPath) throws IOException {
