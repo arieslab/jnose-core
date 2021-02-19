@@ -329,7 +329,9 @@ public class JNoseCore implements PropertyChangeListener {
                 isTestClass = flowClass(((MethodDeclaration) node).getAnnotations(), testClass);
                 if(isTestClass)return true;
             } else if (node instanceof AnnotationExpr) {
-                return ((AnnotationExpr) node).getNameAsString().toLowerCase().contains("test");
+                if(((AnnotationExpr) node).getNameAsString().toLowerCase().contains("test")){
+                    return true;
+                }
             }
         }
         return isTestClass;
