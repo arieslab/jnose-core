@@ -67,71 +67,97 @@ public class MagicNumberTest extends AbstractSmell{
         public void visit(MethodCallExpr n, Void arg){
             super.visit(n, arg);
             if (currentMethod != null) {
-                boolean flag = false;
                 // if the name of a method being called start with 'assert'
                 if (n.getNameAsString().startsWith(("assert"))) {
                     // checks all arguments of the assert method
+
                     for (Expression argument : n.getArguments()) {
                         // if the argument is a number
                         if (Util.isNumber(argument.toString())) {
-                            flag = checkNumber(n, flag);
+                            MethodUsage verification = new MethodUsage(currentMethod.getNameAsString(),
+                                    "",n.getRange().get().begin.line+"");
+                            if (!instances.contains(verification)){
+                                instances.add(verification);
+                            }
                         }
                         // if the argument contains an ObjectCreationExpr (e.g. assertEquals(new Integer(2),...)
                         else if (argument instanceof ObjectCreationExpr) {
-                            flag = checkObject(n, flag, (ObjectCreationExpr) argument);
+                            checkObject( (ObjectCreationExpr) argument);
                         }
                         // if the argument contains an MethodCallExpr (e.g. assertEquals(someMethod(2),...)
                         else if (argument instanceof MethodCallExpr) {
-                            flag = checkMethodCall(n, flag, (MethodCallExpr) argument);
+                            checkMethodCall( (MethodCallExpr) argument);
                         }
                         //if the assertTrue has a number or methodcall with numbers
                         else if (argument instanceof BinaryExpr) {
-                            if (Util.isNumber(((BinaryExpr) argument).getLeft().toString()) ||
-                                    Util.isNumber(((BinaryExpr) argument).getRight().toString())) {
-                                flag = checkNumber(n, flag);
-                            }
-                            else if (((BinaryExpr) argument).getLeft() instanceof ObjectCreationExpr){
-                                flag = checkObject(n, flag, (ObjectCreationExpr) ((BinaryExpr) argument).getLeft());
-                            }
-                            else if (((BinaryExpr) argument).getRight() instanceof ObjectCreationExpr) {
-                                flag = checkObject(n, flag, (ObjectCreationExpr) ((BinaryExpr) argument).getRight());
-                            }
-                            else if (((BinaryExpr) argument).getLeft() instanceof MethodCallExpr){
-                                flag = checkMethodCall(n, flag, (MethodCallExpr) ((BinaryExpr) argument).getLeft());
-                            }
-                            else if (((BinaryExpr) argument).getRight() instanceof ObjectCreationExpr) {
-                                flag = checkMethodCall(n, flag, (MethodCallExpr) ((BinaryExpr) argument).getRight());
-                            }
+                            checkBinary( (BinaryExpr) argument);
                         }
                     }
                 }
             }
         }
 
-        private boolean checkNumber(MethodCallExpr n, boolean flag){
-            if (!flag) {
-                instances.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line+""));
-                flag = true;
-            }
-            return flag;
-        }
 
-        private boolean checkMethodCall(MethodCallExpr n, boolean flag, MethodCallExpr argument){
+        private boolean checkMethodCall(MethodCallExpr argument){
             for (Expression objectArguments : argument.getArguments()) {
                 if (Util.isNumber(objectArguments.toString())) {
-                    flag = checkNumber(n, flag);
+                    MethodUsage verification = new MethodUsage(currentMethod.getNameAsString(), "",
+                            argument.getRange().get().begin.line+"");
+                    if (!instances.contains(verification)){
+                        instances.add(verification);
+                        return true;
+                    }
                 }
             }
-            return flag;
+            return false;
         }
 
-        private boolean checkObject(MethodCallExpr n, boolean flag, ObjectCreationExpr argument){
+        private boolean checkObject(ObjectCreationExpr argument){
             for (Expression objectArguments : argument.getArguments()) {
                 if (Util.isNumber(objectArguments.toString())) {
-                    flag = checkNumber(n, flag);
+                    MethodUsage verification = new MethodUsage(currentMethod.getNameAsString(), "",
+                            argument.getRange().get().begin.line+"");
+                    if (!instances.contains(verification)){
+                        instances.add(verification);
+                        return true;
+                    }
                 }
             }
-            return flag;
+            return false;
+        }
+
+        private boolean checkBinary(BinaryExpr argument) {
+            if (Util.isNumber(argument.getLeft().toString()) ||
+                    Util.isNumber(argument.getRight().toString())) {
+                MethodUsage verification = new MethodUsage(currentMethod.getNameAsString(), "",
+                        argument.getRange().get().begin.line+"");
+                if (!instances.contains(verification)){
+                    instances.add(verification);
+                    return true;
+                }
+            }
+            else if (((BinaryExpr) argument).getLeft() instanceof MethodCallExpr
+                    || ((BinaryExpr) argument).getRight() instanceof MethodCallExpr){
+                if(checkMethodCall((MethodCallExpr) ((BinaryExpr) argument).getLeft()) == true)
+                    return true;
+                if (checkMethodCall((MethodCallExpr) ((BinaryExpr) argument).getRight()))
+                    return true;
+            }
+            else if (((BinaryExpr) argument).getRight() instanceof ObjectCreationExpr
+                    || ((BinaryExpr) argument).getRight() instanceof ObjectCreationExpr) {
+                if (checkObject((ObjectCreationExpr) ((BinaryExpr) argument).getRight()))
+                    return true;
+                if (checkObject( (ObjectCreationExpr) ((BinaryExpr) argument).getLeft()))
+                    return true;
+            }
+            else if (((BinaryExpr) argument).getRight() instanceof BinaryExpr
+                    || ((BinaryExpr) argument).getLeft() instanceof BinaryExpr) {
+                if (checkBinary( (BinaryExpr) argument.getRight()))
+                    return true;
+                if(checkBinary( (BinaryExpr) argument.getLeft()))
+                    return true;
+            }
+            return false;
         }
     }
 }
