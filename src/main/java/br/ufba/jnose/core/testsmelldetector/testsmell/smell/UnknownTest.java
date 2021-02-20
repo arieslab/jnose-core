@@ -51,7 +51,7 @@ public class UnknownTest extends AbstractSmell {
         // examine all methods in the test class
         @Override
         public void visit(MethodDeclaration n, Void arg) {
-            if (Util.isValidTestMethod(n)) {
+            if (Util.isValidTestMethod(n) && n.getBody().get().getStatements().size() >0) {
                 Optional<AnnotationExpr> assertAnnotation = n.getAnnotationByName("Test");
                 if (assertAnnotation.isPresent()) {
                     for (int i = 0; i < assertAnnotation.get().getNodeLists().size(); i++) {
