@@ -62,6 +62,7 @@ public class MysteryGuest extends AbstractSmell {
                         "SoapObject"
                 ));
 
+
         /*
                 private List<String> databaseMethods = new ArrayList<>(
                         Arrays.asList(
@@ -130,6 +131,7 @@ public class MysteryGuest extends AbstractSmell {
             // Removing it will check for variables declared at the class level.
             //TODO: to null check or not to null check???
             if (currentMethod != null) {
+                boolean hasMystery = false;
                 for (String variableType : mysteryTypes) {
                     //check if the type variable encountered is part of the mystery type collection
                     if ((n.getVariable(0).getType().asString().equals(variableType))) {
@@ -140,9 +142,12 @@ public class MysteryGuest extends AbstractSmell {
                         }
                         // variable is not mocked, hence it's a smell
                         mysteryCount++;
-                        mysteryInstance.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line+""));
+                        hasMystery = true;
+//                        mysteryInstance.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line+""));
                     }
                 }
+                if (hasMystery)
+                    mysteryInstance.add(new MethodUsage(currentMethod.getNameAsString(), "",currentMethod.getRange().get().begin.line + "-" + currentMethod.getRange().get().end.line));
             }
         }
     }
