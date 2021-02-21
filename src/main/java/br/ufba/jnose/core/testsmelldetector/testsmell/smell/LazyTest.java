@@ -75,6 +75,21 @@ public class LazyTest extends AbstractSmell {
                 productionClassName = n.getNameAsString();
             }
             super.visit(n, arg);
+
+            ArrayList<String> resultado = new ArrayList<>();
+
+            calledMethodsLine.forEach( (key, value ) -> { // forEach() também é novidade Java 8
+                if(calledMethodsLine.get(key).size() > 1){
+                    List<String> names = calledMethodsName.get(key).stream().distinct().collect(Collectors.toList());
+                    if(names.size()>1) {
+                        List<String> lines = calledMethodsLine.get(key).stream().distinct().collect(Collectors.toList());
+                        instanceLazy.add(new MethodUsage(names.toString()
+                                .replace("[", "").replace("]", ""),
+                                "", lines.toString()
+                                .replace("[", "").replace("]", "")));
+                    }
+                }
+            } );
         }
 
         @Override
@@ -101,25 +116,6 @@ public class LazyTest extends AbstractSmell {
                     //reset values for next method
                     currentMethod = null;
                     productionVariables = new ArrayList<>();
-                    System.out.println(calledMethodsLine.size());
-
-                    ArrayList<String> resultado = new ArrayList<>();
-
-                    calledMethodsLine.forEach( (key, value ) -> { // forEach() também é novidade Java 8
-                        System.out.println( "Key:" + key + " Value:" + value );
-                        if(calledMethodsLine.get(key).size() > 1){
-                            System.out.print(calledMethodsLine.get(key)+ "    ");
-                            System.out.println(calledMethodsName.get(key));
-                            List<String> names = calledMethodsName.get(key).stream().distinct().collect(Collectors.toList());
-                            if(names.size()>1) {
-                                List<String> lines = calledMethodsLine.get(key).stream().distinct().collect(Collectors.toList());
-                                instanceLazy.add(new MethodUsage(names.toString()
-                                        .replace("[", "").replace("]", ""),
-                                        "", lines.toString()
-                                        .replace("[", "").replace("]", "")));
-                            }
-                        }
-                    } );
                 }
             } else { //collect a list of all public/protected members of the production class
                 for (Modifier modifier : n.getModifiers()) {
