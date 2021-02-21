@@ -111,11 +111,13 @@ public class LazyTest extends AbstractSmell {
                             System.out.print(calledMethodsLine.get(key)+ "    ");
                             System.out.println(calledMethodsName.get(key));
                             List<String> names = calledMethodsName.get(key).stream().distinct().collect(Collectors.toList());
-                            List<String> lines = calledMethodsLine.get(key).stream().distinct().collect(Collectors.toList());
-                            instanceLazy.add(new MethodUsage(names.toString()
-                                    .replace("[","").replace("]",""),
-                                    "",lines.toString()
-                                    .replace("[","").replace("]","")));
+                            if(names.size()>1) {
+                                List<String> lines = calledMethodsLine.get(key).stream().distinct().collect(Collectors.toList());
+                                instanceLazy.add(new MethodUsage(names.toString()
+                                        .replace("[", "").replace("]", ""),
+                                        "", lines.toString()
+                                        .replace("[", "").replace("]", "")));
+                            }
                         }
                     } );
                 }
@@ -150,7 +152,9 @@ public class LazyTest extends AbstractSmell {
                     ArrayList<String> lines = new ArrayList<>();
                     ArrayList<String> names = new ArrayList<>();
                     lines.add(String.valueOf(n.getRange().get().begin.line));
-                    names.add(currentMethod.getNameAsString());
+                    if(!names.contains(currentMethod.getNameAsString())) {
+                        names.add(currentMethod.getNameAsString());
+                    }
                     if(!calledMethodsLine.containsKey(valor)) {
                         calledMethodsLine.put(valor, lines);
                         calledMethodsName.put(valor,names);
@@ -175,6 +179,9 @@ public class LazyTest extends AbstractSmell {
                                 ArrayList<String> names = new ArrayList<>();
                                 lines.add(String.valueOf(n.getRange().get().begin.line));
                                 names.add(currentMethod.getNameAsString());
+                                if(!names.contains(currentMethod.getNameAsString())) {
+                                    names.add(currentMethod.getNameAsString());
+                                }
                                 if(!calledMethodsLine.containsKey(valor)) {
                                     calledMethodsLine.put(valor, lines);
                                     calledMethodsName.put(valor,names);
@@ -203,6 +210,9 @@ public class LazyTest extends AbstractSmell {
                         ArrayList<String> names = new ArrayList<>();
                         lines.add(String.valueOf(n.getRange().get().begin.line));
                         names.add(currentMethod.getNameAsString());
+                        if(!names.contains(currentMethod.getNameAsString())) {
+                            names.add(currentMethod.getNameAsString());
+                        }
                         if(!calledMethodsLine.containsKey(valor)) {
                             calledMethodsLine.put(valor, lines);
                             calledMethodsName.put(valor,names);
