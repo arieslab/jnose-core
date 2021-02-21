@@ -89,7 +89,7 @@ public class MysteryGuest extends AbstractSmell {
                                 "openRawResource"));
         */
         private MethodDeclaration currentMethod = null;
-        private int mysteryCount = 0;
+//        private int mysteryCount = 0;
 
         // examine all methods in the test class
         @Override
@@ -100,7 +100,7 @@ public class MysteryGuest extends AbstractSmell {
 
                 //reset values for next method
                 currentMethod = null;
-                mysteryCount = 0;
+//                mysteryCount = 0;
             }
         }
 
@@ -141,13 +141,16 @@ public class MysteryGuest extends AbstractSmell {
                                 break;
                         }
                         // variable is not mocked, hence it's a smell
-                        mysteryCount++;
+//                        mysteryCount++;
                         hasMystery = true;
 //                        mysteryInstance.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line+""));
                     }
                 }
-                if (hasMystery)
-                    mysteryInstance.add(new MethodUsage(currentMethod.getNameAsString(), "",currentMethod.getRange().get().begin.line + "-" + currentMethod.getRange().get().end.line));
+                if (hasMystery) {
+                    MethodUsage methodUsage = new MethodUsage(currentMethod.getNameAsString(), "",currentMethod.getRange().get().begin.line + "-" + currentMethod.getRange().get().end.line);
+                    if (!mysteryInstance.contains(methodUsage))
+                        mysteryInstance.add(methodUsage);
+                }
             }
         }
     }
