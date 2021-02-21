@@ -296,7 +296,12 @@ public class JNoseCore implements PropertyChangeListener {
                     .forEach(filePath -> {
                         if (filePath.getFileName().toString().lastIndexOf(".") != -1) {
                             String fileNameWithoutExtension = filePath.getFileName().toString().substring(0, filePath.getFileName().toString().lastIndexOf(".")).toLowerCase();
-                            if (filePath.toString().toLowerCase().endsWith(".java") && fileNameWithoutExtension.matches("^.*test\\d*$")) {
+//                            if (filePath.toString().toLowerCase().endsWith(".java") && fileNameWithoutExtension.matches("^.*test\\d*$")) {
+                            if (filePath.toString().toLowerCase().endsWith(".java") && (
+                                    fileNameWithoutExtension.matches("^.*test\\d*$") ||
+                                            fileNameWithoutExtension.matches("^.*tests\\d*$") ||
+                                            fileNameWithoutExtension.matches("^test.*") ||
+                                            fileNameWithoutExtension.matches("^tests.*"))) {
                                 br.ufba.jnose.dto.TestClass testClass = new br.ufba.jnose.dto.TestClass();
                                 testClass.setProjectName(projectName);
                                 testClass.setPathFile(filePath.toString());
