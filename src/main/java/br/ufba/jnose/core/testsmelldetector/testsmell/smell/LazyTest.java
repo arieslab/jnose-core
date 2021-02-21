@@ -3,12 +3,10 @@ package br.ufba.jnose.core.testsmelldetector.testsmell.smell;
 import br.ufba.jnose.core.testsmelldetector.testsmell.MethodUsage;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.EnumDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import br.ufba.jnose.core.testsmelldetector.testsmell.AbstractSmell;
 import br.ufba.jnose.core.testsmelldetector.testsmell.TestMethod;
@@ -22,14 +20,16 @@ public class LazyTest extends AbstractSmell {
     private static final String TEST_FILE = "Test";
     private static final String PRODUCTION_FILE = "Production";
     private String productionClassName;
-    private List<MethodUsage> calledProductionMethods;
     private List<MethodDeclaration> productionMethods;
+    private List<ConstructorDeclaration> constructorMethods;
+    private HashMap<String,ArrayList<String>> calledMethodsLine = new HashMap<>();
+    private HashMap<String,ArrayList<String>> calledMethodsName = new HashMap<>();
     private ArrayList<MethodUsage> instanceLazy;
 
     public LazyTest() {
         super("Lazy Test");
         productionMethods = new ArrayList<>();
-        calledProductionMethods = new ArrayList<>();
+        constructorMethods = new ArrayList<>();
         instanceLazy = new ArrayList<>();
     }
 
@@ -48,60 +48,12 @@ public class LazyTest extends AbstractSmell {
         classVisitor = new LazyTest.ClassVisitor(TEST_FILE);
         classVisitor.visit(testFileCompilationUnit, null);
 
-        ArrayList<String> productionChecked = new ArrayList<> ();
-
-        for (MethodUsage method : calledProductionMethods) {
-            List<MethodUsage> s = calledProductionMethods.stream().filter(x -> x.getProductionMethodName().equals(method.getProductionMethodName())).collect(Collectors.toList());
-            if (s.size() > 1) {
-                if (s.stream().filter(y -> y.getTestMethodName().equals(method.getTestMethodName())).count() != s.size()) {
-                    // If counts don not match, this production method is used by multiple test methods. Hence, there is a Lazy Test smell.
-                    // If the counts were equal it means that the production method is only used (called from) inside one test method
-                    TestMethod testClass = new TestMethod(method.getTestMethodName());
-                    testClass.setHasSmell(true);
-
-                    if (method.getRange().charAt(0) == ',') {
-                        testClass.setRange(method.getRange().replaceFirst(",", ""));
-                    } else {
-                        testClass.setRange(method.getRange());
-                    }
-
-                    smellyElementList.add(testClass);
-                }
-            }
+        for (MethodUsage method : instanceLazy) {
+            TestMethod testClass = new TestMethod(method.getTestMethodName());
+            testClass.setRange(method.getRange());
+            testClass.setHasSmell(true);
+            smellyElementList.add(testClass);
         }
-
-//        for (MethodUsage method : calledProductionMethods) {
-//            ArrayList<String> methodsList = new ArrayList<>();
-//            List<MethodUsage> s = calledProductionMethods.stream().filter(x -> x.getProductionMethodName().equals(method.getProductionMethodName())).collect(Collectors.toList());
-//
-//            String range = "";
-//
-//            for(MethodUsage teste : s){
-//                range = range + " , " + teste.getRange();
-//
-//                if(!methodsList.contains(teste.getTestMethodName())){
-//                    methodsList.add(teste.getTestMethodName());
-//                }
-//            }
-//            if(!productionChecked.contains(method.getProductionMethodName ())){
-//                productionChecked.add (method.getProductionMethodName ());
-//                instanceLazy.add (new MethodUsage(String.join(", ", methodsList),"",range));
-//            }
-//        }
-
-//        for (MethodUsage method : instanceLazy) {
-//            TestMethod testClass = new TestMethod(method.getTestMethodName());
-//            if(method.getRange().charAt(0) == ','){
-//                testClass.setRange(method.getRange().replaceFirst(",",""));
-//            }else{
-//                testClass.setRange(method.getRange());
-//            }
-//
-////            testClass.addDataItem("begin", method.getRange());
-////            testClass.addDataItem("end", method.getRange()); // [Remover]
-//            testClass.setHasSmell(true);
-//            smellyElementList.add(testClass);
-//        }
     }
 
     /**
@@ -149,6 +101,25 @@ public class LazyTest extends AbstractSmell {
                     //reset values for next method
                     currentMethod = null;
                     productionVariables = new ArrayList<>();
+                    System.out.println(calledMethodsLine.size());
+
+                    ArrayList<String> resultado = new ArrayList<>();
+
+                    calledMethodsLine.forEach( (key, value ) -> { // forEach() também é novidade Java 8
+                        System.out.println( "Key:" + key + " Value:" + value );
+                        if(calledMethodsLine.get(key).size() > 1){
+                            System.out.print(calledMethodsLine.get(key)+ "    ");
+                            System.out.println(calledMethodsName.get(key));
+                            List<String> names = calledMethodsName.get(key).stream().distinct().collect(Collectors.toList());
+                            if(names.size()>1) {
+                                List<String> lines = calledMethodsLine.get(key).stream().distinct().collect(Collectors.toList());
+                                instanceLazy.add(new MethodUsage(names.toString()
+                                        .replace("[", "").replace("]", ""),
+                                        "", lines.toString()
+                                        .replace("[", "").replace("]", "")));
+                            }
+                        }
+                    } );
                 }
             } else { //collect a list of all public/protected members of the production class
                 for (Modifier modifier : n.getModifiers()) {
@@ -176,8 +147,25 @@ public class LazyTest extends AbstractSmell {
             if (currentMethod != null) {
                 if (productionMethods.stream().anyMatch(i -> i.getNameAsString().equals(n.getNameAsString()) &&
                         i.getParameters().size() == n.getArguments().size())) {
-                    calledProductionMethods.add(new MethodUsage(currentMethod.getNameAsString(), n.getNameAsString(),n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
-                    } else {
+                    //calledProductionMethods.add(new MethodUsage(currentMethod.getNameAsString(), n.getNameAsString(),n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
+                    String valor = n.getNameAsString();
+                    ArrayList<String> lines = new ArrayList<>();
+                    ArrayList<String> names = new ArrayList<>();
+                    lines.add(String.valueOf(n.getRange().get().begin.line));
+                    if(!names.contains(currentMethod.getNameAsString())) {
+                        names.add(currentMethod.getNameAsString());
+                    }
+                    if(!calledMethodsLine.containsKey(valor)) {
+                        calledMethodsLine.put(valor, lines);
+                        calledMethodsName.put(valor,names);
+                    }
+                    else {
+                        lines.addAll(calledMethodsLine.get(valor));
+                        names.addAll(calledMethodsName.get(valor));
+                        calledMethodsLine.computeIfPresent(valor, (k, v) -> v = lines);
+                        calledMethodsName.computeIfPresent(valor, (k, v) -> v = names);
+                    }
+                } else {
                     if (n.getScope().isPresent()) {
                         if (n.getScope().get() instanceof NameExpr) {
                             //checks if the scope of the method being called is either of production class (e.g. static method)
@@ -185,8 +173,25 @@ public class LazyTest extends AbstractSmell {
                             ///if the scope matches a variable which, in turn, is of type of the production class
                             if (((NameExpr) n.getScope().get()).getNameAsString().equals(productionClassName) ||
                                     productionVariables.contains(((NameExpr) n.getScope().get()).getNameAsString())) {
-                                calledProductionMethods.add(new MethodUsage(currentMethod.getNameAsString(), n.getNameAsString(), n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
-
+                                //calledProductionMethods.add(new MethodUsage(currentMethod.getNameAsString(), n.getNameAsString(), n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
+                                String valor = n.getNameAsString();
+                                ArrayList<String> lines = new ArrayList<>();
+                                ArrayList<String> names = new ArrayList<>();
+                                lines.add(String.valueOf(n.getRange().get().begin.line));
+                                names.add(currentMethod.getNameAsString());
+                                if(!names.contains(currentMethod.getNameAsString())) {
+                                    names.add(currentMethod.getNameAsString());
+                                }
+                                if(!calledMethodsLine.containsKey(valor)) {
+                                    calledMethodsLine.put(valor, lines);
+                                    calledMethodsName.put(valor,names);
+                                }
+                                else {
+                                    lines.addAll(calledMethodsLine.get(valor));
+                                    names.addAll(calledMethodsName.get(valor));
+                                    calledMethodsLine.computeIfPresent(valor, (k, v) -> v = lines);
+                                    calledMethodsName.computeIfPresent(valor, (k, v) -> v = names);
+                                }
                             }
                         }
                     }
@@ -194,21 +199,39 @@ public class LazyTest extends AbstractSmell {
             }
         }
 
-//        /**
-//         * The purpose of this method is to capture the names of all variables, declared in the method body, that are of type of the production class.
-//         * The variable is captured as and when the code statement is parsed/evaluated by the parser
-//         */
-//        @Override
-//        public void visit(VariableDeclarationExpr n, Void arg) {
-//            if (currentMethod != null) {
-//                for (int i = 0; i < n.getVariables().size(); i++) {
-//                    if (productionClassName.equals(n.getVariable(i).getType().asString())) {
-//                        productionVariables.add(n.getVariable(i).getNameAsString());
-//                    }
-//                }
-//            }
-//            super.visit(n, arg);
-//        }
+        @Override
+        public void visit(ObjectCreationExpr n, Void arg) {
+            super.visit(n, arg);
+            if (currentMethod != null) {
+                for (int i = 0; i < constructorMethods.size(); i++) {
+                    if (constructorMethods.get(i).getName().asString().equals(n.getType().toString())) {
+                        String valor = constructorMethods.get(i).getName().asString();
+                        ArrayList<String> lines = new ArrayList<>();
+                        ArrayList<String> names = new ArrayList<>();
+                        lines.add(String.valueOf(n.getRange().get().begin.line));
+                        names.add(currentMethod.getNameAsString());
+                        if(!names.contains(currentMethod.getNameAsString())) {
+                            names.add(currentMethod.getNameAsString());
+                        }
+                        if(!calledMethodsLine.containsKey(valor)) {
+                            calledMethodsLine.put(valor, lines);
+                            calledMethodsName.put(valor,names);
+                        }
+                        else {
+                            lines.addAll(calledMethodsLine.get(valor));
+                            names.addAll(calledMethodsName.get(valor));
+                            calledMethodsLine.computeIfPresent(valor, (k, v) -> v = lines);
+                            calledMethodsName.computeIfPresent(valor, (k, v) -> v = names);
+                        }
+                    }
+                }
+            }
+        }
+
+        @Override
+        public void visit(ConstructorDeclaration n, Void arg){
+            constructorMethods.add(n);
+        }
 
         @Override
         public void visit(VariableDeclarator n, Void arg) {
