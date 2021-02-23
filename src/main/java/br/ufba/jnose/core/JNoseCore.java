@@ -1,5 +1,6 @@
 package br.ufba.jnose.core;
 
+import br.ufba.jnose.core.testsmelldetector.testsmell.smell.VerboseTest;
 import br.ufba.jnose.dto.*;
 import br.ufba.jnose.core.testsmelldetector.testsmell.AbstractSmell;
 import br.ufba.jnose.core.testsmelldetector.testsmell.SmellyElement;
@@ -138,6 +139,11 @@ public class JNoseCore implements PropertyChangeListener {
             public Boolean magicNumberTest() {
                 return true;
             }
+
+            @Override
+            public Integer maxStatements() {
+                return 30;
+            }
         };
 
         JNoseCore jNoseCore = new JNoseCore(conf);
@@ -158,6 +164,7 @@ public class JNoseCore implements PropertyChangeListener {
 
     public JNoseCore(Config config) {
         this.config = config;
+        VerboseTest.MAX_STATEMENTS = config.maxStatements();
     }
 
     public List<TestClass> getFilesTest(String directoryPath) throws IOException {
@@ -290,7 +297,12 @@ public class JNoseCore implements PropertyChangeListener {
                     .forEach(filePath -> {
                         if (filePath.getFileName().toString().lastIndexOf(".") != -1) {
                             String fileNameWithoutExtension = filePath.getFileName().toString().substring(0, filePath.getFileName().toString().lastIndexOf(".")).toLowerCase();
-                            if (filePath.toString().toLowerCase().endsWith(".java") && fileNameWithoutExtension.matches("^.*test\\d*$")) {
+//                            if (filePath.toString().toLowerCase().endsWith(".java") && fileNameWithoutExtension.matches("^.*test\\d*$")) {
+                            if (filePath.toString().toLowerCase().endsWith(".java") && (
+                                    fileNameWithoutExtension.matches("^.*test\\d*$") ||
+                                            fileNameWithoutExtension.matches("^.*tests\\d*$") ||
+                                            fileNameWithoutExtension.matches("^test.*") ||
+                                            fileNameWithoutExtension.matches("^tests.*"))) {
                                 br.ufba.jnose.dto.TestClass testClass = new br.ufba.jnose.dto.TestClass();
                                 testClass.setProjectName(projectName);
                                 testClass.setPathFile(filePath.toString());
@@ -323,7 +335,9 @@ public class JNoseCore implements PropertyChangeListener {
                 isTestClass = flowClass(((MethodDeclaration) node).getAnnotations(), testClass);
                 if(isTestClass)return true;
             } else if (node instanceof AnnotationExpr) {
-                return ((AnnotationExpr) node).getNameAsString().toLowerCase().contains("test");
+                if(((AnnotationExpr) node).getNameAsString().toLowerCase().contains("test")){
+                    return true;
+                }
             }
         }
         return isTestClass;

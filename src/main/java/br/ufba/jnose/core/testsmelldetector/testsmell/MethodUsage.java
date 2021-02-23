@@ -1,5 +1,7 @@
 package br.ufba.jnose.core.testsmelldetector.testsmell;
 
+import java.util.Objects;
+
 public class MethodUsage {
     private String testMethodName, productionMethodName, range;
 
@@ -34,5 +36,19 @@ public class MethodUsage {
         return range;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MethodUsage that = (MethodUsage) o;
+        return Objects.equals(testMethodName, that.testMethodName) &&
+                Objects.equals(productionMethodName, that.productionMethodName) &&
+                Objects.equals(range, that.range);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(testMethodName, productionMethodName, range);
+    }
 }
 

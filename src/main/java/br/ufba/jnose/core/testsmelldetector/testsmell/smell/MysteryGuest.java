@@ -62,6 +62,7 @@ public class MysteryGuest extends AbstractSmell {
                         "SoapObject"
                 ));
 
+
         /*
                 private List<String> databaseMethods = new ArrayList<>(
                         Arrays.asList(
@@ -88,7 +89,7 @@ public class MysteryGuest extends AbstractSmell {
                                 "openRawResource"));
         */
         private MethodDeclaration currentMethod = null;
-        private int mysteryCount = 0;
+//        private int mysteryCount = 0;
 
         // examine all methods in the test class
         @Override
@@ -99,7 +100,7 @@ public class MysteryGuest extends AbstractSmell {
 
                 //reset values for next method
                 currentMethod = null;
-                mysteryCount = 0;
+//                mysteryCount = 0;
             }
         }
 
@@ -130,6 +131,7 @@ public class MysteryGuest extends AbstractSmell {
             // Removing it will check for variables declared at the class level.
             //TODO: to null check or not to null check???
             if (currentMethod != null) {
+                boolean hasMystery = false;
                 for (String variableType : mysteryTypes) {
                     //check if the type variable encountered is part of the mystery type collection
                     if ((n.getVariable(0).getType().asString().equals(variableType))) {
@@ -139,9 +141,15 @@ public class MysteryGuest extends AbstractSmell {
                                 break;
                         }
                         // variable is not mocked, hence it's a smell
-                        mysteryCount++;
-                        mysteryInstance.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line+""));
+//                        mysteryCount++;
+                        hasMystery = true;
+//                        mysteryInstance.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line+""));
                     }
+                }
+                if (hasMystery) {
+                    MethodUsage methodUsage = new MethodUsage(currentMethod.getNameAsString(), "",currentMethod.getRange().get().begin.line + "-" + currentMethod.getRange().get().end.line);
+                    if (!mysteryInstance.contains(methodUsage))
+                        mysteryInstance.add(methodUsage);
                 }
             }
         }

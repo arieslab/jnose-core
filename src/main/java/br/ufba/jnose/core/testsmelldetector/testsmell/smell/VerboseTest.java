@@ -3,6 +3,7 @@ package br.ufba.jnose.core.testsmelldetector.testsmell.smell;
 import br.ufba.jnose.core.testsmelldetector.testsmell.*;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 import java.io.FileNotFoundException;
@@ -15,8 +16,8 @@ If a test methods contains a statements that exceeds a certain threshold, the me
 public class VerboseTest extends AbstractSmell {
 
     private ArrayList<MethodUsage> instanceAbstract;
-    public static int MAX_STATEMENTS = 10;
-
+    public static int MAX_STATEMENTS = 30;
+    CompilationUnit testFileCompilationUnit = null;
     public VerboseTest() {
         super("Verbose Test");
         instanceAbstract = new ArrayList<> (  );
@@ -29,7 +30,7 @@ public class VerboseTest extends AbstractSmell {
     public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         classVisitor = new VerboseTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-
+        this.testFileCompilationUnit = testFileCompilationUnit;
         for (MethodUsage method : instanceAbstract) {
             TestMethod testClass = new TestMethod(method.getTestMethodName());
             testClass.setRange(method.getBlock());
@@ -41,7 +42,7 @@ public class VerboseTest extends AbstractSmell {
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
-//        final int MAX_STATEMENTS = 123;
+        //        final int MAX_STATEMENTS = 123;
         private MethodDeclaration currentMethod = null;
         private int verboseCount = 0;
 
@@ -55,10 +56,11 @@ public class VerboseTest extends AbstractSmell {
                 if (!currentMethod.isAbstract()) {
                     if (currentMethod.getBody().isPresent()) {
                         //get the total number of statements contained in the method
-                        if (currentMethod.getBody().get().getStatements().size() >= MAX_STATEMENTS) {
+                        int inicio = currentMethod.getAnnotation(0).getBegin().get().line;
+                        int fim = currentMethod.getBody().get().getEnd().get().line;
+                        if ((fim-inicio) >= MAX_STATEMENTS) {
                             verboseCount++;
                             instanceAbstract.add ( new MethodUsage (n.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
-
                         }
                     }
                 }

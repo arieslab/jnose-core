@@ -141,36 +141,18 @@ public class DuplicateAssert extends AbstractSmell {
             if (currentMethod != null) {
                 // if the name of a method being called start with 'assert'
                 // if the name of a method being called is an assertion and has 3 parameters
-                if (n.getNameAsString().startsWith(("assertArrayEquals")) ||
-                        n.getNameAsString().startsWith(("assertEquals")) ||
-                        n.getNameAsString().startsWith(("assertNotSame")) ||
-                        n.getNameAsString().startsWith(("assertSame")) ||
-                        n.getNameAsString().startsWith(("assertThat"))) {
+                if (n.getNameAsString().startsWith("assert") || n.getNameAsString().startsWith("fail")) {
                     assertMethod.add(n.toString());
                     assertMethodDA.add(new DuplicateAssertStructure(n.toString(), n.getRange().get().begin.line));
-                    // assert method contains a message
+                    if (n.getArguments().size() == 4) {
+                        assertMessage.add(n.getArgument(0).toString());
+                    }
                     if (n.getArguments().size() == 3) {
                         assertMessage.add(n.getArgument(0).toString());
                     }
-
-                }
-                // if the name of a method being called is an assertion and has 2 parameters
-                else if (n.getNameAsString().equals("assertFalse") ||
-                        n.getNameAsString().equals("assertNotNull") ||
-                        n.getNameAsString().equals("assertNull") ||
-                        n.getNameAsString().equals("assertTrue")) {
-                    assertMethod.add(n.toString());
-                    assertMethodDA.add(new DuplicateAssertStructure(n.toString(), n.getRange().get().begin.line));
-                    // assert method contains a message
                     if (n.getArguments().size() == 2) {
                         assertMessage.add(n.getArgument(0).toString());
                     }
-                }
-                // if the name of a method being called is 'fail'
-                else if (n.getNameAsString().equals("fail")) {
-                    assertMethod.add(n.toString());
-                    assertMethodDA.add(new DuplicateAssertStructure(n.toString(), n.getRange().get().begin.line));
-                    // fail method contains a message
                     if (n.getArguments().size() == 1) {
                         assertMessage.add(n.getArgument(0).toString());
                     }

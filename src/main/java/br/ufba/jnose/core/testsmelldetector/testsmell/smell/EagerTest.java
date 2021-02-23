@@ -6,18 +6,15 @@ import br.ufba.jnose.core.testsmelldetector.testsmell.TestMethod;
 import br.ufba.jnose.core.testsmelldetector.testsmell.Util;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.EnumDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class EagerTest extends AbstractSmell {
 
@@ -25,11 +22,13 @@ public class EagerTest extends AbstractSmell {
     private static final String PRODUCTION_FILE = "Production";
     private String productionClassName;
     private List<MethodDeclaration> productionMethods;
+    private List<ConstructorDeclaration> constructorMethods;
     private ArrayList<MethodUsage> instanceEager;
 
     public EagerTest() {
         super("Eager Test");
         productionMethods = new ArrayList<>();
+        constructorMethods = new ArrayList<>();
         instanceEager = new ArrayList<>();
     }
 
@@ -66,11 +65,9 @@ public class EagerTest extends AbstractSmell {
         TestMethod testMethod;
         private int eagerCount = 0;
         private List<String> productionVariables = new ArrayList<>();
-        private List<String> calledMethods = new ArrayList<>();
+        private HashMap<String,ArrayList<String>> calledMethods = new HashMap<>();
         private String fileType;
         ArrayList<String> rangeLines = new ArrayList<>();
-
-//        private String rangeLines = "";
 
         public ClassVisitor(String type) {
             fileType = type;
@@ -105,9 +102,16 @@ public class EagerTest extends AbstractSmell {
                     testMethod.setHasSmell(false); //default value is false (i.e. no smell)
 
                     super.visit(n, arg);
-
                     if(calledMethods.size()> 1){
-                        instanceEager.add(new MethodUsage(currentMethod.getNameAsString(),"",rangeLines.toString().replace("[","").replace("]","")));
+                        ArrayList<String> resultado = new ArrayList<>();
+                        for(Map.Entry entry:calledMethods.entrySet()){
+                            resultado.addAll((Collection<? extends String>) entry.getValue());
+                        }
+                        List<String> deduped = resultado.stream().distinct().collect(Collectors.toList());
+                        Collections.sort(deduped);
+                        instanceEager.add(new MethodUsage(currentMethod.getNameAsString(),
+                                "",deduped.toString()
+                                .replace("[","").replace("]","")));
                     }
 
                     //reset values for next method
@@ -115,7 +119,6 @@ public class EagerTest extends AbstractSmell {
                     eagerCount = 0;
                     productionVariables.clear();
                     calledMethods.clear();
-                    rangeLines.clear();
                 }
             } else { //collect a list of all public/protected members of the production class
                 for (Modifier modifier : n.getModifiers()) {
@@ -123,11 +126,34 @@ public class EagerTest extends AbstractSmell {
                         productionMethods.add(n);
                     }
                 }
-
             }
         }
 
+        @Override
+        public void visit(ObjectCreationExpr n, Void arg) {
+            super.visit(n, arg);
+            if (currentMethod != null) {
+                for (int i = 0; i < constructorMethods.size(); i++) {
+                    if (constructorMethods.get(i).getName().asString().equals(n.getType().toString())) {
+                        String valor = constructorMethods.get(i).getName().asString();
+                        ArrayList<String> a = new ArrayList<>();
+                        a.add(String.valueOf(n.getRange().get().begin.line));
+                        if(!calledMethods.containsKey(valor)) {
+                            calledMethods.put(valor, a); ;
+                        }
+                        else {
+                            a.addAll(calledMethods.get(valor));
+                            calledMethods.computeIfPresent(valor, (k, v) -> v = a);
+                        }
 
+                    }
+                }
+            }
+        }
+        @Override
+        public void visit(ConstructorDeclaration n, Void arg){
+            constructorMethods.add(n);
+        }
         /**
          * The purpose of this method is to identify the production class methods that are called from the test method
          * When the parser encounters a method call:
@@ -142,15 +168,20 @@ public class EagerTest extends AbstractSmell {
         public void visit(MethodCallExpr n, Void arg) {
             NameExpr nameExpr = null;
             if (currentMethod != null) {
-                if (productionMethods.stream().anyMatch(i -> i.getNameAsString().equals(n.getNameAsString()) &&
-                        i.getParameters().size() == n.getArguments().size())) {
-                    if(!calledMethods.contains(n.getNameAsString())){
-                        eagerCount++;
-                        calledMethods.add(n.getNameAsString());
-                        rangeLines.add(String.valueOf(n.getRange().get().begin.line));
-//                        rangeLines = rangeLines + " - " + n.getRange().get();
+                if ((productionMethods.stream().anyMatch(i -> i.getNameAsString().equals(n.getNameAsString()) &&
+                        i.getParameters().size() == n.getArguments().size()))) {
+                    String valor = n.getNameAsString();
+                    ArrayList<String> a = new ArrayList<>();
+                    a.add(String.valueOf(n.getRange().get().begin.line));
+                    if(!calledMethods.containsKey(n.getNameAsString())) {
+                        calledMethods.put(valor, a); ;
                     }
-                } else {
+                    else {
+                        a.addAll(calledMethods.get(n.getNameAsString()));
+                        calledMethods.computeIfPresent(n.getNameAsString(), (k, v) -> v = a);
+                    }
+                }
+                else {
                     if (n.getScope().isPresent()) {
                         //this if statement checks if the method is chained and gets the final scope
                         if ((n.getScope().get() instanceof MethodCallExpr)) {
@@ -167,11 +198,15 @@ public class EagerTest extends AbstractSmell {
                             ///if the scope matches a variable which, in turn, is of type of the production class
                             if (nameExpr.getNameAsString().equals(productionClassName) ||
                                     productionVariables.contains(nameExpr.getNameAsString())) {
-                                if (!calledMethods.contains(n.getNameAsString())) {
-                                    eagerCount++;
-                                    calledMethods.add(n.getNameAsString());
-                                    rangeLines.add(String.valueOf(n.getRange().get().begin.line));
-//                                    rangeLines = rangeLines + n.getRange().get();
+                                String valor = nameExpr.getNameAsString();
+                                ArrayList<String> a = new ArrayList<>();
+                                a.add(String.valueOf(n.getRange().get().begin.line));
+                                if(!calledMethods.containsKey(n.getNameAsString())) {
+                                    calledMethods.put(valor, a);
+                                }
+                                else {
+                                    a.addAll(calledMethods.get(n.getNameAsString()));
+                                    calledMethods.computeIfPresent(n.getNameAsString(), (k, v) -> v = a);
                                 }
                             }
                         }
@@ -180,6 +215,7 @@ public class EagerTest extends AbstractSmell {
             }
             super.visit(n, arg);
         }
+
 
         private NameExpr tempNameExpr;
 
