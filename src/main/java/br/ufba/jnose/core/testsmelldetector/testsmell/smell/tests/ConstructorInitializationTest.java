@@ -1,4 +1,4 @@
-package br.ufba.jnose.core.testsmelldetector.testsmell.smell;
+package br.ufba.jnose.core.testsmelldetector.testsmell.smell.tests;
 
 import static org.junit.Assert.*;
 
@@ -13,27 +13,28 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 
 import br.ufba.jnose.core.testsmelldetector.testsmell.SmellyElement;
+import br.ufba.jnose.core.testsmelldetector.testsmell.smell.ConstructorInitialization;
 
-public class DuplicateAssertTest {
+public class ConstructorInitializationTest {
 	
-	public DuplicateAssert duplicateTest;
+	public ConstructorInitialization constructorTest;
 	FileInputStream fileInputStream;
 	CompilationUnit compilationUnit;
 	SmellyElement smellyElementList;
 
 	@Before
 	public void setUp() throws Exception {
-		duplicateTest = new DuplicateAssert();
-		fileInputStream = new FileInputStream(new File("src/main/java/br/ufba/jnose/core/testsmelldetector/testsmell/smell/Aux.java"));
+		constructorTest = new ConstructorInitialization();
+		fileInputStream = new FileInputStream(new File("src/main/java/br/ufba/jnose/core/testsmelldetector/testsmell/smell/tests/Aux.java"));
 	}
-	
+
 	@Test
 	public void should_get_smells() {
 		try{ 
 			//System.out.print(System.getProperty("user.dir"));
 			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
-			duplicateTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
-			ArrayList<SmellyElement> testes = duplicateTest.list();
+			constructorTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
+			ArrayList<SmellyElement> testes = constructorTest.list();
 			
 			for(SmellyElement t: testes) {
 				System.out.println(t.getHasSmell());
@@ -41,15 +42,13 @@ public class DuplicateAssertTest {
 				System.out.println(t.getRange());
 				System.out.println("");
 			}
-			assertFalse(duplicateTest.list().isEmpty());
+			assertFalse(constructorTest.list().isEmpty());
 			assertTrue(testes.size() == 1);
-			assertEquals(testes.get(0).getElementName(),"should_be_duplicate_assert");
+			assertEquals(testes.get(0).getElementName(),"Aux");
 		}
 		catch (Exception e) {
 	        e.printStackTrace();
 	    }
 	}
-
-
 
 }

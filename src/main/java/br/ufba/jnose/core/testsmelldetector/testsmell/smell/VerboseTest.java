@@ -40,6 +40,10 @@ public class VerboseTest extends AbstractSmell {
             smellyElementList.add(testClass);
         }
     }
+    
+    public ArrayList<SmellyElement> list(){
+    	return (ArrayList<SmellyElement>) smellyElementList;
+    }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         //        final int MAX_STATEMENTS = 123;

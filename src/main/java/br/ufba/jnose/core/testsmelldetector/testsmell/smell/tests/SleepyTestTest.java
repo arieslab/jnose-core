@@ -1,4 +1,4 @@
-package br.ufba.jnose.core.testsmelldetector.testsmell.smell;
+package br.ufba.jnose.core.testsmelldetector.testsmell.smell.tests;
 
 import static org.junit.Assert.*;
 
@@ -13,27 +13,28 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 
 import br.ufba.jnose.core.testsmelldetector.testsmell.SmellyElement;
+import br.ufba.jnose.core.testsmelldetector.testsmell.smell.SleepyTest;
 
-public class ConstructorInitializationTest {
-	
-	public ConstructorInitialization constructorTest;
+public class SleepyTestTest {
+
+	public SleepyTest sleepyTest;
 	FileInputStream fileInputStream;
 	CompilationUnit compilationUnit;
 	SmellyElement smellyElementList;
-
+	
 	@Before
 	public void setUp() throws Exception {
-		constructorTest = new ConstructorInitialization();
-		fileInputStream = new FileInputStream(new File("src/main/java/br/ufba/jnose/core/testsmelldetector/testsmell/smell/Aux.java"));
-	}
-
+		sleepyTest = new SleepyTest();
+		fileInputStream = new FileInputStream(new File("src/main/java/br/ufba/jnose/core/testsmelldetector/testsmell/smell/tests/Aux.java"));
+	}	
+	
 	@Test
 	public void should_get_smells() {
 		try{ 
 			//System.out.print(System.getProperty("user.dir"));
 			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
-			constructorTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
-			ArrayList<SmellyElement> testes = constructorTest.list();
+			sleepyTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
+			ArrayList<SmellyElement> testes = sleepyTest.list();
 			
 			for(SmellyElement t: testes) {
 				System.out.println(t.getHasSmell());
@@ -41,9 +42,9 @@ public class ConstructorInitializationTest {
 				System.out.println(t.getRange());
 				System.out.println("");
 			}
-			assertFalse(constructorTest.list().isEmpty());
-			assertTrue(testes.size() == 1);
-			assertEquals(testes.get(0).getElementName(),"Aux");
+			//assertFalse(emptytest.list().isEmpty());
+			//assertTrue(testes.size() == 1);
+			//assertEquals(testes.get(0).getElementName(),"should_be_sleep_test");
 		}
 		catch (Exception e) {
 	        e.printStackTrace();

@@ -1,4 +1,4 @@
-package br.ufba.jnose.core.testsmelldetector.testsmell.smell;
+package br.ufba.jnose.core.testsmelldetector.testsmell.smell.tests;
 
 import static org.junit.Assert.*;
 
@@ -13,6 +13,7 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 
 import br.ufba.jnose.core.testsmelldetector.testsmell.SmellyElement;
+import br.ufba.jnose.core.testsmelldetector.testsmell.smell.ExceptionCatchingThrowing;
 
 public class ExceptionCatchingThrowingTest {
 	
@@ -24,15 +25,14 @@ public class ExceptionCatchingThrowingTest {
 	@Before
 	public void setUp() throws Exception {
 		exceptionTest = new ExceptionCatchingThrowing();
-		fileInputStream = new FileInputStream(new File("src/main/java/br/ufba/jnose/core/testsmelldetector/testsmell/smell/Aux.java"));
+		fileInputStream = new FileInputStream(new File("src/main/java/br/ufba/jnose/core/testsmelldetector/testsmell/smell/tests/fixtures/ExceptionFixture.java"));
 	}
 	
 	@Test
 	public void should_get_smells() {
 		try{ 
-			//System.out.print(System.getProperty("user.dir"));
 			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
-			exceptionTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
+			exceptionTest.runAnalysis(compilationUnit,new CompilationUnit(),"ExceptionFixture","");
 			ArrayList<SmellyElement> testes = exceptionTest.list();
 			
 			for(SmellyElement t: testes) {
@@ -41,15 +41,13 @@ public class ExceptionCatchingThrowingTest {
 				System.out.println(t.getRange());
 				System.out.println("");
 			}
-			//assertFalse(exceptionTest.list().isEmpty());
-			//assertTrue(testes.size() == 1);
+			assertFalse(exceptionTest.list().isEmpty());
+			//assertTrue(testes.size() == 3);
 			//assertEquals(testes.get(0).getElementName(),"Aux");
 		}
 		catch (Exception e) {
 	        e.printStackTrace();
 	    }
 	}
-
-	
 
 }

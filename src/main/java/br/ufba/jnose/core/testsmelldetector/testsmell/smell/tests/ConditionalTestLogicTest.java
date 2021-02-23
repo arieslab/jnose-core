@@ -1,4 +1,4 @@
-package br.ufba.jnose.core.testsmelldetector.testsmell.smell;
+package br.ufba.jnose.core.testsmelldetector.testsmell.smell.tests;
 
 import static org.junit.Assert.*;
 
@@ -13,6 +13,7 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 
 import br.ufba.jnose.core.testsmelldetector.testsmell.SmellyElement;
+import br.ufba.jnose.core.testsmelldetector.testsmell.smell.ConditionalTestLogic;
 
 public class ConditionalTestLogicTest {
 
@@ -24,7 +25,7 @@ public class ConditionalTestLogicTest {
 	@Before
 	public void setUp() throws Exception {
 		conditionalTest = new ConditionalTestLogic();
-		fileInputStream = new FileInputStream(new File("src/main/java/br/ufba/jnose/core/testsmelldetector/testsmell/smell/Aux.java"));
+		fileInputStream = new FileInputStream(new File("src/main/java/br/ufba/jnose/core/testsmelldetector/testsmell/smell/tests/Aux.java"));
 	}	
 	
 	@Test
