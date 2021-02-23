@@ -1,6 +1,8 @@
 package br.ufba.jnose.core.testsmelldetector.testsmell.smell;
 
 import br.ufba.jnose.core.testsmelldetector.testsmell.MethodUsage;
+import br.ufba.jnose.core.testsmelldetector.testsmell.SmellyElement;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -11,6 +13,7 @@ import br.ufba.jnose.core.testsmelldetector.testsmell.Util;
 
 import java.io.FileNotFoundException;
 import java.util.*;
+import java.util.ArrayList;
 
 public class DuplicateAssert extends AbstractSmell {
 
@@ -56,7 +59,10 @@ public class DuplicateAssert extends AbstractSmell {
         public void setChecked(boolean checked) {
             this.checked = checked;
         }
-
+    }
+    
+    public ArrayList<SmellyElement> list(){
+    	return (ArrayList<SmellyElement>) smellyElementList;
     }
     /**
      * Analyze the test file for test methods that have multiple assert statements with the same explanation message

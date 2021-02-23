@@ -1,6 +1,7 @@
 package br.ufba.jnose.core.testsmelldetector.testsmell.smell;
 
 import br.ufba.jnose.core.testsmelldetector.testsmell.MethodUsage;
+import br.ufba.jnose.core.testsmelldetector.testsmell.SmellyElement;
 import br.ufba.jnose.core.testsmelldetector.testsmell.TestMethod;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -24,6 +25,10 @@ public class ConstructorInitialization extends AbstractSmell {
     public ConstructorInitialization() {
         super("Constructor Initialization");
         instanceConstructor = new ArrayList<>();
+    }
+
+    public ArrayList<SmellyElement> list(){
+    	return (ArrayList<SmellyElement>) smellyElementList;
     }
 
     /**

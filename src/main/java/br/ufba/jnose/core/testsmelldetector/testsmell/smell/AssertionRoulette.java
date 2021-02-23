@@ -5,10 +5,12 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import br.ufba.jnose.core.testsmelldetector.testsmell.AbstractSmell;
+import br.ufba.jnose.core.testsmelldetector.testsmell.SmellyElement;
 import br.ufba.jnose.core.testsmelldetector.testsmell.TestMethod;
 import br.ufba.jnose.core.testsmelldetector.testsmell.Util;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 
 /**
  * "Guess what's wrong?" This smell comes from having a number of assertions in a test method that have no explanation.
@@ -20,6 +22,10 @@ public class AssertionRoulette extends AbstractSmell {
     public AssertionRoulette() {
         super("Assertion Roulette");
         classVisitor = new AssertionRoulette.ClassVisitor();
+    }
+    
+    public ArrayList<SmellyElement> list(){
+    	return (ArrayList<SmellyElement>) smellyElementList;
     }
 
     /**

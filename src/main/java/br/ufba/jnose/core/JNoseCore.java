@@ -30,13 +30,14 @@ public class JNoseCore implements PropertyChangeListener {
     private Config config;
 
     public static void main(String[] args) throws IOException {
-        String directoryPath = "/home/tassio/.jnose_projects/jnose-tests/";
+        String directoryPath = "/home/daniele/Documentos/tests/IC_projects/jnose-tests/";
 
         Config conf = new Config() {
             @Override
             public Boolean assertionRoulette() {
                 return true;
             }
+           
 
             @Override
             public Boolean conditionalTestLogic() {

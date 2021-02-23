@@ -59,7 +59,6 @@ public class VerboseTest extends AbstractSmell {
                             verboseCount++;
                             instanceAbstract.add ( new MethodUsage (n.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
 
-
                         }
                     }
                 }
