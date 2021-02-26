@@ -25,29 +25,64 @@ public class PrintStatementTest {
 	@Before
 	public void setUp() throws Exception {
 		printTest = new PrintStatement();
-		fileInputStream = new FileInputStream(new File("src/main/java/br/ufba/jnose/core/testsmelldetector/testsmell/smell/tests/Aux.java"));
+		fileInputStream = new FileInputStream(new File("src/main/java/br/ufba/jnose/core/testsmelldetector/testsmell/smell/tests/fixtures/PrintStatmentFixture.java"));
 	}
 	
 	@Test
-	public void should_get_smells() { // REFATORAR EM 3 TESTES
+	public void should_get_number_of_tests() {
 		try{ 
-			//System.out.print(System.getProperty("user.dir"));
 			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
 			printTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = printTest.list();
 			
-			for(SmellyElement t: testes) {
-				System.out.println(t.getHasSmell());
-				System.out.println(t.getElementName());
-				System.out.println(t.getRange());
-				System.out.println("");
-			}
-			assertFalse(printTest.list().isEmpty());
-			assertTrue(testes.size() == 7);
-			assertEquals(testes.get(4).getElementName(),"should_be_print_statement_one");
-			assertEquals(testes.get(5).getElementName(),"should_be_print_statement_two");
-			assertEquals(testes.get(6).getElementName(),"should_be_print_statement_three");
+			assertTrue(testes.size() == 3);
+		}
+		catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	@Test
+	public void should_get_test_one_informations() { 
+		try{ 
+			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			printTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
+			ArrayList<SmellyElement> testes = printTest.list();
 			
+			assertEquals(testes.get(0).getRange(),"16");
+			assertEquals(testes.get(0).getElementName(),"should_be_print_statement_one");
+		}
+		catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	@Test
+	public void should_get_test_two_informations() { 
+		try{ 
+			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			printTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
+			ArrayList<SmellyElement> testes = printTest.list();
+			
+			assertEquals(testes.get(1).getRange(),"23");
+			assertEquals(testes.get(1).getElementName(),"should_be_print_statement_two");
+		}
+		catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+
+
+	@Test
+	public void should_get_test_three_informations() { 
+		try{ 
+			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			printTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
+			ArrayList<SmellyElement> testes = printTest.list();
+	
+			assertFalse(printTest.list().isEmpty());
+			assertEquals(testes.get(2).getRange(),"28");
+			assertEquals(testes.get(2).getElementName(),"should_be_print_statement_three");	
 		}
 		catch (Exception e) {
 	        e.printStackTrace();

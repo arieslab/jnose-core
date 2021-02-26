@@ -1,6 +1,8 @@
 package br.ufba.jnose.core.testsmelldetector.testsmell.smell;
 
 import br.ufba.jnose.core.testsmelldetector.testsmell.MethodUsage;
+import br.ufba.jnose.core.testsmelldetector.testsmell.SmellyElement;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.*;
@@ -54,6 +56,10 @@ public class LazyTest extends AbstractSmell {
             testClass.setHasSmell(true);
             smellyElementList.add(testClass);
         }
+    }
+    
+    public ArrayList<SmellyElement> list(){
+    	return (ArrayList<SmellyElement>) smellyElementList;
     }
 
     /**

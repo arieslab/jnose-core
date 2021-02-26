@@ -49,6 +49,10 @@ public class ConstructorInitialization extends AbstractSmell {
             smellyElementList.add(testClass);
         }
     }
+    
+    public ArrayList<SmellyElement> listTests(){
+    	return (ArrayList<SmellyElement>) smellyElementList;
+    }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         boolean constructorAllowed=false;

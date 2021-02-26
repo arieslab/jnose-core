@@ -16,7 +16,6 @@ import br.ufba.jnose.core.testsmelldetector.testsmell.SmellyElement;
 import br.ufba.jnose.core.testsmelldetector.testsmell.smell.AssertionRoulette;
 
 public class AssertionRouletteTest {
-	// TEM QUE IMPLEMENTAR
 	public AssertionRoulette assertionTest;
 	FileInputStream fileInputStream;
 	CompilationUnit compilationUnit;
@@ -26,26 +25,40 @@ public class AssertionRouletteTest {
 	@Before
 	public void setUp() throws Exception {
 		assertionTest = new AssertionRoulette();
-		fileInputStream = new FileInputStream(new File("src/main/java/br/ufba/jnose/core/testsmelldetector/testsmell/smell/tests/Aux.java"));
+		fileInputStream = new FileInputStream(new File("src/main/java/br/ufba/jnose/core/testsmelldetector/testsmell/smell/tests/fixtures/AssertionRouletteFixture.java"));
 	}
 	
 	@Test
-	public void should_get_smells() {
+	public void should_get_number_of_tests() {
 		try{ 
-			//System.out.print(System.getProperty("user.dir"));
 			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
 			assertionTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = assertionTest.list();
 			
-			for(SmellyElement t: testes) {
-				System.out.println(t.getHasSmell());
-				System.out.println(t.getElementName());
-				System.out.println(t.getRange());
-				System.out.println("");
-			}
-			assertFalse(assertionTest.list().isEmpty());
-			assertTrue(testes.size() == 1);
-			assertEquals(testes.get(0).getElementName(),"Aux");
+			assertTrue(testes.size() == 2);
+		}
+		catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	@Test
+	public void should_get_test_smells_informations() {
+		try{ 
+			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			assertionTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
+			ArrayList<SmellyElement> testes = assertionTest.list();
+			
+//			for(SmellyElement t: testes) {
+//				System.out.println(t.getHasSmell());
+//				System.out.println(t.getElementName());
+//				System.out.println(t.getRange());
+//				System.out.println("");
+//			}
+		
+			assertEquals(testes.get(0).getRange(), "13-13");
+			assertEquals(testes.get(1).getRange(), "14-14");
+			assertEquals(testes.get(0).getElementName(),"should_be_assertion_roulette");
 		}
 		catch (Exception e) {
 	        e.printStackTrace();

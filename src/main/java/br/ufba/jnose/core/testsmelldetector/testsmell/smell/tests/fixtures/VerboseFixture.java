@@ -20,5 +20,23 @@ public class VerboseFixture {
 		assertEquals(2 + 3,5);
 		assertEquals(2 + 3,5);
 		assertEquals(2 + 3,5);
+		assertEquals(2 + 3,5);
+		assertEquals(2 + 3,5);
+		assertEquals(2 + 3,5);
+		assertEquals(2 + 3,5);
+		assertEquals(2 + 3,5);
+		assertEquals(2 + 3,5);
+		assertEquals(2 + 3,5);
+		assertEquals(2 + 3,5);
+		assertEquals(2 + 3,5);
+		assertEquals(2 + 3,5);
+		assertEquals(2 + 3,5);
+		assertEquals(2 + 3,5);
+		assertEquals(2 + 3,5);
+		assertEquals(2 + 3,5);
+		assertEquals(2 + 3,5);
+		assertEquals(2 + 3,5);
+		assertEquals(2 + 3,5);
+
 	}
 }

@@ -28,13 +28,27 @@ public class EmptyTestTest {
 	@Before
 	public void setUp() throws Exception {
 		emptytest = new EmptyTest();
-		fileInputStream = new FileInputStream(new File("src/main/java/br/ufba/jnose/core/testsmelldetector/testsmell/smell/tests/fixtures/Aux.java"));
+		fileInputStream = new FileInputStream(new File("src/main/java/br/ufba/jnose/core/testsmelldetector/testsmell/smell/tests/fixtures/EmptyFixture.java"));
 	}	
+	
+	@Test
+	public void should_get_number_of_tests() {
+		try{ 
+			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			emptytest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
+			ArrayList<SmellyElement> testes = emptytest.list();
+			
+			assertTrue(testes.size() == 1);
+		}
+		catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
 	
 	@Test
 	public void should_get_smells() {
 		try{ 
-			//System.out.print(System.getProperty("user.dir"));
 			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
 			emptytest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = emptytest.list();
@@ -45,9 +59,9 @@ public class EmptyTestTest {
 				System.out.println(t.getRange());
 				System.out.println("");
 			}
-			//assertFalse(emptytest.list().isEmpty());
-			//assertTrue(testes.size() == 1);
-			//assertEquals(testes.get(0).getElementName(),"should_be_empty_test");
+			
+			assertEquals(testes.get(0).getRange(),"10-12");
+			assertEquals(testes.get(0).getElementName(),"should_be_empty_test");
 		}
 		catch (Exception e) {
 	        e.printStackTrace();

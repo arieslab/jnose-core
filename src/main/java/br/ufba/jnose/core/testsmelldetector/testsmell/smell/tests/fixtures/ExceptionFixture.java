@@ -14,24 +14,24 @@ public class ExceptionFixture {
 	@Before
 	public void setUp() throws Exception {
 	}
-
 	@Test
-	public void should_be_Exception_one() throws IOException{
-	    File tempFile = File.createTempFile("test", ".txt");
+	public void should_be_expection_one() {
+		try {
+				throw new Error("oops");
+		     }
+			finally {
+				System.out.println("finally");
+		}
 	}
 	
 	@Test
-	public void should_be_Exception_two() throws Exception {
-		File file = new File( "file.txt" );
-	    FileWriter fw = new FileWriter( file );
-	    fw.write("my text");
-	    fw.close();
-	    file.delete();
-	}
-	
-	@Test
-	public void should_be_should_be_Exception_three() throws InterruptedException {
-		Thread.sleep(500);
+	public void expection_two() {
+		try {
+			throw new Error("oops");
+	     }
+		catch(Error e) {
+			System.out.println("catch");
+		}
 	}
 
 }

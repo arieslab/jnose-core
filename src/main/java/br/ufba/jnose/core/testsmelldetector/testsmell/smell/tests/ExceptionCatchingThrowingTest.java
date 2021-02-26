@@ -29,6 +29,21 @@ public class ExceptionCatchingThrowingTest {
 	}
 	
 	@Test
+	public void should_get_number_of_tests() {
+		try{ 
+			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			exceptionTest.runAnalysis(compilationUnit,new CompilationUnit(),"ExceptionFixture","");
+			ArrayList<SmellyElement> testes = exceptionTest.list();
+			
+			assertTrue(testes.size() == 2);
+		}
+		catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	
+	@Test
 	public void should_get_smells() {
 		try{ 
 			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
@@ -41,9 +56,12 @@ public class ExceptionCatchingThrowingTest {
 				System.out.println(t.getRange());
 				System.out.println("");
 			}
-			assertFalse(exceptionTest.list().isEmpty());
-			//assertTrue(testes.size() == 3);
-			//assertEquals(testes.get(0).getElementName(),"Aux");
+		
+		    assertEquals(testes.get(0).getElementName(),"should_be_expection_one");
+		    //19-24
+		    //expection_two
+		    //29-34
+		
 		}
 		catch (Exception e) {
 	        e.printStackTrace();

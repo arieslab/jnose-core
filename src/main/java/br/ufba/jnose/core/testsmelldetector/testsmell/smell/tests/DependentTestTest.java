@@ -10,10 +10,7 @@ public class DependentTestTest {
 	@Before
 	public void setUp() throws Exception {
 	}
-
-	@Test
-	public void test() {
-		fail("Not yet implemented");
-	}
+	
+	// to be implemented
 
 }

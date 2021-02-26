@@ -25,13 +25,27 @@ public class ConditionalTestLogicTest {
 	@Before
 	public void setUp() throws Exception {
 		conditionalTest = new ConditionalTestLogic();
-		fileInputStream = new FileInputStream(new File("src/main/java/br/ufba/jnose/core/testsmelldetector/testsmell/smell/tests/Aux.java"));
-	}	
+		fileInputStream = new FileInputStream(new File("src/main/java/br/ufba/jnose/core/testsmelldetector/testsmell/smell/tests/fixtures/ConditionalFixture.java"));
+	}
 	
 	@Test
-	public void should_get_smells() { //Separar em 6 testes!!
+	public void should_get_number_of_tests() {
 		try{ 
-			//System.out.print(System.getProperty("user.dir"));
+			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			conditionalTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
+			ArrayList<SmellyElement> testes = conditionalTest.list();
+			
+			assertTrue(testes.size() == 7);
+		}
+		catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	
+	@Test
+	public void should_get_test_one_informations() {
+		try{ 
 			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
 			conditionalTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = conditionalTest.list();
@@ -42,20 +56,105 @@ public class ConditionalTestLogicTest {
 				System.out.println(t.getRange());
 				System.out.println("");
 			}
-			assertFalse(conditionalTest.list().isEmpty());
-			assertTrue(testes.size() == 6);
+			
 			assertEquals(testes.get(0).getElementName(),"should_be_conditional_one");
+			assertEquals(testes.get(0).getRange(),"10-11");
+			
+		}
+		catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	@Test
+	public void should_get_test_two_informations() {
+		try{ 
+			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			conditionalTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
+			ArrayList<SmellyElement> testes = conditionalTest.list();
+			
+			
 			assertEquals(testes.get(1).getElementName(),"should_be_conditional_two");
-			assertEquals(testes.get(2).getElementName(),"should_be_conditional_three");
-			assertEquals(testes.get(3).getElementName(),"should_be_conditional_four");
-			assertEquals(testes.get(4).getElementName(),"should_be_conditional_five");
-			assertEquals(testes.get(5).getElementName(),"should_be_conditional_six");
-			assertEquals(testes.get(5).getElementName(),"should_be_conditional_seven");
-			// pegar o range
+			assertEquals(testes.get(1).getRange(),"16-17");
 		}
 		catch (Exception e) {
 	        e.printStackTrace();
 	    }
 	}
 
+	@Test
+	public void should_get_test_three_informations() {
+		try{ 
+			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			conditionalTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
+			ArrayList<SmellyElement> testes = conditionalTest.list();
+			
+			assertEquals(testes.get(2).getElementName(),"should_be_conditional_three");
+			assertEquals(testes.get(2).getRange(),"23-25");
+		}
+		catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	@Test
+	public void should_get_test_four_informations() {
+		try{ 
+			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			conditionalTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
+			ArrayList<SmellyElement> testes = conditionalTest.list();
+			
+			assertEquals(testes.get(3).getElementName(),"should_be_conditional_four");
+			assertEquals(testes.get(3).getRange(),"31-31");
+		}
+		catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	@Test
+	public void should_get_test_five_informations() {
+		try{ 
+			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			conditionalTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
+			ArrayList<SmellyElement> testes = conditionalTest.list();
+			
+			assertEquals(testes.get(4).getElementName(),"should_be_conditional_five");
+			assertEquals(testes.get(4).getRange(),"37-39");
+		}
+		catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	@Test
+	public void should_get_test_six_informations() {
+		try{ 
+			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			conditionalTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
+			ArrayList<SmellyElement> testes = conditionalTest.list();
+			
+			assertEquals(testes.get(5).getElementName(),"should_be_conditional_six");
+			assertEquals(testes.get(5).getRange(),"45-52");
+		}
+		catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	@Test
+	public void should_get_test_seven_informations() {
+		try{ 
+			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			conditionalTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
+			ArrayList<SmellyElement> testes = conditionalTest.list();
+			
+			assertEquals(testes.get(6).getElementName(),"should_be_conditional_seven");
+			assertEquals(testes.get(6).getRange(),"57-61");
+		}
+		catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
 }

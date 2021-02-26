@@ -26,8 +26,22 @@ public class RedundantAssertionTest {
 	@Before
 	public void setUp() throws Exception {
 		redudantTest = new RedundantAssertion();
-		fileInputStream = new FileInputStream(new File("src/main/java/br/ufba/jnose/core/testsmelldetector/testsmell/smell/tests/fixtures/Aux.java"));
+		fileInputStream = new FileInputStream(new File("src/main/java/br/ufba/jnose/core/testsmelldetector/testsmell/smell/tests/fixtures/RedundantAssertionFixture.java"));
 	}	
+	
+	@Test
+	public void should_get_number_of_tests() {
+		try{ 
+			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			redudantTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
+			ArrayList<SmellyElement> testes = redudantTest.list();
+			
+			assertTrue(testes.size() == 2);
+		}
+		catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
 	
 	@Test
 	public void should_get_smells() {
@@ -43,8 +57,8 @@ public class RedundantAssertionTest {
 				System.out.println(t.getRange());
 				System.out.println("");
 			}
-			//assertFalse(emptytest.list().isEmpty());
-			//assertTrue(testes.size() == 1);
+			assertFalse(redudantTest.list().isEmpty());
+			//assertTrue(testes.size() == 2);
 			//assertEquals(testes.get(0).getElementName(),"should_be_empty_test");
 		}
 		catch (Exception e) {

@@ -27,6 +27,21 @@ public class IgnoredTestTest {
 		ignoredTest = new IgnoredTest();
 		fileInputStream = new FileInputStream(new File("src/main/java/br/ufba/jnose/core/testsmelldetector/testsmell/smell/tests/fixtures/IgnoredFixture.java"));
 	}
+	
+	@Test
+	public void should_get_number_of_tests() {
+		try{ 
+			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			ignoredTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
+			ArrayList<SmellyElement> testes = ignoredTest.list();
+			
+			
+			assertTrue(testes.size() == 1);
+		}
+		catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
 
 	@Test
 	public void should_get_smells() {
@@ -35,7 +50,6 @@ public class IgnoredTestTest {
 			ignoredTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = ignoredTest.list();
 			
-			assertTrue(testes.size() == 1);
 			assertEquals(testes.get(0).getRange(),"15-18");
 			assertEquals(testes.get(0).getElementName(),"should_be_ignored_test");
 		}

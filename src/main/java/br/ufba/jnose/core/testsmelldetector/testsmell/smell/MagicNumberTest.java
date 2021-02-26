@@ -36,6 +36,10 @@ public class MagicNumberTest extends AbstractSmell{
             smellyElementList.add(testClass);
         }
     }
+    
+    public ArrayList<SmellyElement> list(){
+    	return (ArrayList<SmellyElement>) smellyElementList;
+    }
 
     /**
      * Returns the set of analyzed elements (i.e. test methods)

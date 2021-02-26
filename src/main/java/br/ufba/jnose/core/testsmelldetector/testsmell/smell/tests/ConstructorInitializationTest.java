@@ -25,26 +25,32 @@ public class ConstructorInitializationTest {
 	@Before
 	public void setUp() throws Exception {
 		constructorTest = new ConstructorInitialization();
-		fileInputStream = new FileInputStream(new File("src/main/java/br/ufba/jnose/core/testsmelldetector/testsmell/smell/tests/Aux.java"));
+		fileInputStream = new FileInputStream(new File("src/main/java/br/ufba/jnose/core/testsmelldetector/testsmell/smell/tests/fixtures/ConstructorFixture.java"));
+	}
+	
+	@Test
+	public void should_get_number_of_tests() {
+		try{ 
+			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			constructorTest.runAnalysis(compilationUnit,new CompilationUnit(),"ConstructorFixture","");
+			ArrayList<SmellyElement> testes = constructorTest.listTests();
+			
+			assertTrue(testes.size() == 1);
+		}
+		catch (Exception e) {
+	        e.printStackTrace();
+	    }
 	}
 
 	@Test
-	public void should_get_smells() {
+	public void should_get_test_smells_informations() {
 		try{ 
-			//System.out.print(System.getProperty("user.dir"));
 			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
-			constructorTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
-			ArrayList<SmellyElement> testes = constructorTest.list();
-			
-			for(SmellyElement t: testes) {
-				System.out.println(t.getHasSmell());
-				System.out.println(t.getElementName());
-				System.out.println(t.getRange());
-				System.out.println("");
-			}
-			assertFalse(constructorTest.list().isEmpty());
-			assertTrue(testes.size() == 1);
-			assertEquals(testes.get(0).getElementName(),"Aux");
+			constructorTest.runAnalysis(compilationUnit,new CompilationUnit(),"ConstructorFixture","");
+			ArrayList<SmellyElement> testes = constructorTest.listTests();
+
+			assertEquals(testes.get(0).getRange(),"8-10");
+			assertEquals(testes.get(0).getElementName(),"ConstructorFixture");	
 		}
 		catch (Exception e) {
 	        e.printStackTrace();

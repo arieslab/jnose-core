@@ -29,13 +29,26 @@ public class SensitiveEqualityTest {
 	}	
 	
 	@Test
-	public void should_get_smell_informations() {
+	public void should_get_number_of_tests() {
 		try{ 
 			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
 			sensitiveTest.runAnalysis(compilationUnit,new CompilationUnit(),"SentiviveEqualityTest","");
 			ArrayList<SmellyElement> testes = sensitiveTest.list();
 			
 			assertTrue(testes.size() == 1);
+		}
+		catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	@Test
+	public void should_get_smell_informations() {
+		try{ 
+			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			sensitiveTest.runAnalysis(compilationUnit,new CompilationUnit(),"SentiviveEqualityTest","");
+			ArrayList<SmellyElement> testes = sensitiveTest.list();
+			
 			assertEquals(testes.get(0).getRange(),"19-19");
 			assertEquals(testes.get(0).getElementName(),"should_be_sensitive_equality");
 		}
