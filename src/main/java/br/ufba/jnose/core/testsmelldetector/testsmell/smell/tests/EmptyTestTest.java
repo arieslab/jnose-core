@@ -53,12 +53,12 @@ public class EmptyTestTest {
 			emptytest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = emptytest.list();
 			
-			for(SmellyElement t: testes) {
-				System.out.println(t.getHasSmell());
-				System.out.println(t.getElementName());
-				System.out.println(t.getRange());
-				System.out.println("");
-			}
+//			for(SmellyElement t: testes) {
+//				System.out.println(t.getHasSmell());
+//				System.out.println(t.getElementName());
+//				System.out.println(t.getRange());
+//				System.out.println("");
+//			}
 			
 			assertEquals(testes.get(0).getRange(),"10-12");
 			assertEquals(testes.get(0).getElementName(),"should_be_empty_test");
