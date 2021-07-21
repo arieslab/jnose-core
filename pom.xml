@@ -114,7 +114,7 @@
                     <branch>refs/heads/mvn-repo</branch>                       <!-- remote branch name -->
                     <includes><include>**/*</include></includes>
                     <repositoryName>jnose-core</repositoryName>
-                    <repositoryOwner>tassiovirginio</repositoryOwner>
+                    <repositoryOwner>arieslab</repositoryOwner>
                 </configuration>
                 <executions>
                     <!-- run site-maven-plugin's 'site' target as part of the build's normal 'deploy' phase -->

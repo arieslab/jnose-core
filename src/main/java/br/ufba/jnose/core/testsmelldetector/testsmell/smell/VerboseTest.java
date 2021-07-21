@@ -60,7 +60,7 @@ public class VerboseTest extends AbstractSmell {
                 if (!currentMethod.isAbstract()) {
                     if (currentMethod.getBody().isPresent()) {
                         //get the total number of statements contained in the method
-                        int inicio = currentMethod.getAnnotation(0).getBegin().get().line;
+                        int inicio = currentMethod.getBody().get().getBegin().get().line;
                         int fim = currentMethod.getBody().get().getEnd().get().line;
                         if ((fim-inicio) >= MAX_STATEMENTS) {
                             verboseCount++;
