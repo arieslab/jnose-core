@@ -2,6 +2,7 @@ package br.ufba.jnose.core.testsmelldetector.testsmell.smell;
 
 import br.ufba.jnose.core.testsmelldetector.testsmell.AbstractSmell;
 import br.ufba.jnose.core.testsmelldetector.testsmell.MethodUsage;
+import br.ufba.jnose.core.testsmelldetector.testsmell.SmellyElement;
 import br.ufba.jnose.core.testsmelldetector.testsmell.TestMethod;
 import br.ufba.jnose.core.testsmelldetector.testsmell.Util;
 import com.github.javaparser.ast.CompilationUnit;
@@ -55,6 +56,10 @@ public class EagerTest extends AbstractSmell {
             testClass.setHasSmell(true);
             smellyElementList.add(testClass);
         }
+    }
+    
+    public ArrayList<SmellyElement> list(){
+    	return (ArrayList<SmellyElement>) smellyElementList;
     }
 
     /**

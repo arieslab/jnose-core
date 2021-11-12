@@ -1,6 +1,8 @@
 package br.ufba.jnose.core.testsmelldetector.testsmell.smell;
 
 import br.ufba.jnose.core.testsmelldetector.testsmell.MethodUsage;
+import br.ufba.jnose.core.testsmelldetector.testsmell.SmellyElement;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.Expression;
@@ -37,6 +39,10 @@ public class SensitiveEquality extends AbstractSmell {
             testClass.setHasSmell(true);
             smellyElementList.add(testClass);
         }
+    }
+    
+    public ArrayList<SmellyElement> list(){
+    	return (ArrayList<SmellyElement>) smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
