@@ -31,7 +31,7 @@ public class JNoseCore implements PropertyChangeListener {
     private Config config;
 
     public static void main(String[] args) throws IOException {
-        String directoryPath = "/home/tassio/.jnose_projects/jnose-tests/";
+        String directoryPath = args[0];
 
         Config conf = new Config() {
             @Override
@@ -150,13 +150,17 @@ public class JNoseCore implements PropertyChangeListener {
         List<TestClass> lista = jNoseCore.getFilesTest(directoryPath);
 
         for(TestClass testClass : lista){
-            System.out.println(testClass.getPathFile() + " - " + testClass.getProductionFile() + " - " + testClass.getJunitVersion());
-
             for (TestSmell testSmell : testClass.getListTestSmell()){
-                System.out.println(testSmell.getName() + " - " + testSmell.getMethod() + " - " + testSmell.getRange());
+                System.out.println(
+                        testClass.getPathFile() + ";" +
+                                testClass.getProductionFile() + ";" +
+                                testClass.getJunitVersion() + ";" +
+                        testSmell.getName() + ";" +
+                        testSmell.getMethod() + ";" +
+                        testSmell.getRange());
             }
 
-            System.out.println(testClass.getLineSumTestSmells());
+//            System.out.println(testClass.getLineSumTestSmells());
         }
 
     }
