@@ -79,6 +79,10 @@ public class GeneralFixture extends AbstractSmell {
             smellyElementList.add(testClass);
         }
     }
+    
+    public ArrayList<SmellyElement> list(){
+    	return (ArrayList<SmellyElement>) smellyElementList;
+    }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration methodDeclaration = null;

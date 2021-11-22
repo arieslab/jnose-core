@@ -38,6 +38,7 @@ public class JNoseCore implements PropertyChangeListener {
             public Boolean assertionRoulette() {
                 return true;
             }
+           
 
             @Override
             public Boolean conditionalTestLogic() {
