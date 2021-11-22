@@ -174,10 +174,15 @@
     </repositories>
 
     <distributionManagement>
-        <repository>
+        <!-- <repository>
             <id>internal.repo</id>
             <name>Temporary Staging Repository</name>
             <url>file://${project.build.directory}/mvn-repo</url>
+        </repository> -->
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/aaries/jnose-core</url>
         </repository>
     </distributionManagement>
 
