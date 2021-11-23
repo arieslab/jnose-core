@@ -275,10 +275,13 @@ public class JNoseCore implements PropertyChangeListener {
         for (ImportDeclaration node : nodeList) {
             if (node.getNameAsString().contains("org.junit.jupiter")) {
                 testClass.setJunitVersion(TestClass.JunitVersion.JUnit5);
+                break;
             } else if (node.getNameAsString().contains("org.junit")) {
                 testClass.setJunitVersion(TestClass.JunitVersion.JUnit4);
+                break;
             } else if (node.getNameAsString().contains("junit.framework")) {
                 testClass.setJunitVersion(TestClass.JunitVersion.JUnit3);
+                break;
             } else {
                 testClass.setJunitVersion(TestClass.JunitVersion.None);
             }
