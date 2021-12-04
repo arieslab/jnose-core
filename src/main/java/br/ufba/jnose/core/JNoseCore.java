@@ -197,7 +197,7 @@ public class JNoseCore implements PropertyChangeListener{
                 });
 
         while (todosExecutados(futures)) {
-            System.out.println("A tarefa ainda não foi processada!");
+//            System.out.println("A tarefa ainda não foi processada!");
             Thread.sleep(1); // sleep for 1 millisecond
         }
 
