@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 
 public class JNoseCore implements PropertyChangeListener{
 
-    private static final ExecutorService threadpool = Executors.newFixedThreadPool(3);
+    private ExecutorService threadpool;
 
     private final static Logger LOGGER = Logger.getLogger(JNoseCore.class.getName());
 
@@ -149,7 +149,7 @@ public class JNoseCore implements PropertyChangeListener{
             }
         };
 
-        JNoseCore jNoseCore = new JNoseCore(conf);
+        JNoseCore jNoseCore = new JNoseCore(conf, 3);
 
         List<TestClass> lista = jNoseCore.getFilesTest(directoryPath);
 
@@ -169,7 +169,8 @@ public class JNoseCore implements PropertyChangeListener{
 
     }
 
-    public JNoseCore(Config config) {
+    public JNoseCore(Config config, int numberThread) {
+        threadpool = Executors.newFixedThreadPool(numberThread);
         this.config = config;
         VerboseTest.MAX_STATEMENTS = config.maxStatements();
     }
