@@ -21,16 +21,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class JNoseCore implements PropertyChangeListener {
+public class JNoseCore implements PropertyChangeListener{
+
+    private static final ExecutorService threadpool = Executors.newFixedThreadPool(3);
 
     private final static Logger LOGGER = Logger.getLogger(JNoseCore.class.getName());
 
     private Config config;
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         String directoryPath = args[0];
 
         Config conf = new Config() {
@@ -171,7 +174,7 @@ public class JNoseCore implements PropertyChangeListener {
         VerboseTest.MAX_STATEMENTS = config.maxStatements();
     }
 
-    public List<TestClass> getFilesTest(String directoryPath) throws IOException {
+    public List<TestClass> getFilesTest(String directoryPath) throws Exception {
         LOGGER.log(Level.INFO, "getFilesTest: start");
 
         String projectName = directoryPath.substring(directoryPath.lastIndexOf(File.separatorChar) + 1, directoryPath.length());
@@ -180,72 +183,93 @@ public class JNoseCore implements PropertyChangeListener {
 
         Path startDir = Paths.get(directoryPath);
 
+        List<Future<List<TestClass>>> futures = new ArrayList<>();
+
         Files.walk(startDir)
                 .filter(Files::isRegularFile)
                 .forEach(filePath -> {
-                    if (filePath.getFileName().toString().lastIndexOf(".") != -1) {
-                        String fileNameWithoutExtension = filePath.getFileName().toString().substring(0, filePath.getFileName().toString().lastIndexOf(".")).toLowerCase();
+                    JNoseCallable jNoseCallable = new JNoseCallable(filePath, projectName, startDir, this);
+                    Future<List<TestClass>> future = threadpool.submit(jNoseCallable);
+                    futures.add(future);
 
-                        if (filePath.toString().toLowerCase().endsWith(".java") && (
-                                fileNameWithoutExtension.matches("^.*test\\d*$") ||
-                                        fileNameWithoutExtension.matches("^.*tests\\d*$") ||
-                                        fileNameWithoutExtension.matches("^test.*") ||
-                                        fileNameWithoutExtension.matches("^tests.*"))) {
-
-                            Boolean testTrueFinal = fileNameWithoutExtension.matches("^.*test\\d*$");
-                            Boolean testsTrueFinal = fileNameWithoutExtension.matches("^.*tests\\d*$");
-
-                            Boolean testTrueInicio = fileNameWithoutExtension.matches("^test.*");
-                            Boolean testsTrueInicio = fileNameWithoutExtension.matches("^tests.*");
-
-
-
-                            TestClass testClass = new TestClass();
-                            testClass.setProjectName(projectName);
-                            testClass.setPathFile(filePath.toString());
-
-                            if (isTestFile(testClass)) {
-
-                                LOGGER.log(Level.INFO, "getFilesTest: " + testClass.getPathFile());
-
-                                String productionFileName = "";
-
-                                int index = 0;
-
-                                if(testTrueInicio)
-                                    index = 0;
-
-                                if(testsTrueInicio)
-                                    index = 0;
-
-                                if(testTrueFinal)
-                                    index = testClass.getName().toLowerCase().lastIndexOf("test");
-
-                                if(testsTrueFinal)
-                                    index = testClass.getName().toLowerCase().lastIndexOf("tests");
-
-
-                                if (index > 0) {
-                                    if(testTrueFinal)
-                                        productionFileName = testClass.getName().substring(0, testClass.getName().toLowerCase().lastIndexOf("test")) + ".java";
-                                    if(testsTrueFinal)
-                                        productionFileName = testClass.getName().substring(0, testClass.getName().toLowerCase().lastIndexOf("tests")) + ".java";
-                                }else{
-                                    if(testTrueInicio)
-                                        productionFileName = testClass.getName().substring(4, testClass.getName().length()) + ".java";
-                                    if(testsTrueInicio)
-                                        productionFileName = testClass.getName().substring(5, testClass.getName().length()) + ".java";
-                                }
-                                testClass.setProductionFile(getFileProduction(startDir.toString(), productionFileName));
-
-                                if (!testClass.getProductionFile().isEmpty()) {
-                                    getTestSmells(testClass);
-                                    files.add(testClass);
-                                }
-                            }
-                        }
-                    }
+//                    files.addAll(processarPath(filePath, projectName, startDir));
                 });
+
+        while (todosExecutados(futures)) {
+            System.out.println("A tarefa ainda não foi processada!");
+            Thread.sleep(1); // sleep for 1 millisecond
+        }
+
+
+        for(Future<List<TestClass>> future : futures){
+            files.addAll(future.get());
+        }
+
+        return files;
+    }
+
+
+    private Boolean todosExecutados(List<Future<List<TestClass>>> futures){
+        for(Future future : futures){
+            if(future.isDone() == false){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private List<TestClass> processarPath(Path filePath, String projectName, Path startDir){
+
+        List<TestClass> files = new ArrayList<>();
+
+        if (filePath.getFileName().toString().lastIndexOf(".") != -1) {
+            String fileNameWithoutExtension = filePath.getFileName().toString().substring(0, filePath.getFileName().toString().lastIndexOf(".")).toLowerCase();
+
+            if (filePath.toString().toLowerCase().endsWith(".java") && (
+                    fileNameWithoutExtension.matches("^.*test\\d*$") ||
+                            fileNameWithoutExtension.matches("^.*tests\\d*$") ||
+                            fileNameWithoutExtension.matches("^test.*") ||
+                            fileNameWithoutExtension.matches("^tests.*"))) {
+
+                Boolean testTrueFinal = fileNameWithoutExtension.matches("^.*test\\d*$");
+                Boolean testsTrueFinal = fileNameWithoutExtension.matches("^.*tests\\d*$");
+
+                Boolean testTrueInicio = fileNameWithoutExtension.matches("^test.*");
+                Boolean testsTrueInicio = fileNameWithoutExtension.matches("^tests.*");
+
+                TestClass testClass = new TestClass();
+                testClass.setProjectName(projectName);
+                testClass.setPathFile(filePath.toString());
+
+                if (isTestFile(testClass)) {
+                    LOGGER.log(Level.INFO, "getFilesTest: " + testClass.getPathFile());
+                    String productionFileName = "";
+                    int index = 0;
+                    if(testTrueInicio) index = 0;
+                    if(testsTrueInicio) index = 0;
+                    if(testTrueFinal) index = testClass.getName().toLowerCase().lastIndexOf("test");
+                    if(testsTrueFinal) index = testClass.getName().toLowerCase().lastIndexOf("tests");
+
+                    if (index > 0) {
+                        if(testTrueFinal)
+                            productionFileName = testClass.getName().substring(0, testClass.getName().toLowerCase().lastIndexOf("test")) + ".java";
+                        if(testsTrueFinal)
+                            productionFileName = testClass.getName().substring(0, testClass.getName().toLowerCase().lastIndexOf("tests")) + ".java";
+                    }else{
+                        if(testTrueInicio)
+                            productionFileName = testClass.getName().substring(4, testClass.getName().length()) + ".java";
+                        if(testsTrueInicio)
+                            productionFileName = testClass.getName().substring(5, testClass.getName().length()) + ".java";
+                    }
+                    testClass.setProductionFile(getFileProduction(startDir.toString(), productionFileName));
+
+                    if (!testClass.getProductionFile().isEmpty()) {
+                        getTestSmells(testClass);
+                        files.add(testClass);
+                    }
+                }
+            }
+        }
         return files;
     }
 
