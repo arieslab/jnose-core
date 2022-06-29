@@ -21,17 +21,20 @@ public class MagicNumberTestTest {
 	FileInputStream fileInputStream;
 	CompilationUnit compilationUnit;
 	SmellyElement smellyElementList;
+
+	JavaParser javaParser;
 	
 	@Before
 	public void setUp() throws Exception {
 		magicTest = new MagicNumberTest();
 		fileInputStream = new FileInputStream(new File("src/test/java/br/ufba/jnose/test/fixtures/MagicNumberFixture.java"));
-	}	
+		javaParser = new JavaParser();
+	}
 	
 	@Test
 	public void should_get_number_of_tests() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			magicTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = magicTest.list();
 			
@@ -45,7 +48,7 @@ public class MagicNumberTestTest {
 	@Test
 	public void should_get_smell_informations() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			magicTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = magicTest.list();
 		

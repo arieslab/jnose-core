@@ -21,17 +21,20 @@ public class RedundantAssertionTest {
 	FileInputStream fileInputStream;
 	CompilationUnit compilationUnit;
 	SmellyElement smellyElementList;
+
+	JavaParser javaParser;
 	
 	@Before
 	public void setUp() throws Exception {
 		redudantTest = new RedundantAssertion();
 		fileInputStream = new FileInputStream(new File("src/test/java/br/ufba/jnose/test/fixtures/RedundantAssertionFixture.java"));
-	}	
+		javaParser = new JavaParser();
+	}
 	
 	@Test
 	public void should_get_number_of_tests() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			redudantTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = redudantTest.list();
 			
@@ -46,7 +49,7 @@ public class RedundantAssertionTest {
 	public void should_get_smells() {
 		try{ 
 			//System.out.print(System.getProperty("user.dir"));
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			redudantTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 //			ArrayList<SmellyElement> testes = redudantTest.list();
 			

@@ -22,16 +22,19 @@ public class UnknownTestTest {
 	CompilationUnit compilationUnit;
 	SmellyElement smellyElementList;
 
+	JavaParser javaParser;
+
 	@Before
 	public void setUp() throws Exception {
 		unknownTest = new UnknownTest();
 		fileInputStream = new FileInputStream(new File("src/test/java/br/ufba/jnose/test/fixtures/UnkwonFixture.java"));
+		javaParser = new JavaParser();
 	}
 	
 	@Test
 	public void should_get_number_of_tests() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			unknownTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = unknownTest.list();
 			
@@ -45,7 +48,7 @@ public class UnknownTestTest {
 	@Test
 	public void should_get_smell_informations() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			unknownTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = unknownTest.list();
 			

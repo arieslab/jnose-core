@@ -23,18 +23,20 @@ public class AssertionRouletteTest {
 	FileInputStream fileInputStream;
 	CompilationUnit compilationUnit;
 	SmellyElement smellyElementList;
-	
+
+	JavaParser javaParser;
 
 	@Before
 	public void setUp() throws Exception {
 		assertionTest = new AssertionRoulette();
 		fileInputStream = new FileInputStream(new File("src/test/java/br/ufba/jnose/test/fixtures/AssertionRouletteFixture.java"));
+		javaParser = new JavaParser();
 	}
 	
 	@Test
 	public void should_get_number_of_tests() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			assertionTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = assertionTest.list();
 			
@@ -48,7 +50,7 @@ public class AssertionRouletteTest {
 	@Test
 	public void should_get_test_smells_informations() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			assertionTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = assertionTest.list();
 			

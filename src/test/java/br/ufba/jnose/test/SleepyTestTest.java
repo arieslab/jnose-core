@@ -21,17 +21,20 @@ public class SleepyTestTest {
 	FileInputStream fileInputStream;
 	CompilationUnit compilationUnit;
 	SmellyElement smellyElementList;
+
+	JavaParser javaParser;
 	
 	@Before
 	public void setUp() throws Exception {
 		sleepyTest = new SleepyTest();
 		fileInputStream = new FileInputStream(new File("src/test/java/br/ufba/jnose/test/fixtures/SleepyFixture.java"));
-	}	
+		javaParser = new JavaParser();
+	}
 	
 	@Test
 	public void should_get_number_of_tests() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			sleepyTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = sleepyTest.list();
 			
@@ -45,7 +48,7 @@ public class SleepyTestTest {
 	@Test
 	public void should_get_smell_informations() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			sleepyTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = sleepyTest.list();
 			

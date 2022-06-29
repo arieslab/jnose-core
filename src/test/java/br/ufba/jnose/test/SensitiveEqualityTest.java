@@ -22,16 +22,19 @@ public class SensitiveEqualityTest {
 	CompilationUnit compilationUnit;
 	SmellyElement smellyElementList;
 
+	JavaParser javaParser;
+
 	@Before
 	public void setUp() throws Exception {
 		sensitiveTest = new SensitiveEquality();
 		fileInputStream = new FileInputStream(new File("src/test/java/br/ufba/jnose/test/fixtures/SensitiveEqualityFixtureTest.java"));
-	}	
+		javaParser = new JavaParser();
+	}
 	
 	@Test
 	public void should_get_number_of_tests() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			sensitiveTest.runAnalysis(compilationUnit,new CompilationUnit(),"SentiviveEqualityTest","");
 			ArrayList<SmellyElement> testes = sensitiveTest.list();
 			
@@ -45,7 +48,7 @@ public class SensitiveEqualityTest {
 	@Test
 	public void should_get_smell_informations() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			sensitiveTest.runAnalysis(compilationUnit,new CompilationUnit(),"SentiviveEqualityTest","");
 			ArrayList<SmellyElement> testes = sensitiveTest.list();
 			

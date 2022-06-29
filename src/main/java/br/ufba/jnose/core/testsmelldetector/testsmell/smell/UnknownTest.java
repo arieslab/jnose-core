@@ -58,15 +58,16 @@ public class UnknownTest extends AbstractSmell {
             if (Util.isValidTestMethod(n) && n.getBody().get().getStatements().size() >0) {
                 Optional<AnnotationExpr> assertAnnotation = n.getAnnotationByName("Test");
                 if (assertAnnotation.isPresent()) {
-                    for (int i = 0; i < assertAnnotation.get().getNodeLists().size(); i++) {
-                        NodeList<?> c = assertAnnotation.get().getNodeLists().get(i);
-                        for (int j = 0; j < c.size(); j++)
-                            if (c.get(j) instanceof MemberValuePair) {
-                                if (((MemberValuePair) c.get(j)).getName().equals("expected") && ((MemberValuePair) c.get(j)).getValue().toString().contains("Exception"))
-                                    ;
-                                hasExceptionAnnotation = true;
-                            }
-                    }
+                    System.out.println(assertAnnotation);
+//                    for (int i = 0; i < assertAnnotation.get().getNodeLists().size(); i++) {
+//                        NodeList<?> c = assertAnnotation.get().getNodeLists().get(i);
+//                        for (int j = 0; j < c.size(); j++)
+//                            if (c.get(j) instanceof MemberValuePair) {
+//                                if (((MemberValuePair) c.get(j)).getName().equals("expected") && ((MemberValuePair) c.get(j)).getValue().toString().contains("Exception"))
+//                                    ;
+//                                hasExceptionAnnotation = true;
+//                            }
+//                    }
                 }
                 currentMethod = n;
                 super.visit(n, arg);

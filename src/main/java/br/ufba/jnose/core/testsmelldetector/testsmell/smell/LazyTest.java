@@ -125,9 +125,12 @@ public class LazyTest extends AbstractSmell {
                 }
             } else { //collect a list of all public/protected members of the production class
                 for (Modifier modifier : n.getModifiers()) {
-                    if (modifier.name().toLowerCase().equals("public") || modifier.name().toLowerCase().equals("protected")) {
+                    if(modifier.equals(Modifier.publicModifier()) || modifier.equals(Modifier.protectedModifier())){
                         productionMethods.add(n);
                     }
+//                    if (modifier.name().toLowerCase().equals("public") || modifier.name().toLowerCase().equals("protected")) {
+//                        productionMethods.add(n);
+//                    }
                 }
             }
         }

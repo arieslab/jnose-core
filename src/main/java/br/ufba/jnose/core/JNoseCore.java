@@ -9,6 +9,7 @@ import br.ufba.jnose.core.testsmelldetector.testsmell.TestSmellDetector;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -32,6 +33,8 @@ public class JNoseCore implements PropertyChangeListener{
     private final static Logger LOGGER = Logger.getLogger(JNoseCore.class.getName());
 
     private Config config;
+
+    private JavaParser javaParser;
 
     public static void main(String[] args) throws Exception {
         String directoryPath = args[0];
@@ -173,6 +176,7 @@ public class JNoseCore implements PropertyChangeListener{
         threadpool = Executors.newFixedThreadPool(numberThread);
         this.config = config;
         VerboseTest.MAX_STATEMENTS = config.maxStatements();
+        javaParser = new JavaParser();
     }
 
     public List<TestClass> getFilesTest(String directoryPath) throws Exception {
@@ -196,11 +200,9 @@ public class JNoseCore implements PropertyChangeListener{
 //                    files.addAll(processarPath(filePath, projectName, startDir));
                 });
 
-        while (todosExecutados(futures)) {
-//            System.out.println("A tarefa ainda não foi processada!");
+        while (allExecuted(futures)) {
             Thread.sleep(1); // sleep for 1 millisecond
         }
-
 
         for(Future<List<TestClass>> future : futures){
             files.addAll(future.get());
@@ -210,8 +212,9 @@ public class JNoseCore implements PropertyChangeListener{
     }
 
 
-    private Boolean todosExecutados(List<Future<List<TestClass>>> futures){
-        for(Future future : futures){
+    private Boolean allExecuted(List<Future<List<TestClass>>> futures){
+        // return futures.parallelStream().allMatch(future -> future.isDone());
+        for(Future<List<TestClass>> future : futures){
             if(future.isDone() == false){
                 return false;
             }
@@ -282,12 +285,14 @@ public class JNoseCore implements PropertyChangeListener{
         try {
             FileInputStream fileInputStream = null;
             fileInputStream = new FileInputStream(new File(testClass.getPathFile()));
-            CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+            CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
             testClass.setNumberLine(compilationUnit.getRange().get().end.line);
             detectJUnitVersion(compilationUnit.getImports(), testClass);
-            List<NodeList<?>> nodeList = compilationUnit.getNodeLists();
-            for (NodeList<?> node : nodeList) {
-                isTestFile = flowClass(node, testClass);
+//            List<NodeList<?>> nodeList = compilationUnit.getNodeLists();
+            List<Node> nodeList = compilationUnit.getChildNodes();
+            for (Node node : nodeList) {
+                System.out.println(node);
+//                isTestFile = flowClass(node, testClass);
             }
         } catch (Exception e) {
             e.printStackTrace();

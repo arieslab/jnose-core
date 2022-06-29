@@ -22,16 +22,19 @@ public class DuplicateAssertTest {
 	CompilationUnit compilationUnit;
 	SmellyElement smellyElementList;
 
+	JavaParser javaParser;
+
 	@Before
 	public void setUp() throws Exception {
 		duplicateTest = new DuplicateAssert();
 		fileInputStream = new FileInputStream(new File("src/test/java/br/ufba/jnose/test/fixtures/DuplicateAssertFixture.java"));
+		javaParser = new JavaParser();
 	}
 	
 	@Test
 	public void should_get_number_of_tests() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			duplicateTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = duplicateTest.list();
 			
@@ -45,7 +48,7 @@ public class DuplicateAssertTest {
 	@Test
 	public void should_get_smells() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			duplicateTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = duplicateTest.list();
 			

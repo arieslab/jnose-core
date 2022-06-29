@@ -22,16 +22,19 @@ public class GeneralFixtureTest {
 	CompilationUnit compilationUnit;
 	SmellyElement smellyElementList;
 
+	JavaParser javaParser;
+
 	@Before
 	public void setUp() throws Exception {
 		generalTest = new GeneralFixture();
 		fileInputStream = new FileInputStream(new File("src/test/java/br/ufba/jnose/test/fixtures/GeneralFixtureFixture.java"));
+		javaParser = new JavaParser();
 	}
 	
 	@Test
 	public void should_get_number_of_tests() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			generalTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = generalTest.list();
 			
@@ -45,7 +48,7 @@ public class GeneralFixtureTest {
 	@Test
 	public void should_get_smells() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			generalTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = generalTest.list();
 			

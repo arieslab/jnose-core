@@ -22,17 +22,20 @@ public class EmptyTestTest {
 	FileInputStream fileInputStream;
 	CompilationUnit compilationUnit;
 	SmellyElement smellyElementList;
+
+	JavaParser javaParser;
 	
 	@Before
 	public void setUp() throws Exception {
 		emptytest = new EmptyTest();
 		fileInputStream = new FileInputStream(new File("src/test/java/br/ufba/jnose/test/fixtures/EmptyFixture.java"));
-	}	
+		javaParser = new JavaParser();
+	}
 	
 	@Test
 	public void should_get_number_of_tests() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			emptytest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = emptytest.list();
 			
@@ -47,7 +50,7 @@ public class EmptyTestTest {
 	@Test
 	public void should_get_smells() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			emptytest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = emptytest.list();
 			

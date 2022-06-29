@@ -22,16 +22,19 @@ public class ConstructorInitializationTest {
 	CompilationUnit compilationUnit;
 	SmellyElement smellyElementList;
 
+	JavaParser javaParser;
+
 	@Before
 	public void setUp() throws Exception {
 		constructorTest = new ConstructorInitialization();
 		fileInputStream = new FileInputStream(new File("src/test/java/br/ufba/jnose/test/fixtures/ConstructorFixture.java"));
+		javaParser = new JavaParser();
 	}
 	
 	@Test
 	public void should_get_number_of_tests() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			constructorTest.runAnalysis(compilationUnit,new CompilationUnit(),"ConstructorFixture","");
 			ArrayList<SmellyElement> testes = constructorTest.listTests();
 			
@@ -45,7 +48,7 @@ public class ConstructorInitializationTest {
 	@Test
 	public void should_get_test_smells_informations() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			constructorTest.runAnalysis(compilationUnit,new CompilationUnit(),"ConstructorFixture","");
 			ArrayList<SmellyElement> testes = constructorTest.listTests();
 

@@ -21,18 +21,21 @@ public class VerboseTestTest {
 	FileInputStream fileInputStream;
 	CompilationUnit compilationUnit;
 	SmellyElement smellyElementList;
+
+	JavaParser javaParser;
 	
 	@Before
 	public void setUp() throws Exception {
 		verboseTest = new VerboseTest();
 		fileInputStream = new FileInputStream(new File("src/test/java/br/ufba/jnose/test/fixtures/VerboseFixture.java"));
 		//CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+		javaParser = new JavaParser();
 	}
 	
 	@Test
 	public void should_get_number_of_tests() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			verboseTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = verboseTest.list();
 
@@ -46,7 +49,7 @@ public class VerboseTestTest {
 	@Test
 	public void should_get_smell_informations() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			verboseTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = verboseTest.list();
 			

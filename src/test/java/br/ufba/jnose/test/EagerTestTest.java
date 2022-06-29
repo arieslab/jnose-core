@@ -22,19 +22,22 @@ public class EagerTestTest {
 	FileInputStream fileInputStream2;
 	CompilationUnit compilationUnit;
 	SmellyElement smellyElementList;
+
+	JavaParser javaParser;
 	
 	@Before
 	public void setUp() throws Exception {
 		eagerTest = new EagerTest();
 		fileInputStream = new FileInputStream(new File("src/test/java/br/ufba/jnose/test/fixtures/EagerFixture.java"));
 		fileInputStream2 = new FileInputStream(new File("src/test/java/br/ufba/jnose/test/fixtures/LazyClassFixture.java"));
+		javaParser = new JavaParser();
 	}	
 	
 	@Test
 	public void should_get_number_of_tests() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
-			CompilationUnit compilationUnit2 = JavaParser.parse(fileInputStream2);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
+			CompilationUnit compilationUnit2 = javaParser.parse(fileInputStream2).getResult().get();
 			eagerTest.runAnalysis(compilationUnit,compilationUnit2,"LazyFixture","LazyClassFixture");
 			ArrayList<SmellyElement> testes = eagerTest.list();
 			
@@ -49,8 +52,8 @@ public class EagerTestTest {
 	@Test
 	public void should_get_smell_informations() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
-			CompilationUnit compilationUnit2 = JavaParser.parse(fileInputStream2);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
+			CompilationUnit compilationUnit2 = javaParser.parse(fileInputStream2).getResult().get();
 			eagerTest.runAnalysis(compilationUnit,compilationUnit2,"EagerFixture","LazyClassFixture");
 			ArrayList<SmellyElement> testes = eagerTest.list();
 						

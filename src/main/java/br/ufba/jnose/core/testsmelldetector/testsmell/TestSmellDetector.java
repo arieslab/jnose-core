@@ -3,6 +3,7 @@ package br.ufba.jnose.core.testsmelldetector.testsmell;
 import br.ufba.jnose.core.Config;
 import br.ufba.jnose.core.testsmelldetector.testsmell.smell.*;
 import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
 import com.github.javaparser.ast.CompilationUnit;
 
 import java.io.FileInputStream;
@@ -18,12 +19,15 @@ public class TestSmellDetector {
 
     private Config config;
 
+    private JavaParser javaParser;
+
     /**
      * Instantiates the various test smell analyzer classes and loads the objects into an List
      */
     public TestSmellDetector(Config config) {
         this.config = config;
         initializeSmells();
+        javaParser = new JavaParser();
     }
 
     private void initializeSmells(){
@@ -73,18 +77,18 @@ public class TestSmellDetector {
      * Loads the java source code file into an AST and then analyzes it for the existence of the different types of test smells
      */
     public TestFile detectSmells(TestFile testFile) throws IOException {
-        CompilationUnit testFileCompilationUnit=null, productionFileCompilationUnit=null;
+        CompilationUnit testFileCompilationUnit = null, productionFileCompilationUnit = null;
         FileInputStream testFileInputStream, productionFileInputStream;
 
         if(!testFile.getTestFilePath().isEmpty()) {
             testFileInputStream = new FileInputStream(testFile.getTestFilePath());
             //Linha que dar problema de memoria.
-            testFileCompilationUnit = JavaParser.parse(testFileInputStream);
+            testFileCompilationUnit = javaParser.parse(testFileInputStream).getResult().get();
         }
 
         if(!testFile.getProductionFilePath().isEmpty()){
             productionFileInputStream = new FileInputStream(testFile.getProductionFilePath());
-            productionFileCompilationUnit = JavaParser.parse(productionFileInputStream);
+            productionFileCompilationUnit = javaParser.parse(productionFileInputStream).getResult().get();
         }
 
         initializeSmells();

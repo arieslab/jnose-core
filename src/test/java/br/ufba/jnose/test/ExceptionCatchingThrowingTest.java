@@ -22,20 +22,24 @@ public class ExceptionCatchingThrowingTest {
 	CompilationUnit compilationUnit;
 	SmellyElement smellyElementList;
 
+	JavaParser javaParser;
+
 	@Before
 	public void setUp() throws Exception {
 		exceptionTest = new ExceptionCatchingThrowing();
 		fileInputStream = new FileInputStream(new File("src/test/java/br/ufba/jnose/test/fixtures/ExceptionFixture.java"));
+		javaParser = new JavaParser();
 	}
 	
 	@Test
 	public void should_get_number_of_tests() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			exceptionTest.runAnalysis(compilationUnit,new CompilationUnit(),"ExceptionFixture","");
 			ArrayList<SmellyElement> testes = exceptionTest.list();
 			
 			assertTrue(testes.size() == 2);
+
 		}
 		catch (Exception e) {
 	        e.printStackTrace();
@@ -46,7 +50,7 @@ public class ExceptionCatchingThrowingTest {
 	@Test
 	public void should_get_smells() {
 		try{ 
-			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+			CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
 			exceptionTest.runAnalysis(compilationUnit,new CompilationUnit(),"ExceptionFixture","");
 			ArrayList<SmellyElement> testes = exceptionTest.list();
 		    assertEquals(testes.get(0).getElementName(),"should_be_expection_one");
