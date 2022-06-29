@@ -288,11 +288,14 @@ public class JNoseCore implements PropertyChangeListener{
             CompilationUnit compilationUnit = javaParser.parse(fileInputStream).getResult().get();
             testClass.setNumberLine(compilationUnit.getRange().get().end.line);
             detectJUnitVersion(compilationUnit.getImports(), testClass);
-//            List<NodeList<?>> nodeList = compilationUnit.getNodeLists();
-            List<Node> nodeList = compilationUnit.getChildNodes();
-            for (Node node : nodeList) {
-                System.out.println(node);
-//                isTestFile = flowClass(node, testClass);
+            List<NodeList<?>> lista = new ArrayList<>();
+            List<Node> node = compilationUnit.getChildNodes();
+            NodeList nodeList = new NodeList();
+            nodeList.addAll(node);
+            lista.add(nodeList);
+
+            for (NodeList n : lista) {
+                isTestFile = flowClass(n, testClass);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -356,6 +359,7 @@ public class JNoseCore implements PropertyChangeListener{
         }
         return jUnitVersion[0];
     }
+
 
     private Boolean flowClass(NodeList<?> nodeList, TestClass testClass) {
         LOGGER.log(Level.INFO, "flowClass: start -> " + nodeList.toString());
