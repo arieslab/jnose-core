@@ -292,6 +292,10 @@ public class JNoseCore implements PropertyChangeListener{
             for (NodeList<?> node : nodeList) {
                 isTestFile = flowClass(node, testClass);
             }
+
+            if(testClass.getJunitVersion() != null && testClass.getJunitVersion() != TestClass.JunitVersion.None){
+                isTestFile = true;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -330,13 +334,18 @@ public class JNoseCore implements PropertyChangeListener{
             Files.walk(startDir)
                     .filter(Files::isRegularFile)
                     .forEach(filePath -> {
+                        if(filePath.getFileName().toString().toLowerCase().contains("loadtestcase")){
+                            System.out.println("achei...");
+                        }
                         if (filePath.getFileName().toString().lastIndexOf(".") != -1) {
                             String fileNameWithoutExtension = filePath.getFileName().toString().substring(0, filePath.getFileName().toString().lastIndexOf(".")).toLowerCase();
 //                            if (filePath.toString().toLowerCase().endsWith(".java") && fileNameWithoutExtension.matches("^.*test\\d*$")) {
                             if (filePath.toString().toLowerCase().endsWith(".java") && (
                                     fileNameWithoutExtension.matches("^.*test\\d*$") ||
+                                            fileNameWithoutExtension.matches("^.*testcase\\d*") ||
                                             fileNameWithoutExtension.matches("^.*tests\\d*$") ||
                                             fileNameWithoutExtension.matches("^test.*") ||
+                                            fileNameWithoutExtension.matches("^testcase.*") ||
                                             fileNameWithoutExtension.matches("^tests.*"))) {
                                 br.ufba.jnose.dto.TestClass testClass = new br.ufba.jnose.dto.TestClass();
                                 testClass.setProjectName(projectName);
