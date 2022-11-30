@@ -10,9 +10,11 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
+import com.github.javaparser.metamodel.ClassOrInterfaceDeclarationMetaModel;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -34,7 +36,7 @@ public class JNoseCore implements PropertyChangeListener{
     private Config config;
 
     public static void main(String[] args) throws Exception {
-        String directoryPath = args[0];
+        String directoryPath = "C:\\Users\\Tássio\\Desenvolvimento\\repo.git\\KTestSmells\\tmp\\commons-io";
 
         Config conf = new Config() {
             @Override
@@ -156,12 +158,13 @@ public class JNoseCore implements PropertyChangeListener{
         for(TestClass testClass : lista){
             for (TestSmell testSmell : testClass.getListTestSmell()){
                 System.out.println(
-                        testClass.getPathFile() + ";" +
-                                testClass.getProductionFile() + ";" +
-                                testClass.getJunitVersion() + ";" +
-                        testSmell.getName() + ";" +
-                        testSmell.getMethod() + ";" +
-                        testSmell.getRange());
+                            testClass.getPathFile() + ";" +
+                            testClass.getProductionFile() + ";" +
+                            testClass.getJunitVersion() + ";" +
+                            testSmell.getName() + ";" +
+                            testSmell.getMethod() + ";" +
+                            testSmell.getRange()
+                );
             }
 
 //            System.out.println(testClass.getLineSumTestSmells());
@@ -359,6 +362,7 @@ public class JNoseCore implements PropertyChangeListener{
             if (node instanceof ClassOrInterfaceDeclaration) {
                 ClassOrInterfaceDeclaration classAtual = ((ClassOrInterfaceDeclaration) node);
                 testClass.setName(classAtual.getNameAsString());
+                testClass.setFullName(classAtual.getName().toString());
                 NodeList<?> nodeList_members = classAtual.getMembers();
                 testClass.setNumberMethods(classAtual.getMembers().size());
                 isTestClass = flowClass(nodeList_members, testClass);

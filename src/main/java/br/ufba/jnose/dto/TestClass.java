@@ -11,6 +11,8 @@ public class TestClass implements Serializable {
     private String projectName;
     private String pathFile;
     private String name;
+
+    private String fullName;
     private Integer numberMethods;
     private Integer numberLine;
     private String productionFile;
@@ -90,6 +92,14 @@ public class TestClass implements Serializable {
 
     public void setJunitVersion(JunitVersion junitVersion) {
         this.junitVersion = junitVersion;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     @Override
