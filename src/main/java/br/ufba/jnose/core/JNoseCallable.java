@@ -58,8 +58,10 @@ public class JNoseCallable implements Callable<List<TestClass>> {
                     String productionFileName = "";
                     int index = 0;
                     if(testTrueInicio) index = 0;
+                    if(testCaseTrueInicio) index = 0;
                     if(testsTrueInicio) index = 0;
                     if(testTrueFinal) index = testClass.getName().toLowerCase().lastIndexOf("test");
+                    if(testCaseTrueFinal) index = testClass.getName().toLowerCase().lastIndexOf("testcase");
                     if(testsTrueFinal) index = testClass.getName().toLowerCase().lastIndexOf("tests");
 
                     if (index > 0) {
