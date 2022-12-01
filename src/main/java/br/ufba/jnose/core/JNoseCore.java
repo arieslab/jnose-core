@@ -231,14 +231,18 @@ public class JNoseCore implements PropertyChangeListener{
 
             if (filePath.toString().toLowerCase().endsWith(".java") && (
                     fileNameWithoutExtension.matches("^.*test\\d*$") ||
+                    fileNameWithoutExtension.matches("^.*testcase\\d*$") ||
                             fileNameWithoutExtension.matches("^.*tests\\d*$") ||
                             fileNameWithoutExtension.matches("^test.*") ||
+                            fileNameWithoutExtension.matches("^testcase.*") ||
                             fileNameWithoutExtension.matches("^tests.*"))) {
 
                 Boolean testTrueFinal = fileNameWithoutExtension.matches("^.*test\\d*$");
+                Boolean testCaseTrueFinal = fileNameWithoutExtension.matches("^.*testcase\\d*$");
                 Boolean testsTrueFinal = fileNameWithoutExtension.matches("^.*tests\\d*$");
 
                 Boolean testTrueInicio = fileNameWithoutExtension.matches("^test.*");
+                Boolean testCaseTrueInicio = fileNameWithoutExtension.matches("^testcase.*");
                 Boolean testsTrueInicio = fileNameWithoutExtension.matches("^tests.*");
 
                 TestClass testClass = new TestClass();
@@ -250,18 +254,24 @@ public class JNoseCore implements PropertyChangeListener{
                     String productionFileName = "";
                     int index = 0;
                     if(testTrueInicio) index = 0;
+                    if(testCaseTrueInicio) index = 0;
                     if(testsTrueInicio) index = 0;
                     if(testTrueFinal) index = testClass.getName().toLowerCase().lastIndexOf("test");
+                    if(testCaseTrueFinal) index = testClass.getName().toLowerCase().lastIndexOf("testcase");
                     if(testsTrueFinal) index = testClass.getName().toLowerCase().lastIndexOf("tests");
 
                     if (index > 0) {
                         if(testTrueFinal)
                             productionFileName = testClass.getName().substring(0, testClass.getName().toLowerCase().lastIndexOf("test")) + ".java";
+                        if(testCaseTrueFinal)
+                            productionFileName = testClass.getName().substring(0, testClass.getName().toLowerCase().lastIndexOf("testcase")) + ".java";
                         if(testsTrueFinal)
                             productionFileName = testClass.getName().substring(0, testClass.getName().toLowerCase().lastIndexOf("tests")) + ".java";
                     }else{
                         if(testTrueInicio)
                             productionFileName = testClass.getName().substring(4, testClass.getName().length()) + ".java";
+                        if(testCaseTrueInicio)
+                            productionFileName = testClass.getName().substring(8, testClass.getName().length()) + ".java";
                         if(testsTrueInicio)
                             productionFileName = testClass.getName().substring(5, testClass.getName().length()) + ".java";
                     }
