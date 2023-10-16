@@ -1,14 +1,14 @@
 package br.ufba.jnose.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -16,7 +16,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import br.ufba.jnose.core.testsmelldetector.testsmell.SmellyElement;
 import br.ufba.jnose.core.testsmelldetector.testsmell.smell.AssertionRoulette;
 
-
+@DisplayName("Assertion Roulette Test")
 public class AssertionRouletteTest {
 
 	public AssertionRoulette assertionTest;
@@ -25,13 +25,14 @@ public class AssertionRouletteTest {
 	SmellyElement smellyElementList;
 	
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		assertionTest = new AssertionRoulette();
 		fileInputStream = new FileInputStream(new File("src/test/java/br/ufba/jnose/test/fixtures/AssertionRouletteFixture.java"));
 	}
 	
 	@Test
+	@DisplayName("should get number of tests")
 	public void should_get_number_of_tests() {
 		try{ 
 			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
@@ -46,6 +47,7 @@ public class AssertionRouletteTest {
 	}
 	
 	@Test
+	@DisplayName("should get test smells informations")
 	public void should_get_test_smells_informations() {
 		try{ 
 			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);

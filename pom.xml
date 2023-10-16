@@ -36,12 +36,29 @@
             <artifactId>slf4j-simple</artifactId>
             <version>${slf4j.version}</version>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>junit</groupId>-->
+<!--            <artifactId>junit</artifactId>-->
+<!--            <version>${junit.version}</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.10.0</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-migrationsupport -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-migrationsupport</artifactId>
+            <version>5.10.0</version>
+            <scope>test</scope>
+        </dependency>
+
 
         <dependency>
             <groupId>com.github.javaparser</groupId>
@@ -138,6 +155,18 @@
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.1.2</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.junit.jupiter</groupId>
+                        <artifactId>junit-jupiter-engine</artifactId>
+                        <version>5.10.0</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

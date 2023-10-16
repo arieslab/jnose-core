@@ -1,13 +1,14 @@
 package br.ufba.jnose.test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -22,7 +23,7 @@ public class IgnoredTestTest {
 	CompilationUnit compilationUnit;
 	SmellyElement smellyElementList;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		ignoredTest = new IgnoredTest();
 		fileInputStream = new FileInputStream(new File("src/test/java/br/ufba/jnose/test/fixtures/IgnoredFixture.java"));

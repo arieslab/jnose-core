@@ -6,15 +6,15 @@ import com.github.javaparser.ast.CompilationUnit;
 import br.ufba.jnose.core.testsmelldetector.testsmell.SmellyElement;
 import br.ufba.jnose.core.testsmelldetector.testsmell.smell.EmptyTest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class EmptyTestTest {
 	
@@ -23,7 +23,7 @@ public class EmptyTestTest {
 	CompilationUnit compilationUnit;
 	SmellyElement smellyElementList;
 	
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		emptytest = new EmptyTest();
 		fileInputStream = new FileInputStream(new File("src/test/java/br/ufba/jnose/test/fixtures/EmptyFixture.java"));
