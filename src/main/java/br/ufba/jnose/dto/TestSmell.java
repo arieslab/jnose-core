@@ -62,6 +62,7 @@ public class TestSmell implements Serializable {
             hash = String.format("%032x", new BigInteger(1, md5.digest()));
         } catch (Exception e) {
             e.printStackTrace();
+            return "";
         }
         return hash;
     }

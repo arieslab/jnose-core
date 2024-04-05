@@ -433,6 +433,7 @@ public class JNoseCore implements PropertyChangeListener{
                         testSmell.setName(smell.getSmellName());
                         testSmell.setMethod(smellyElement.getElementName());
                         testSmell.setRange(smellyElement.getRange());
+                        testSmell.setTestClass(testClass);
                         testClass.getListTestSmell().add(testSmell);
                     }
                 }
