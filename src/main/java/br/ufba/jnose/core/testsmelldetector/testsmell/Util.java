@@ -7,14 +7,9 @@ public class Util {
     public static boolean isValidTestMethod(MethodDeclaration n) {
         boolean valid = false;
 
-        if (!n.getAnnotationByName("Ignore").isPresent()) {
-            // only analyze methods that either have a @test annotation (Junit 4) or the
-            // method name starts with 'test'
+        if (n.getAnnotationByName("Ignore").isEmpty()) {
             if (n.getAnnotationByName("Test").isPresent() || n.getNameAsString().toLowerCase().startsWith("test")) {
-                // must be a public method
-//                if (n.getModifiers().contains(Modifier.PUBLIC)) {
-                    valid = true;
-//                }
+                valid = true;
             }
         }
 
@@ -30,7 +25,7 @@ public class Util {
             if (n.getAnnotationByName("Before").isPresent() || n.getNameAsString().equals("setUp")) {
                 // must be a public method
 //                if (n.getModifiers().contains(Modifier.PUBLIC)) {
-                    valid = true;
+                valid = true;
 //                }
             }
         }
@@ -42,7 +37,7 @@ public class Util {
         try {
             Integer.parseInt(s);
             return true;
-        }catch (NumberFormatException er) {
+        } catch (NumberFormatException er) {
             return false;
         }
     }

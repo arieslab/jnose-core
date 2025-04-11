@@ -25,7 +25,7 @@ public class MysteryGuestTest {
 	public void setUp() throws Exception {
 		mysteryTest = new MysteryGuest();
 		fileInputStream = new FileInputStream(new File("src/test/java/br/ufba/jnose/test/fixtures/MisteryGuestFixture.java"));
-	}	
+	}
 	
 	@Test
 	public void should_get_number_of_tests() {
@@ -33,6 +33,10 @@ public class MysteryGuestTest {
 			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
 			mysteryTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = mysteryTest.list();
+
+//			for(SmellyElement element : testes){
+//				System.out.println(element.getElementName() + " - " + element.getHasSmell() + " - " + element.getRange());
+//			}
 			
 			assertEquals(testes.size(),5);
 		}
