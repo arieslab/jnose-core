@@ -4,7 +4,9 @@ import br.ufba.jnose.core.testsmelldetector.testsmell.*;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 import java.io.FileNotFoundException;
@@ -39,19 +41,17 @@ public class MysteryGuest extends AbstractSmell {
         for (MethodUsage method : mysteryInstance) {
             TestMethod testClass = new TestMethod(method.getTestMethodName());
             testClass.setRange(method.getRange());
-//            testClass.addDataItem("begin", method.getLine());
-//            testClass.addDataItem("end", method.getLine()); // [Remover]
             testClass.setHasSmell(true);
             smellyElementList.add(testClass);
         }
     }
-    
-    public ArrayList<SmellyElement> list(){
-    	return (ArrayList<SmellyElement>) smellyElementList;
+
+    public ArrayList<SmellyElement> list() {
+        return (ArrayList<SmellyElement>) smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
-        private List<String> mysteryTypes = new ArrayList<>(
+        final private List<String> mysteryTypes = new ArrayList<>(
                 Arrays.asList(
                         "File",
                         "FileOutputStream",
@@ -65,97 +65,26 @@ public class MysteryGuest extends AbstractSmell {
                         "HttpGet",
                         "SoapObject"
                 ));
-
-
-        /*
-                private List<String> databaseMethods = new ArrayList<>(
-                        Arrays.asList(
-                                "getWritableDatabase",
-                                "getReadableDatabase",
-                                "execSQL",
-                                "rawQuery"
-                        ));
-                private List<String> fileMethods = new ArrayList<>(
-                        Arrays.asList(
-                                "getFilesDir",
-                                "getDir",
-                                "getCacheDir",
-                                "createTempFile",
-                                "getExternalStorageState",
-                                "getExternalStoragePublicDirectory",
-                                "getExternalFilesDir",
-                                "getExternalCacheDir",
-                                "getFreeSpace",
-                                "getTotalSpace",
-                                "deleteFile",
-                                "fileList",
-                                "openFileOutput",
-                                "openRawResource"));
-        */
         private MethodDeclaration currentMethod = null;
-//        private int mysteryCount = 0;
 
-        // examine all methods in the test class
         @Override
         public void visit(MethodDeclaration n, Void arg) {
             if (Util.isValidTestMethod(n)) {
                 currentMethod = n;
                 super.visit(n, arg);
-
-                //reset values for next method
                 currentMethod = null;
-//                mysteryCount = 0;
             }
         }
 
-        /*
-        // examine the methods being called within the test method
         @Override
-        public void visit(MethodCallExpr n, Void arg) {
+        public void visit(ClassOrInterfaceType n, Void arg) {
             super.visit(n, arg);
-            if (currentMethod != null){
-                for (String methodName: fileMethods) {
-                    if(n.getNameAsString().equals(methodName)){
-                        mysteryCount++;
-                    }
-                }
-                for (String methodName: databaseMethods) {
-                    if(n.getNameAsString().equals(methodName)){
-                        mysteryCount++;
-                    }
-                }
+            if (mysteryTypes.contains(n.asString())) {
+                MethodUsage methodUsage = new MethodUsage(currentMethod.getNameAsString(), "", currentMethod.getRange().get().begin.line + "-" + currentMethod.getRange().get().end.line);
+                if (!mysteryInstance.contains(methodUsage))
+                    mysteryInstance.add(methodUsage);
             }
         }
-        */
 
-        @Override
-        public void visit(VariableDeclarationExpr n, Void arg) {
-            super.visit(n, arg);
-            //Note: the null check limits the identification of variable types declared within the method body.
-            // Removing it will check for variables declared at the class level.
-            //TODO: to null check or not to null check???
-            if (currentMethod != null) {
-                boolean hasMystery = false;
-                for (String variableType : mysteryTypes) {
-                    //check if the type variable encountered is part of the mystery type collection
-                    if ((n.getVariable(0).getType().asString().equals(variableType))) {
-                        //check if the variable has been mocked
-                        for (AnnotationExpr annotation : n.getAnnotations()) {
-                            if (annotation.getNameAsString().equals("Mock") || annotation.getNameAsString().equals("Spy"))
-                                break;
-                        }
-                        // variable is not mocked, hence it's a smell
-//                        mysteryCount++;
-                        hasMystery = true;
-//                        mysteryInstance.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line+""));
-                    }
-                }
-                if (hasMystery) {
-                    MethodUsage methodUsage = new MethodUsage(currentMethod.getNameAsString(), "",currentMethod.getRange().get().begin.line + "-" + currentMethod.getRange().get().end.line);
-                    if (!mysteryInstance.contains(methodUsage))
-                        mysteryInstance.add(methodUsage);
-                }
-            }
-        }
     }
 }

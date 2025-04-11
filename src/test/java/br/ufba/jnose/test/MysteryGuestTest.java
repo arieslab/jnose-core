@@ -20,9 +20,7 @@ public class MysteryGuestTest {
 
 	public MysteryGuest mysteryTest;
 	FileInputStream fileInputStream;
-	CompilationUnit compilationUnit;
-	SmellyElement smellyElementList;
-	
+
 	@BeforeEach
 	public void setUp() throws Exception {
 		mysteryTest = new MysteryGuest();
@@ -36,7 +34,7 @@ public class MysteryGuestTest {
 			mysteryTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = mysteryTest.list();
 			
-			assertTrue(testes.size() == 1);
+			assertEquals(testes.size(),5);
 		}
 		catch (Exception e) {
 	        e.printStackTrace();
@@ -51,8 +49,20 @@ public class MysteryGuestTest {
 			mysteryTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = mysteryTest.list();
 
-			assertEquals(testes.get(0).getRange(), "13-16");
+			assertEquals(testes.get(0).getRange(), "14-17");
 			assertEquals(testes.get(0).getElementName(),"should_be_Mistery_Guest");
+
+			assertEquals(testes.get(1).getRange(), "19-22");
+			assertEquals(testes.get(1).getElementName(),"should_be_Mistery_Guest2");
+
+			assertEquals(testes.get(2).getRange(), "24-27");
+			assertEquals(testes.get(2).getElementName(),"should_be_Mistery_Guest3");
+
+			assertEquals(testes.get(3).getRange(), "29-32");
+			assertEquals(testes.get(3).getElementName(),"should_be_Mistery_Guest4");
+
+			assertEquals(testes.get(4).getRange(), "34-37");
+			assertEquals(testes.get(4).getElementName(),"should_be_Mistery_Guest5");
 		}
 		catch (Exception e) {
 	        e.printStackTrace();
