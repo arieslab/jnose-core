@@ -39,15 +39,18 @@ public class JNoseCallable implements Callable<List<TestClass>> {
                             fileNameWithoutExtension.matches("^.*tests\\d*$") ||
                             fileNameWithoutExtension.matches("^test.*") ||
                             fileNameWithoutExtension.matches("^testcase.*") ||
-                            fileNameWithoutExtension.matches("^tests.*"))) {
+                            fileNameWithoutExtension.matches("^tests.*") ||
+                            fileNameWithoutExtension.matches("^estest.*"))) {
 
                 Boolean testTrueFinal = fileNameWithoutExtension.matches("^.*test\\d*$");
                 Boolean testCaseTrueFinal = fileNameWithoutExtension.matches("^.*testcase\\d*$");
                 Boolean testsTrueFinal = fileNameWithoutExtension.matches("^.*tests\\d*$");
+                Boolean testsESTrueFinal = fileNameWithoutExtension.matches("^.*_estest\\d*$");
 
                 Boolean testTrueInicio = fileNameWithoutExtension.matches("^test.*");
                 Boolean testCaseTrueInicio = fileNameWithoutExtension.matches("^testcase.*");
                 Boolean testsTrueInicio = fileNameWithoutExtension.matches("^tests.*");
+
 
                 TestClass testClass = new TestClass();
                 testClass.setProjectName(projectName);
@@ -63,6 +66,7 @@ public class JNoseCallable implements Callable<List<TestClass>> {
                     if(testTrueFinal) index = testClass.getName().toLowerCase().lastIndexOf("test");
                     if(testCaseTrueFinal) index = testClass.getName().toLowerCase().lastIndexOf("testcase");
                     if(testsTrueFinal) index = testClass.getName().toLowerCase().lastIndexOf("tests");
+                    if(testsESTrueFinal) index = testClass.getName().toLowerCase().lastIndexOf("_estest");
 
                     if (index > 0) {
                         if(testTrueFinal)
@@ -71,6 +75,8 @@ public class JNoseCallable implements Callable<List<TestClass>> {
                             productionFileName = testClass.getName().substring(0, testClass.getName().toLowerCase().lastIndexOf("testcase")) + ".java";
                         if(testsTrueFinal)
                             productionFileName = testClass.getName().substring(0, testClass.getName().toLowerCase().lastIndexOf("tests")) + ".java";
+                        if(testsESTrueFinal)
+                            productionFileName = testClass.getName().substring(0, testClass.getName().toLowerCase().lastIndexOf("_estest")) + ".java";
                     }else{
                         if(testTrueInicio)
                             productionFileName = testClass.getName().substring(4, testClass.getName().length()) + ".java";
@@ -81,10 +87,10 @@ public class JNoseCallable implements Callable<List<TestClass>> {
                     }
                     testClass.setProductionFile(jNoseCore.getFileProduction(startDir.toString(), productionFileName));
 
-                    // if (!testClass.getProductionFile().isEmpty()) {
+//                     if (!testClass.getProductionFile().isEmpty()) {
                         jNoseCore.getTestSmells(testClass);
                         files.add(testClass);
-                    // }
+//                     }
                 }
             }
         }
