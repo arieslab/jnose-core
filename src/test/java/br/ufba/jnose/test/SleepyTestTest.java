@@ -36,7 +36,7 @@ public class SleepyTestTest {
 			sleepyTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = sleepyTest.list();
 			
-			assertTrue(testes.size() == 1);
+			assertEquals(testes.size(), 4);
 		}
 		catch (Exception e) {
 	        e.printStackTrace();
@@ -52,6 +52,15 @@ public class SleepyTestTest {
 			
 			assertEquals(testes.get(0).getRange(), "16-16");
 			assertEquals(testes.get(0).getElementName(),"should_be_sleep_test");
+
+			assertEquals(testes.get(1).getRange(), "21-21");
+			assertEquals(testes.get(1).getElementName(),"should_be_sleep_test_1");
+
+			assertEquals(testes.get(2).getRange(), "27-27");
+			assertEquals(testes.get(2).getElementName(),"should_be_sleep_test_2");
+
+			assertEquals(testes.get(3).getRange(), "28-28");
+			assertEquals(testes.get(3).getElementName(),"should_be_sleep_test_2");
 		}
 		catch (Exception e) {
 	        e.printStackTrace();
