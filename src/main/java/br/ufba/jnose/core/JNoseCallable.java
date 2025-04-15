@@ -13,10 +13,10 @@ public class JNoseCallable implements Callable<List<TestClass>> {
 
     private final static Logger LOGGER = Logger.getLogger(JNoseCallable.class.getName());
 
-    private Path filePath;
-    private String projectName;
-    private Path startDir;
-    private JNoseCore jNoseCore;
+    private final Path filePath;
+    private final String projectName;
+    private final Path startDir;
+    private final JNoseCore jNoseCore;
 
 
     public JNoseCallable(Path filePath, String projectName, Path startDir, JNoseCore jNoseCore){
@@ -81,10 +81,10 @@ public class JNoseCallable implements Callable<List<TestClass>> {
                     }
                     testClass.setProductionFile(jNoseCore.getFileProduction(startDir.toString(), productionFileName));
 
-                    if (!testClass.getProductionFile().isEmpty()) {
+                    // if (!testClass.getProductionFile().isEmpty()) {
                         jNoseCore.getTestSmells(testClass);
                         files.add(testClass);
-                    }
+                    // }
                 }
             }
         }

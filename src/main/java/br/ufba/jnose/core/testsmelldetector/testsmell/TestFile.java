@@ -5,7 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TestFile {
-    private String testFilePath, productionFilePath;
+    private final String testFilePath;
+    private final String productionFilePath;
     private List<AbstractSmell> testSmells;
     private Integer loc;
     private Integer qtdMethods;

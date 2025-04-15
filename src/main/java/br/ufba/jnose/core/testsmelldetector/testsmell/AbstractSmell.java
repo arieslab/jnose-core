@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AbstractSmell {
-    private String smellName;
-    protected List<SmellyElement> smellyElementList;
+    private final String smellName;
+    protected final List<SmellyElement> smellyElementList;
     protected VoidVisitorAdapter<Void> classVisitor;
 
     public AbstractSmell(String smellName) {

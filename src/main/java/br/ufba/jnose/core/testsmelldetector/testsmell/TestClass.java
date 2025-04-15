@@ -2,7 +2,7 @@ package br.ufba.jnose.core.testsmelldetector.testsmell;
 
 public class TestClass extends SmellyElement {
 
-    private String className;
+    private final String className;
     private boolean hasSmell;
     private String range;
 
