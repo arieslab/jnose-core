@@ -27,7 +27,6 @@ public class VerboseTestTest {
 	public void setUp() throws Exception {
 		verboseTest = new VerboseTest();
 		fileInputStream = new FileInputStream(new File("src/test/java/br/ufba/jnose/test/fixtures/VerboseFixture.java"));
-		//CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
 	}
 	
 	@Test
@@ -37,7 +36,7 @@ public class VerboseTestTest {
 			verboseTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = verboseTest.list();
 
-			assertTrue(testes.size() == 1);
+			assertEquals(testes.size(), 3);
 		}
 		catch (Exception e) {
 	        e.printStackTrace();
@@ -52,7 +51,13 @@ public class VerboseTestTest {
 			ArrayList<SmellyElement> testes = verboseTest.list();
 			
 			assertEquals(testes.get(0).getRange(),"10-41");
-			assertEquals(testes.get(0).getElementName(),"should_be_verbose_test");
+			assertEquals(testes.get(0).getElementName(),"should_be_verbose_test_0");
+
+			assertEquals(testes.get(1).getRange(),"43-74");
+			assertEquals(testes.get(1).getElementName(),"should_be_verbose_test_1");
+
+			assertEquals(testes.get(2).getRange(),"76-107");
+			assertEquals(testes.get(2).getElementName(),"should_be_verbose_test_2");
 		}
 		catch (Exception e) {
 	        e.printStackTrace();
