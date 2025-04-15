@@ -19,4 +19,10 @@ public class SensitiveEqualityFixtureTest {
 		assertEquals(s.x.toString(), "text");
 	}
 
+	@Test
+	public void should_be_sensitive_equality_1() {
+		System.out.println(s.x.toString());
+		assertEquals(s.x.toString(), "text");
+	}
+
 }

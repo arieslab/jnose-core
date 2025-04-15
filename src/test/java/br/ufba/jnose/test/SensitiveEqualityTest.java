@@ -36,7 +36,7 @@ public class SensitiveEqualityTest {
 			sensitiveTest.runAnalysis(compilationUnit,new CompilationUnit(),"SentiviveEqualityTest","");
 			ArrayList<SmellyElement> testes = sensitiveTest.list();
 			
-			assertTrue(testes.size() == 1);
+			assertEquals(testes.size(), 2);
 		}
 		catch (Exception e) {
 	        e.printStackTrace();
@@ -52,6 +52,9 @@ public class SensitiveEqualityTest {
 			
 			assertEquals(testes.get(0).getRange(),"19-19");
 			assertEquals(testes.get(0).getElementName(),"should_be_sensitive_equality");
+
+			assertEquals(testes.get(1).getRange(),"25-25");
+			assertEquals(testes.get(1).getElementName(),"should_be_sensitive_equality_1");
 		}
 		catch (Exception e) {
 	        e.printStackTrace();
