@@ -36,7 +36,7 @@ public class UnknownTestTest {
 			unknownTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = unknownTest.list();
 			
-			assertTrue(testes.size() == 1);
+			assertEquals(testes.size(), 3);
 		}
 		catch (Exception e) {
 	        e.printStackTrace();
@@ -50,9 +50,16 @@ public class UnknownTestTest {
 			unknownTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = unknownTest.list();
 			
-			assertTrue(testes.size() == 1);
+			assertTrue(testes.size() == 3);
+
 			assertEquals(testes.get(0).getElementName(),"should_be_unknown_test");
-			assertEquals(testes.get(0).getRange(),"14-17");
+			assertEquals(testes.get(0).getRange(),"13-16");
+
+			assertEquals(testes.get(1).getElementName(),"should_be_unknown_test_1");
+			assertEquals(testes.get(1).getRange(),"18-21");
+
+			assertEquals(testes.get(2).getElementName(),"should_be_unknown_test_2");
+			assertEquals(testes.get(2).getRange(),"23-26");
 		}
 		catch (Exception e) {
 	        e.printStackTrace();
