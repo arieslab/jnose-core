@@ -39,7 +39,7 @@ public class AssertionRouletteTest {
 			assertionTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = assertionTest.list();
 			
-			assertTrue(testes.size() == 2);
+			assertEquals(4, testes.size());
 		}
 		catch (Exception e) {
 	        e.printStackTrace();
@@ -53,17 +53,16 @@ public class AssertionRouletteTest {
 			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
 			assertionTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = assertionTest.list();
-			
-//			for(SmellyElement t: testes) {
-//				System.out.println(t.getHasSmell());
-//				System.out.println(t.getElementName());
-//				System.out.println(t.getRange());
-//				System.out.println("");
-//			}
-		
-			assertEquals(testes.get(0).getRange(), "13-13");
-			assertEquals(testes.get(1).getRange(), "14-14");
-			assertEquals(testes.get(0).getElementName(),"should_be_assertion_roulette");
+
+			assertEquals(testes.get(0).getRange(), "33-33");
+			assertEquals(testes.get(1).getRange(), "47-47");
+			assertEquals(testes.get(2).getRange(), "48-48");
+			assertEquals(testes.get(3).getRange(), "49-49");
+
+			assertEquals(testes.get(0).getElementName(),"should_be_assertion_roulette_2");
+			assertEquals(testes.get(1).getElementName(),"should_be_assertion_roulette_4");
+			assertEquals(testes.get(2).getElementName(),"should_be_assertion_roulette_4");
+			assertEquals(testes.get(3).getElementName(),"should_be_assertion_roulette_4");
 		}
 		catch (Exception e) {
 	        e.printStackTrace();

@@ -94,13 +94,13 @@ public class AssertionRoulette extends AbstractSmell {
                         assertNoMessageCount++;
                         hasMissingExplanation = true;
                     }
-                    else{
-                        if((!n.getArgument(0).getClass().getSimpleName().equals("StringLiteralExpr"))
-                                || explanationIsEmpty(n.getArgument(0).toString())){
-                            assertNoMessageCount++;
-                            hasMissingExplanation = true;
-                        }
-                    }
+//                    else{
+//                        if((!n.getArguments().get(0).getClass().getSimpleName().equals("StringLiteralExpr"))
+//                                || explanationIsEmpty(n.getArgument(0).toString())){
+//                            assertNoMessageCount++;
+//                            hasMissingExplanation = true;
+//                        }
+//                    }
                 }
                 // if the name of a method being called is an assertion and has 2 parameters
                 else if (n.getNameAsString().equals("assertFalse") ||
@@ -125,7 +125,7 @@ public class AssertionRoulette extends AbstractSmell {
                         hasMissingExplanation = true;
                     }
                 }
-                if (hasMissingExplanation) {
+                if (hasMissingExplanation && assertNoMessageCount > 1) {
                     testMethod = new TestMethod(methodName);
 
                     testMethod.setRange(n.getRange().get().begin.line + "-" + n.getRange().get().end.line);
