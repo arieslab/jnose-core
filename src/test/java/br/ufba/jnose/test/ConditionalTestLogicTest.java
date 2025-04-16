@@ -6,8 +6,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.ArrayList;
 
-import org.junit.Before;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -43,8 +41,7 @@ public class ConditionalTestLogicTest {
 	        e.printStackTrace();
 	    }
 	}
-	
-	
+
 	@Test
 	public void should_get_test_one_informations() {
 		try{ 
@@ -67,7 +64,7 @@ public class ConditionalTestLogicTest {
 			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
 			conditionalTest.runAnalysis(compilationUnit,new CompilationUnit(),"Aux","");
 			ArrayList<SmellyElement> testes = conditionalTest.list();
-			
+
 			
 			assertEquals(testes.get(1).getElementName(),"should_be_conditional_two");
 			assertEquals(testes.get(1).getRange(),"16-17");
