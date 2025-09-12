@@ -87,6 +87,9 @@ public class TestClass implements Serializable {
     }
 
     public JunitVersion getJunitVersion() {
+        if(junitVersion == null){
+            junitVersion = JunitVersion.None;
+        }
         return junitVersion;
     }
 
