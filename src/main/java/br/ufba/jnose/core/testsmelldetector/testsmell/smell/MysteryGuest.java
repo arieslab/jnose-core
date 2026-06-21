@@ -78,7 +78,7 @@ public class MysteryGuest extends AbstractSmell {
 
         @Override
         public void visit(ClassOrInterfaceType n, Void arg) {
-            if (mysteryTypes.contains(n.asString())) {
+            if (mysteryTypes.contains(n.asString()) && currentMethod != null) {
                 MethodUsage methodUsage = new MethodUsage(currentMethod.getNameAsString(), "", currentMethod.getRange().get().begin.line + "-" + currentMethod.getRange().get().end.line);
                 if(mysteryInstance.contains(methodUsage) == false){
                     mysteryInstance.add(methodUsage);
