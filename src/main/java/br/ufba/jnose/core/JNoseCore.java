@@ -37,44 +37,43 @@ public class JNoseCore {
     public List<TestClass> getFilesTest(String directoryPath) throws Exception {
         int numberThread = Runtime.getRuntime().availableProcessors() * 2;
         ExecutorService threadpool = Executors.newFixedThreadPool(numberThread);
-
         try {
-            String projectName = directoryPath.substring(directoryPath.lastIndexOf(File.separatorChar) + 1);
-            Path startDir = Paths.get(directoryPath);
-
-            Map<String, String> fileMap = new ConcurrentHashMap<>();
-            try (var paths = Files.walk(startDir).filter(Files::isRegularFile)) {
-                paths.forEach(path -> {
-                    if (path.toString().toLowerCase().endsWith(".java")) {
-                        fileMap.put(path.getFileName().toString().toLowerCase(), path.toString());
-                    }
-                });
-            }
-
-            List<TestClass> files = new ArrayList<>();
-            List<Future<List<TestClass>>> futures = new ArrayList<>();
-
-            Files.walk(startDir)
-                    .filter(Files::isRegularFile)
-                    .forEach(filePath -> {
-                        JNoseCallable callable = new JNoseCallable(filePath, projectName, startDir, this, fileMap);
-                        Future<List<TestClass>> future = threadpool.submit(callable);
-                        futures.add(future);
-                    });
-
-            threadpool.shutdown();
-            threadpool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-
-            for (Future<List<TestClass>> future : futures) {
-                files.addAll(future.get());
-            }
-
-            return files;
+            return getFilesTest(directoryPath, threadpool);
         } finally {
             if (!threadpool.isShutdown()) {
-                threadpool.shutdownNow();
+                threadpool.shutdown();
             }
+            threadpool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
         }
+    }
+
+    public List<TestClass> getFilesTest(String directoryPath, ExecutorService threadpool) throws Exception {
+        String projectName = directoryPath.substring(directoryPath.lastIndexOf(File.separatorChar) + 1);
+        Path startDir = Paths.get(directoryPath);
+
+        Map<String, String> fileMap = new ConcurrentHashMap<>();
+        List<Path> javaFiles = new ArrayList<>();
+
+        try (var paths = Files.walk(startDir).filter(Files::isRegularFile)) {
+            paths.forEach(filePath -> {
+                if (filePath.toString().toLowerCase().endsWith(".java")) {
+                    fileMap.put(filePath.getFileName().toString().toLowerCase(), filePath.toString());
+                    javaFiles.add(filePath);
+                }
+            });
+        }
+
+        List<Future<List<TestClass>>> futures = new ArrayList<>();
+        for (Path filePath : javaFiles) {
+            JNoseCallable callable = new JNoseCallable(filePath, projectName, startDir, this, fileMap);
+            futures.add(threadpool.submit(callable));
+        }
+
+        List<TestClass> files = new ArrayList<>();
+        for (Future<List<TestClass>> future : futures) {
+            files.addAll(future.get());
+        }
+        return files;
     }
 
 
