@@ -1,5 +1,3 @@
-<p align="center"><img src="https://github.com/arieslab/jnose-core/blob/main/logo.png?raw=true" width="70"></p>
-
 # JNose-Core
 
 Java library for automatic **Test Smells** detection in test code.
