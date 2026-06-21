@@ -59,7 +59,7 @@ Add the GitHub Packages repository to your `pom.xml`:
 
 ```xml
 <dependency>
-    <groupId>br.ufba.jnose</groupId>
+    <groupId>io.github.arieslab</groupId>
     <artifactId>jnose-core</artifactId>
     <version>0.9.0</version>
 </dependency>
