@@ -28,6 +28,14 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
+    - name: Upload JARs to Release
+      run: |
+        gh release upload ${{ github.event.release.tag_name }} \
+          target/*.jar \
+          --repo ${{ github.repository }}
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+
     - name: Publish to GitHub Packages
       run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml -DskipTests
       env:
