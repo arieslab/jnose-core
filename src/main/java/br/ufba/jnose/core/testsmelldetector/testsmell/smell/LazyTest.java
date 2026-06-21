@@ -1,8 +1,5 @@
 package br.ufba.jnose.core.testsmelldetector.testsmell.smell;
 
-import br.ufba.jnose.core.testsmelldetector.testsmell.MethodUsage;
-import br.ufba.jnose.core.testsmelldetector.testsmell.SmellyElement;
-
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.body.*;
@@ -10,9 +7,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import br.ufba.jnose.core.testsmelldetector.testsmell.AbstractSmell;
-import br.ufba.jnose.core.testsmelldetector.testsmell.TestMethod;
-import br.ufba.jnose.core.testsmelldetector.testsmell.Util;
+import br.ufba.jnose.core.testsmelldetector.testsmell.*;
 
 import java.io.FileNotFoundException;
 import java.util.*;

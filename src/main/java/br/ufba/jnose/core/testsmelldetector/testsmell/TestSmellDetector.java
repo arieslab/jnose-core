@@ -74,17 +74,17 @@ public class TestSmellDetector {
      */
     public TestFile detectSmells(TestFile testFile) throws IOException {
         CompilationUnit testFileCompilationUnit=null, productionFileCompilationUnit=null;
-        FileInputStream testFileInputStream, productionFileInputStream;
 
         if(!testFile.getTestFilePath().isEmpty()) {
-            testFileInputStream = new FileInputStream(testFile.getTestFilePath());
-            //Linha que dar problema de memoria.
-            testFileCompilationUnit = JavaParser.parse(testFileInputStream);
+            try (FileInputStream testFileInputStream = new FileInputStream(testFile.getTestFilePath())) {
+                testFileCompilationUnit = JavaParser.parse(testFileInputStream);
+            }
         }
 
         if(!testFile.getProductionFilePath().isEmpty()){
-            productionFileInputStream = new FileInputStream(testFile.getProductionFilePath());
-            productionFileCompilationUnit = JavaParser.parse(productionFileInputStream);
+            try (FileInputStream productionFileInputStream = new FileInputStream(testFile.getProductionFilePath())) {
+                productionFileCompilationUnit = JavaParser.parse(productionFileInputStream);
+            }
         }
 
         initializeSmells();
@@ -93,7 +93,6 @@ public class TestSmellDetector {
             try {
                 smell.runAnalysis(testFileCompilationUnit, productionFileCompilationUnit,testFile.getTestFileNameWithoutExtension(),testFile.getProductionFileNameWithoutExtension());
             } catch (FileNotFoundException e) {
-                testFile.addSmell(null);
                 continue;
             }
             testFile.addSmell(smell);

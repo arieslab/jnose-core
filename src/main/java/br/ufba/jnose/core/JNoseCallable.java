@@ -39,17 +39,16 @@ public class JNoseCallable implements Callable<List<TestClass>> {
                             fileNameWithoutExtension.matches("^.*tests\\d*$") ||
                             fileNameWithoutExtension.matches("^test.*") ||
                             fileNameWithoutExtension.matches("^testcase.*") ||
-                            fileNameWithoutExtension.matches("^tests.*") ||
-                            fileNameWithoutExtension.matches("^estest.*"))) {
+                            fileNameWithoutExtension.matches("^tests.*"))) {
 
-                Boolean testTrueFinal = fileNameWithoutExtension.matches("^.*test\\d*$");
-                Boolean testCaseTrueFinal = fileNameWithoutExtension.matches("^.*testcase\\d*$");
-                Boolean testsTrueFinal = fileNameWithoutExtension.matches("^.*tests\\d*$");
-                Boolean testsESTrueFinal = fileNameWithoutExtension.matches("^.*_estest\\d*$");
+                boolean testTrueFinal = fileNameWithoutExtension.matches("^.*test\\d*$");
+                boolean testCaseTrueFinal = fileNameWithoutExtension.matches("^.*testcase\\d*$");
+                boolean testsTrueFinal = fileNameWithoutExtension.matches("^.*tests\\d*$");
+                boolean testsESTrueFinal = fileNameWithoutExtension.matches("^.*_estest\\d*$");
 
-                Boolean testTrueInicio = fileNameWithoutExtension.matches("^test.*");
-                Boolean testCaseTrueInicio = fileNameWithoutExtension.matches("^testcase.*");
-                Boolean testsTrueInicio = fileNameWithoutExtension.matches("^tests.*");
+                boolean testTrueInicio = fileNameWithoutExtension.matches("^test.*");
+                boolean testCaseTrueInicio = fileNameWithoutExtension.matches("^testcase.*");
+                boolean testsTrueInicio = fileNameWithoutExtension.matches("^tests.*");
 
 
                 TestClass testClass = new TestClass();

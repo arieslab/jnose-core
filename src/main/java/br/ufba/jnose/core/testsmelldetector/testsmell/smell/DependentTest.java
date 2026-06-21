@@ -4,9 +4,7 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import br.ufba.jnose.core.testsmelldetector.testsmell.AbstractSmell;
-import br.ufba.jnose.core.testsmelldetector.testsmell.SmellyElement;
-import br.ufba.jnose.core.testsmelldetector.testsmell.Util;
+import br.ufba.jnose.core.testsmelldetector.testsmell.*;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -14,12 +12,12 @@ import java.util.List;
 
 public class DependentTest extends AbstractSmell {
 
-    private List<TestMethod> testMethods;
+    private List<MethodEntry> methodEntries;
 
 
     public DependentTest() {
         super("Dependent Test");
-        testMethods = new ArrayList<>();
+        methodEntries = new ArrayList<>();
     }
 
     /**
@@ -31,11 +29,16 @@ public class DependentTest extends AbstractSmell {
         classVisitor = new DependentTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
 
-        for (TestMethod testMethod : testMethods) {
-            if (testMethod.getCalledMethods().stream().anyMatch(x -> x.getName()
-                    .equals(testMethods.stream().map(z -> z.getMethodDeclaration().getNameAsString())))) {
-                smellyElementList.add(new br.ufba.jnose.core.testsmelldetector.testsmell.TestMethod(
-                        testMethod.getMethodDeclaration().getNameAsString()));
+        for (MethodEntry methodEntry : methodEntries) {
+            boolean callsOtherTestMethod = methodEntry.getCalledMethods().stream()
+                .anyMatch(called -> methodEntries.stream()
+                    .anyMatch(tm -> tm.getMethodDeclaration().getNameAsString().equals(called.getName())));
+            if (callsOtherTestMethod) {
+                var element = new br.ufba.jnose.core.testsmelldetector.testsmell.TestMethod(
+                    methodEntry.getMethodDeclaration().getNameAsString());
+                element.setHasSmell(true);
+                element.setRange(methodEntry.getMethodDeclaration().getRange().get().begin.line + "-" + methodEntry.getMethodDeclaration().getRange().get().end.line);
+                smellyElementList.add(element);
             }
         }
 
@@ -58,9 +61,9 @@ public class DependentTest extends AbstractSmell {
 
                 super.visit(n, arg);
 
-                TestMethod testMethod = new DependentTest.TestMethod(n, calledMethods);
+                MethodEntry methodEntry = new MethodEntry(n, calledMethods);
 
-                testMethods.add(testMethod);
+                methodEntries.add(methodEntry);
             }
         }
 
@@ -76,7 +79,7 @@ public class DependentTest extends AbstractSmell {
         }
     }
 
-    private class TestMethod {
+    private class MethodEntry {
         public List<CalledMethod> getCalledMethods() {
             return calledMethods;
         }
@@ -85,7 +88,7 @@ public class DependentTest extends AbstractSmell {
             return methodDeclaration;
         }
 
-        public TestMethod(MethodDeclaration methodDeclaration, List<CalledMethod> calledMethods) {
+        public MethodEntry(MethodDeclaration methodDeclaration, List<CalledMethod> calledMethods) {
             this.methodDeclaration = methodDeclaration;
             this.calledMethods = calledMethods;
         }

@@ -1,14 +1,11 @@
 package br.ufba.jnose.core.testsmelldetector.testsmell.smell;
 
-import br.ufba.jnose.core.testsmelldetector.testsmell.MethodUsage;
-import br.ufba.jnose.core.testsmelldetector.testsmell.SmellyElement;
-import br.ufba.jnose.core.testsmelldetector.testsmell.TestMethod;
+import br.ufba.jnose.core.testsmelldetector.testsmell.*;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import br.ufba.jnose.core.testsmelldetector.testsmell.AbstractSmell;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -50,10 +47,6 @@ public class ConstructorInitialization extends AbstractSmell {
         }
     }
     
-    public ArrayList<SmellyElement> listTests(){
-    	return (ArrayList<SmellyElement>) smellyElementList;
-    }
-
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         boolean constructorAllowed=false;
 

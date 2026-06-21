@@ -61,16 +61,12 @@ public class TestSmell implements Serializable {
             md5.update(StandardCharsets.UTF_8.encode(this.method));
             hash = String.format("%032x", new BigInteger(1, md5.digest()));
         } catch (Exception e) {
-            e.printStackTrace();
             return "";
         }
         return hash;
     }
 
     public String getMethodNameFullURIHash(){
-        if(this.testClass == null){
-            System.out.println("testClass = null ===========================");
-        }
         String nomeProjeto = this.testClass.getProjectName();
         String nomeClasse = this.testClass.getFullName();
         String nomeMetodo = this.method;
@@ -81,7 +77,6 @@ public class TestSmell implements Serializable {
             md5.update(StandardCharsets.UTF_8.encode(baseText));
             hash = String.format("%032x", new BigInteger(1, md5.digest()));
         } catch (Exception e) {
-            e.printStackTrace();
         }
         return hash;
     }

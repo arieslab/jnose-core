@@ -1,13 +1,10 @@
 package br.ufba.jnose.core.testsmelldetector.testsmell.smell;
 
+import br.ufba.jnose.core.testsmelldetector.testsmell.*;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import br.ufba.jnose.core.testsmelldetector.testsmell.AbstractSmell;
-import br.ufba.jnose.core.testsmelldetector.testsmell.SmellyElement;
-import br.ufba.jnose.core.testsmelldetector.testsmell.TestMethod;
-import br.ufba.jnose.core.testsmelldetector.testsmell.Util;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -21,7 +18,6 @@ public class AssertionRoulette extends AbstractSmell {
 
     public AssertionRoulette() {
         super("Assertion Roulette");
-        classVisitor = new AssertionRoulette.ClassVisitor();
     }
     
     public ArrayList<SmellyElement> list(){
@@ -33,6 +29,7 @@ public class AssertionRoulette extends AbstractSmell {
      */
     @Override
     public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
+        classVisitor = new AssertionRoulette.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
     }
 

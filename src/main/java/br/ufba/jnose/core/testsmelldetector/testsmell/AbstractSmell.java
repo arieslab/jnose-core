@@ -25,12 +25,12 @@ public abstract class AbstractSmell {
     /**
      * Returns true if any of the elements has a smell
      */
-    public boolean getHasSmell() {return smellyElementList.parallelStream().filter(x -> x.getHasSmell()).count() >= 1;}
+    public boolean getHasSmell() {return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;}
 
     /**
      * Returns number of smell
      */
-    public long getHasSmellCount() { return smellyElementList.parallelStream().filter(x -> x.getHasSmell()).count();}
+    public long getHasSmellCount() { return smellyElementList.stream().filter(x -> x.getHasSmell()).count();}
 
     /**
      * Test Smell Name
@@ -39,4 +39,8 @@ public abstract class AbstractSmell {
 
     public abstract void runAnalysis(CompilationUnit testFileCompilationUnit,CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException;
 
+    @SuppressWarnings("unchecked")
+    public ArrayList<SmellyElement> list() {
+        return (ArrayList<SmellyElement>) smellyElementList;
+    }
 }

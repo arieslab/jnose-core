@@ -6,6 +6,7 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.*;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,14 +40,6 @@ public class MagicNumberTest extends AbstractSmell{
     
     public ArrayList<SmellyElement> list(){
     	return (ArrayList<SmellyElement>) smellyElementList;
-    }
-
-    /**
-     * Returns the set of analyzed elements (i.e. test methods)
-     */
-    @Override
-    public List<SmellyElement> getSmellyElements(){
-        return smellyElementList;
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void>{

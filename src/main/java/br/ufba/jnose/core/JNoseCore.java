@@ -10,11 +10,9 @@ import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.PackageDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
-import com.github.javaparser.metamodel.ClassOrInterfaceDeclarationMetaModel;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -29,8 +27,6 @@ import java.util.logging.Logger;
 
 public class JNoseCore implements PropertyChangeListener{
 
-    private ExecutorService threadpool;
-
     private final static Logger LOGGER = Logger.getLogger(JNoseCore.class.getName());
 
     private Config config;
@@ -40,113 +36,113 @@ public class JNoseCore implements PropertyChangeListener{
 
         Config conf = new Config() {
             @Override
-            public Boolean assertionRoulette() {
+            public boolean assertionRoulette() {
                 return true;
             }
            
 
             @Override
-            public Boolean conditionalTestLogic() {
+            public boolean conditionalTestLogic() {
                 return true;
             }
 
             @Override
-            public Boolean constructorInitialization() {
+            public boolean constructorInitialization() {
                 return true;
             }
 
             @Override
-            public Boolean defaultTest() {
+            public boolean defaultTest() {
                 return true;
             }
 
             @Override
-            public Boolean dependentTest() {
+            public boolean dependentTest() {
                 return true;
             }
 
             @Override
-            public Boolean duplicateAssert() {
+            public boolean duplicateAssert() {
                 return true;
             }
 
             @Override
-            public Boolean eagerTest() {
+            public boolean eagerTest() {
                 return true;
             }
 
             @Override
-            public Boolean emptyTest() {
+            public boolean emptyTest() {
                 return true;
             }
 
             @Override
-            public Boolean exceptionCatchingThrowing() {
+            public boolean exceptionCatchingThrowing() {
                 return true;
             }
 
             @Override
-            public Boolean generalFixture() {
+            public boolean generalFixture() {
                 return true;
             }
 
             @Override
-            public Boolean mysteryGuest() {
+            public boolean mysteryGuest() {
                 return true;
             }
 
             @Override
-            public Boolean printStatement() {
+            public boolean printStatement() {
                 return true;
             }
 
             @Override
-            public Boolean redundantAssertion() {
+            public boolean redundantAssertion() {
                 return true;
             }
 
             @Override
-            public Boolean sensitiveEquality() {
+            public boolean sensitiveEquality() {
                 return true;
             }
 
             @Override
-            public Boolean verboseTest() {
+            public boolean verboseTest() {
                 return true;
             }
 
             @Override
-            public Boolean sleepyTest() {
+            public boolean sleepyTest() {
                 return true;
             }
 
             @Override
-            public Boolean lazyTest() {
+            public boolean lazyTest() {
                 return true;
             }
 
             @Override
-            public Boolean unknownTest() {
+            public boolean unknownTest() {
                 return true;
             }
 
             @Override
-            public Boolean ignoredTest() {
+            public boolean ignoredTest() {
                 return true;
             }
 
             @Override
-            public Boolean resourceOptimism() {
+            public boolean resourceOptimism() {
                 return true;
             }
 
             @Override
-            public Boolean magicNumberTest() {
+            public boolean magicNumberTest() {
                 return true;
             }
 
             @Override
-            public Integer maxStatements() {
+            public int maxStatements() {
                 return 30;
             }
         };
@@ -173,7 +169,6 @@ public class JNoseCore implements PropertyChangeListener{
     }
 
     public JNoseCore(Config config, int numberThread) {
-        threadpool = Executors.newFixedThreadPool(numberThread);
         this.config = config;
         VerboseTest.MAX_STATEMENTS = config.maxStatements();
     }
@@ -181,120 +176,45 @@ public class JNoseCore implements PropertyChangeListener{
     public List<TestClass> getFilesTest(String directoryPath) throws Exception {
         LOGGER.log(Level.INFO, "getFilesTest: start");
 
-        String projectName = directoryPath.substring(directoryPath.lastIndexOf(File.separatorChar) + 1, directoryPath.length());
+        int numberThread = Runtime.getRuntime().availableProcessors() * 2;
+        ExecutorService threadpool = Executors.newFixedThreadPool(numberThread);
 
-        List<TestClass> files = new ArrayList<>();
+        try {
+            String projectName = directoryPath.substring(directoryPath.lastIndexOf(File.separatorChar) + 1, directoryPath.length());
 
-        Path startDir = Paths.get(directoryPath);
+            List<TestClass> files = new ArrayList<>();
+            Path startDir = Paths.get(directoryPath);
+            List<Future<List<TestClass>>> futures = new ArrayList<>();
 
-        List<Future<List<TestClass>>> futures = new ArrayList<>();
+            Files.walk(startDir)
+                    .filter(Files::isRegularFile)
+                    .forEach(filePath -> {
+                        JNoseCallable jNoseCallable = new JNoseCallable(filePath, projectName, startDir, this);
+                        Future<List<TestClass>> future = threadpool.submit(jNoseCallable);
+                        futures.add(future);
+                    });
 
-        Files.walk(startDir)
-                .filter(Files::isRegularFile)
-                .forEach(filePath -> {
-                    JNoseCallable jNoseCallable = new JNoseCallable(filePath, projectName, startDir, this);
-                    Future<List<TestClass>> future = threadpool.submit(jNoseCallable);
-                    futures.add(future);
+            threadpool.shutdown();
+            threadpool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
 
-//                    files.addAll(processarPath(filePath, projectName, startDir));
-                });
+            for (Future<List<TestClass>> future : futures) {
+                files.addAll(future.get());
+            }
 
-        while (todosExecutados(futures)) {
-//            System.out.println("A tarefa ainda não foi processada!");
-            Thread.sleep(1); // sleep for 1 millisecond
-        }
-
-
-        for(Future<List<TestClass>> future : futures){
-            files.addAll(future.get());
-        }
-
-        return files;
-    }
-
-
-    private Boolean todosExecutados(List<Future<List<TestClass>>> futures){
-        for(Future future : futures){
-            if(future.isDone() == false){
-                return false;
+            return files;
+        } finally {
+            if (!threadpool.isShutdown()) {
+                threadpool.shutdownNow();
             }
         }
-        return true;
-    }
-
-    private List<TestClass> processarPath(Path filePath, String projectName, Path startDir){
-
-        List<TestClass> files = new ArrayList<>();
-
-        if (filePath.getFileName().toString().lastIndexOf(".") != -1) {
-            String fileNameWithoutExtension = filePath.getFileName().toString().substring(0, filePath.getFileName().toString().lastIndexOf(".")).toLowerCase();
-
-            if (filePath.toString().toLowerCase().endsWith(".java") && (
-                    fileNameWithoutExtension.matches("^.*test\\d*$") ||
-                    fileNameWithoutExtension.matches("^.*testcase\\d*$") ||
-                            fileNameWithoutExtension.matches("^.*tests\\d*$") ||
-                            fileNameWithoutExtension.matches("^test.*") ||
-                            fileNameWithoutExtension.matches("^testcase.*") ||
-                            fileNameWithoutExtension.matches("^tests.*"))) {
-
-                Boolean testTrueFinal = fileNameWithoutExtension.matches("^.*test\\d*$");
-                Boolean testCaseTrueFinal = fileNameWithoutExtension.matches("^.*testcase\\d*$");
-                Boolean testsTrueFinal = fileNameWithoutExtension.matches("^.*tests\\d*$");
-
-                Boolean testTrueInicio = fileNameWithoutExtension.matches("^test.*");
-                Boolean testCaseTrueInicio = fileNameWithoutExtension.matches("^testcase.*");
-                Boolean testsTrueInicio = fileNameWithoutExtension.matches("^tests.*");
-
-                TestClass testClass = new TestClass();
-                testClass.setProjectName(projectName);
-                testClass.setPathFile(filePath.toString());
-
-                if (isTestFile(testClass)) {
-                    LOGGER.log(Level.INFO, "getFilesTest: " + testClass.getPathFile());
-                    String productionFileName = "";
-                    int index = 0;
-                    if(testTrueInicio) index = 0;
-                    if(testCaseTrueInicio) index = 0;
-                    if(testsTrueInicio) index = 0;
-                    if(testTrueFinal) index = testClass.getName().toLowerCase().lastIndexOf("test");
-                    if(testCaseTrueFinal) index = testClass.getName().toLowerCase().lastIndexOf("testcase");
-                    if(testsTrueFinal) index = testClass.getName().toLowerCase().lastIndexOf("tests");
-
-                    if (index > 0) {
-                        if(testTrueFinal)
-                            productionFileName = testClass.getName().substring(0, testClass.getName().toLowerCase().lastIndexOf("test")) + ".java";
-                        if(testCaseTrueFinal)
-                            productionFileName = testClass.getName().substring(0, testClass.getName().toLowerCase().lastIndexOf("testcase")) + ".java";
-                        if(testsTrueFinal)
-                            productionFileName = testClass.getName().substring(0, testClass.getName().toLowerCase().lastIndexOf("tests")) + ".java";
-                    }else{
-                        if(testTrueInicio)
-                            productionFileName = testClass.getName().substring(4, testClass.getName().length()) + ".java";
-                        if(testCaseTrueInicio)
-                            productionFileName = testClass.getName().substring(8, testClass.getName().length()) + ".java";
-                        if(testsTrueInicio)
-                            productionFileName = testClass.getName().substring(5, testClass.getName().length()) + ".java";
-                    }
-                    testClass.setProductionFile(getFileProduction(startDir.toString(), productionFileName));
-
-                    if (!testClass.getProductionFile().isEmpty()) {
-                        getTestSmells(testClass);
-                        files.add(testClass);
-                    }
-                }
-            }
-        }
-        return files;
     }
 
 
-    public Boolean isTestFile(TestClass testClass) {
+    public boolean isTestFile(TestClass testClass) {
         LOGGER.log(Level.INFO, "isTestFile: start");
 
-        Boolean isTestFile = false;
-        try {
-            FileInputStream fileInputStream = null;
-            fileInputStream = new FileInputStream(new File(testClass.getPathFile()));
+        boolean isTestFile = false;
+        try (FileInputStream fileInputStream = new FileInputStream(new File(testClass.getPathFile()))) {
             CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
             testClass.setNumberLine(compilationUnit.getRange().get().end.line);
             detectJUnitVersion(compilationUnit.getImports(), testClass);
@@ -307,7 +227,7 @@ public class JNoseCore implements PropertyChangeListener{
                 isTestFile = true;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "isTestFile: error parsing file", e);
         }
         return isTestFile;
     }
@@ -345,7 +265,7 @@ public class JNoseCore implements PropertyChangeListener{
                     .filter(Files::isRegularFile)
                     .forEach(filePath -> {
                         if(filePath.getFileName().toString().toLowerCase().contains("loadtestcase")){
-                            System.out.println("achei...");
+                            LOGGER.log(Level.FINE, "found: {0}", filePath.getFileName());
                         }
                         if (filePath.getFileName().toString().lastIndexOf(".") != -1) {
                             String fileNameWithoutExtension = filePath.getFileName().toString().substring(0, filePath.getFileName().toString().lastIndexOf(".")).toLowerCase();
@@ -373,12 +293,12 @@ public class JNoseCore implements PropertyChangeListener{
                         }
                     });
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "getJUnitVersion: error walking files", e);
         }
         return jUnitVersion[0];
     }
 
-    private Boolean flowClass(NodeList<?> nodeList, TestClass testClass) {
+    private boolean flowClass(NodeList<?> nodeList, TestClass testClass) {
         LOGGER.log(Level.INFO, "flowClass: start -> " + nodeList.toString());
         boolean isTestClass = false;
         for (Object node : nodeList) {
@@ -415,7 +335,7 @@ public class JNoseCore implements PropertyChangeListener{
                         }
                     });
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "getFileProduction: error finding file", e);
         }
         return retorno[0];
     }
@@ -430,7 +350,7 @@ public class JNoseCore implements PropertyChangeListener{
         try {
             TestFile tempFile = testSmellDetector.detectSmells(testFile);
             for (AbstractSmell smell : tempFile.getTestSmells()) {
-                smell.getSmellyElements();
+                if (smell == null) continue;
                 for (SmellyElement smellyElement : smell.getSmellyElements()) {
                     if (smellyElement.getHasSmell()) {
                         TestSmell testSmell = new TestSmell();
@@ -443,7 +363,7 @@ public class JNoseCore implements PropertyChangeListener{
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.log(Level.WARNING, "getTestSmells: error detecting smells", e);
         }
 
         setLineSumTestSmells(testClass);

@@ -3,12 +3,10 @@ package br.ufba.jnose.core.testsmelldetector.testsmell.smell;
 import br.ufba.jnose.core.testsmelldetector.testsmell.*;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.List;
 
 /*
 If a test methods contains a statements that exceeds a certain threshold, the method is marked as smelly
@@ -17,7 +15,6 @@ public class VerboseTest extends AbstractSmell {
 
     private ArrayList<MethodUsage> instanceAbstract;
     public static int MAX_STATEMENTS = 30;
-    CompilationUnit testFileCompilationUnit = null;
     public VerboseTest() {
         super("Verbose Test");
         instanceAbstract = new ArrayList<> (  );
@@ -30,7 +27,6 @@ public class VerboseTest extends AbstractSmell {
     public void runAnalysis(CompilationUnit testFileCompilationUnit, CompilationUnit productionFileCompilationUnit, String testFileName, String productionFileName) throws FileNotFoundException {
         classVisitor = new VerboseTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
-        this.testFileCompilationUnit = testFileCompilationUnit;
         for (MethodUsage method : instanceAbstract) {
             TestMethod testClass = new TestMethod(method.getTestMethodName());
             testClass.setRange(method.getBlock());

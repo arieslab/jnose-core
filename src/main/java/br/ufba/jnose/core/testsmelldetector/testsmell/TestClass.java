@@ -29,4 +29,8 @@ public class TestClass extends SmellyElement {
         return range;
     }
 
+    public void setRange(String range) {
+        this.range = range;
+    }
+
 }

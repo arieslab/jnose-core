@@ -1,26 +1,26 @@
 package br.ufba.jnose.core;
 
 public interface Config {
-    Boolean assertionRoulette();
-    Boolean conditionalTestLogic();
-    Boolean constructorInitialization();
-    Boolean defaultTest();
-    Boolean dependentTest();
-    Boolean duplicateAssert();
-    Boolean eagerTest();
-    Boolean emptyTest();
-    Boolean exceptionCatchingThrowing();
-    Boolean generalFixture();
-    Boolean mysteryGuest();
-    Boolean printStatement();
-    Boolean redundantAssertion();
-    Boolean sensitiveEquality();
-    Boolean verboseTest();
-    Boolean sleepyTest();
-    Boolean lazyTest();
-    Boolean unknownTest();
-    Boolean ignoredTest();
-    Boolean resourceOptimism();
-    Boolean magicNumberTest();
-    Integer maxStatements();
+    boolean assertionRoulette();
+    boolean conditionalTestLogic();
+    boolean constructorInitialization();
+    boolean defaultTest();
+    boolean dependentTest();
+    boolean duplicateAssert();
+    boolean eagerTest();
+    boolean emptyTest();
+    boolean exceptionCatchingThrowing();
+    boolean generalFixture();
+    boolean mysteryGuest();
+    boolean printStatement();
+    boolean redundantAssertion();
+    boolean sensitiveEquality();
+    boolean verboseTest();
+    boolean sleepyTest();
+    boolean lazyTest();
+    boolean unknownTest();
+    boolean ignoredTest();
+    boolean resourceOptimism();
+    boolean magicNumberTest();
+    int maxStatements();
 }

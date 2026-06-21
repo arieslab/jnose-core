@@ -34,7 +34,7 @@ public class ConstructorInitializationTest {
 		try{ 
 			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
 			constructorTest.runAnalysis(compilationUnit,new CompilationUnit(),"ConstructorFixture","");
-			ArrayList<SmellyElement> testes = constructorTest.listTests();
+			ArrayList<SmellyElement> testes = constructorTest.list();
 			
 			assertTrue(testes.size() == 1);
 		}
@@ -48,7 +48,7 @@ public class ConstructorInitializationTest {
 		try{ 
 			CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
 			constructorTest.runAnalysis(compilationUnit,new CompilationUnit(),"ConstructorFixture","");
-			ArrayList<SmellyElement> testes = constructorTest.listTests();
+			ArrayList<SmellyElement> testes = constructorTest.list();
 
 			assertEquals(testes.get(0).getRange(),"8-10");
 			assertEquals(testes.get(0).getElementName(),"ConstructorFixture");	
