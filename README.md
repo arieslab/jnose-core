@@ -2,51 +2,51 @@
 
 # JNose-Core
 
-Biblioteca Java para detecção automática de **Test Smells** em código de teste.
+Java library for automatic **Test Smells** detection in test code.
 
-## Test Smells Detectados
+## Supported Test Smells
 
-| Test Smell | Descrição |
+| Test Smell | Description |
 |---|---|
-| Assertion Roulette | Múltiplas asserções sem mensagem identificadora |
-| Conditional Test Logic | Testes com lógica condicional (if/switch/loop) |
-| Constructor Initialization | Inicialização via construtor em vez de @Before |
-| Default Test | Teste que apenas verifica o fluxo padrão |
-| Dependent Test | Testes que dependem da execução de outros |
-| Duplicate Assert | Asserções duplicadas no mesmo teste |
-| Eager Test | Teste que verifica múltiplos métodos |
-| Empty Test | Teste sem corpo |
-| Exception Catching Throwing | Captura e relançamento de exceção no teste |
-| General Fixture | Fixture muito genérica compartilhada entre testes |
-| Ignored Test | Teste ignorado/skipped |
-| Lazy Test | Teste que não verifica o resultado |
-| Magic Number Test | Uso de números mágicos em asserções |
-| Mystery Guest | Teste que acessa recursos externos (arquivos, rede, banco) |
-| Print Statement | Uso de System.out/System.err no teste |
-| Redundant Assertion | Asserções redundantes |
-| Resource Optimism | Otimismo ao acessar recursos sem verificação |
-| Sensitive Equality | Comparação de igualdade usando toString() |
-| Sleepy Test | Uso de Thread.sleep() no teste |
-| Unknown Test | Teste que não segue padrões JUnit |
-| Verbose Test | Teste com excesso de linhas / log verboso |
+| Assertion Roulette | Multiple assertions without identification message |
+| Conditional Test Logic | Tests with conditional logic (if/switch/loop) |
+| Constructor Initialization | Initialization via constructor instead of @Before |
+| Default Test | Test that only checks the default flow |
+| Dependent Test | Tests that depend on other tests execution |
+| Duplicate Assert | Duplicate assertions in the same test |
+| Eager Test | Test that verifies multiple methods |
+| Empty Test | Test with no body |
+| Exception Catching Throwing | Catching and rethrowing exceptions in test |
+| General Fixture | Overly generic fixture shared across tests |
+| Ignored Test | Skipped/ignored test |
+| Lazy Test | Test that does not verify the result |
+| Magic Number Test | Usage of magic numbers in assertions |
+| Mystery Guest | Test accessing external resources (files, network, database) |
+| Print Statement | Usage of System.out/System.err in test |
+| Redundant Assertion | Redundant assertions |
+| Resource Optimism | Optimistic resource access without verification |
+| Sensitive Equality | Equality comparison using toString() |
+| Sleepy Test | Usage of Thread.sleep() in test |
+| Unknown Test | Test that does not follow JUnit patterns |
+| Verbose Test | Test with excessive lines / verbose logging |
 
-## Suporte a JUnit
+## JUnit Support
 
 - JUnit 3 (junit.framework)
 - JUnit 4 (@Test)
 - JUnit 5 (org.junit.jupiter)
 
-## Como usar
+## Usage
 
-### CLI (JAR executável)
+### CLI (Executable JAR)
 
 ```bash
-java -jar jnose-core-<versao>-jar-with-dependencies.jar <caminho-do-projeto>
+java -jar jnose-core-<version>-jar-with-dependencies.jar <project-path>
 ```
 
-### Como dependência Maven
+### Maven Dependency
 
-Adicione o repositório GitHub Packages no seu `pom.xml`:
+Add the GitHub Packages repository to your `pom.xml`:
 
 ```xml
 <repositories>
@@ -65,18 +65,18 @@ Adicione o repositório GitHub Packages no seu `pom.xml`:
 </dependency>
 ```
 
-### Uso programático
+### Programmatic Usage
 
 ```java
 Config config = new Config() {
     public boolean assertionRoulette() { return true; }
     public boolean conditionalTestLogic() { return true; }
-    // habilite/desabilite cada test smell
+    // enable/disable each test smell
     public int maxStatements() { return 50; }
 };
 
 JNoseCore jnose = new JNoseCore(config);
-List<TestClass> results = jnose.getFilesTest("/caminho/do/projeto");
+List<TestClass> results = jnose.getFilesTest("/path/to/project");
 
 for (TestClass tc : results) {
     System.out.println(tc.getName() + " - " + tc.getListTestSmell().size() + " smells");
@@ -89,15 +89,15 @@ for (TestClass tc : results) {
 mvn clean package
 ```
 
-Gera:
-- `target/jnose-core-<versao>.jar`
-- `target/jnose-core-<versao>-jar-with-dependencies.jar` (com todas as dependências)
+Generates:
+- `target/jnose-core-<version>.jar`
+- `target/jnose-core-<version>-jar-with-dependencies.jar` (with all dependencies)
 
-## Licença
+## License
 
 Apache License 2.0
 
-## Contato
+## Contact
 
 - tassiovirginio@gmail.com
 - tassio.virginio@ifto.edu.br
