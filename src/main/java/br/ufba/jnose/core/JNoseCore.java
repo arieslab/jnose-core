@@ -14,8 +14,6 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,172 +23,42 @@ import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class JNoseCore implements PropertyChangeListener{
+public class JNoseCore {
 
     private final static Logger LOGGER = Logger.getLogger(JNoseCore.class.getName());
 
     private Config config;
 
-    public static void main(String[] args) throws Exception {
-        String directoryPath = "C:\\Users\\Tássio\\Desenvolvimento\\repo.git\\KTestSmells\\tmp\\commons-io";
-
-        Config conf = new Config() {
-            @Override
-            public boolean assertionRoulette() {
-                return true;
-            }
-           
-
-            @Override
-            public boolean conditionalTestLogic() {
-                return true;
-            }
-
-            @Override
-            public boolean constructorInitialization() {
-                return true;
-            }
-
-            @Override
-            public boolean defaultTest() {
-                return true;
-            }
-
-            @Override
-            public boolean dependentTest() {
-                return true;
-            }
-
-            @Override
-            public boolean duplicateAssert() {
-                return true;
-            }
-
-            @Override
-            public boolean eagerTest() {
-                return true;
-            }
-
-            @Override
-            public boolean emptyTest() {
-                return true;
-            }
-
-            @Override
-            public boolean exceptionCatchingThrowing() {
-                return true;
-            }
-
-            @Override
-            public boolean generalFixture() {
-                return true;
-            }
-
-            @Override
-            public boolean mysteryGuest() {
-                return true;
-            }
-
-            @Override
-            public boolean printStatement() {
-                return true;
-            }
-
-            @Override
-            public boolean redundantAssertion() {
-                return true;
-            }
-
-            @Override
-            public boolean sensitiveEquality() {
-                return true;
-            }
-
-            @Override
-            public boolean verboseTest() {
-                return true;
-            }
-
-            @Override
-            public boolean sleepyTest() {
-                return true;
-            }
-
-            @Override
-            public boolean lazyTest() {
-                return true;
-            }
-
-            @Override
-            public boolean unknownTest() {
-                return true;
-            }
-
-            @Override
-            public boolean ignoredTest() {
-                return true;
-            }
-
-            @Override
-            public boolean resourceOptimism() {
-                return true;
-            }
-
-            @Override
-            public boolean magicNumberTest() {
-                return true;
-            }
-
-            @Override
-            public int maxStatements() {
-                return 30;
-            }
-        };
-
-        JNoseCore jNoseCore = new JNoseCore(conf, 3);
-
-        List<TestClass> lista = jNoseCore.getFilesTest(directoryPath);
-
-        for(TestClass testClass : lista){
-            for (TestSmell testSmell : testClass.getListTestSmell()){
-                System.out.println(
-                            testClass.getPathFile() + ";" +
-                            testClass.getProductionFile() + ";" +
-                            testClass.getJunitVersion() + ";" +
-                            testSmell.getName() + ";" +
-                            testSmell.getMethod() + ";" +
-                            testSmell.getRange()
-                );
-            }
-
-//            System.out.println(testClass.getLineSumTestSmells());
-        }
-
-    }
-
-    public JNoseCore(Config config, int numberThread) {
+    public JNoseCore(Config config) {
         this.config = config;
         VerboseTest.MAX_STATEMENTS = config.maxStatements();
     }
 
     public List<TestClass> getFilesTest(String directoryPath) throws Exception {
-        LOGGER.log(Level.INFO, "getFilesTest: start");
-
         int numberThread = Runtime.getRuntime().availableProcessors() * 2;
         ExecutorService threadpool = Executors.newFixedThreadPool(numberThread);
 
         try {
-            String projectName = directoryPath.substring(directoryPath.lastIndexOf(File.separatorChar) + 1, directoryPath.length());
+            String projectName = directoryPath.substring(directoryPath.lastIndexOf(File.separatorChar) + 1);
+            Path startDir = Paths.get(directoryPath);
+
+            Map<String, String> fileMap = new ConcurrentHashMap<>();
+            try (var paths = Files.walk(startDir).filter(Files::isRegularFile)) {
+                paths.forEach(path -> {
+                    if (path.toString().toLowerCase().endsWith(".java")) {
+                        fileMap.put(path.getFileName().toString().toLowerCase(), path.toString());
+                    }
+                });
+            }
 
             List<TestClass> files = new ArrayList<>();
-            Path startDir = Paths.get(directoryPath);
             List<Future<List<TestClass>>> futures = new ArrayList<>();
 
             Files.walk(startDir)
                     .filter(Files::isRegularFile)
                     .forEach(filePath -> {
-                        JNoseCallable jNoseCallable = new JNoseCallable(filePath, projectName, startDir, this);
-                        Future<List<TestClass>> future = threadpool.submit(jNoseCallable);
+                        JNoseCallable callable = new JNoseCallable(filePath, projectName, startDir, this, fileMap);
+                        Future<List<TestClass>> future = threadpool.submit(callable);
                         futures.add(future);
                     });
 
@@ -211,8 +79,6 @@ public class JNoseCore implements PropertyChangeListener{
 
 
     public boolean isTestFile(TestClass testClass) {
-        LOGGER.log(Level.INFO, "isTestFile: start");
-
         boolean isTestFile = false;
         try (FileInputStream fileInputStream = new FileInputStream(new File(testClass.getPathFile()))) {
             CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
@@ -233,7 +99,6 @@ public class JNoseCore implements PropertyChangeListener{
     }
 
     public void detectJUnitVersion(NodeList<ImportDeclaration> nodeList, TestClass testClass) {
-        LOGGER.log(Level.INFO, "detectJUnitVersion: start");
         for (ImportDeclaration node : nodeList) {
             if (node.getNameAsString().contains("org.junit.jupiter")) {
                 testClass.setJunitVersion(TestClass.JunitVersion.JUnit5);
@@ -252,24 +117,17 @@ public class JNoseCore implements PropertyChangeListener{
 
 
     public TestClass.JunitVersion getJUnitVersion(String directoryPath) {
-        String projectName = directoryPath.substring(directoryPath.lastIndexOf(File.separatorChar) + 1, directoryPath.length());
+        String projectName = directoryPath.substring(directoryPath.lastIndexOf(File.separatorChar) + 1);
 
-        final br.ufba.jnose.dto.TestClass.JunitVersion[] jUnitVersion = new br.ufba.jnose.dto.TestClass.JunitVersion[1];
+        final TestClass.JunitVersion[] jUnitVersion = {TestClass.JunitVersion.None};
 
-        jUnitVersion[0] = TestClass.JunitVersion.None;
-
-        List<br.ufba.jnose.dto.TestClass> files = new ArrayList<>();
         Path startDir = Paths.get(directoryPath);
         try {
             Files.walk(startDir)
                     .filter(Files::isRegularFile)
                     .forEach(filePath -> {
-                        if(filePath.getFileName().toString().toLowerCase().contains("loadtestcase")){
-                            LOGGER.log(Level.FINE, "found: {0}", filePath.getFileName());
-                        }
                         if (filePath.getFileName().toString().lastIndexOf(".") != -1) {
                             String fileNameWithoutExtension = filePath.getFileName().toString().substring(0, filePath.getFileName().toString().lastIndexOf(".")).toLowerCase();
-//                            if (filePath.toString().toLowerCase().endsWith(".java") && fileNameWithoutExtension.matches("^.*test\\d*$")) {
                             if (filePath.toString().toLowerCase().endsWith(".java") && (
                                     fileNameWithoutExtension.matches("^.*test\\d*$") ||
                                             fileNameWithoutExtension.matches("^.*testcase\\d*") ||
@@ -277,7 +135,7 @@ public class JNoseCore implements PropertyChangeListener{
                                             fileNameWithoutExtension.matches("^test.*") ||
                                             fileNameWithoutExtension.matches("^testcase.*") ||
                                             fileNameWithoutExtension.matches("^tests.*"))) {
-                                br.ufba.jnose.dto.TestClass testClass = new br.ufba.jnose.dto.TestClass();
+                                TestClass testClass = new TestClass();
                                 testClass.setProjectName(projectName);
                                 testClass.setPathFile(filePath.toString());
                                 if (isTestFile(testClass)) {
@@ -299,7 +157,6 @@ public class JNoseCore implements PropertyChangeListener{
     }
 
     private boolean flowClass(NodeList<?> nodeList, TestClass testClass) {
-        LOGGER.log(Level.INFO, "flowClass: start -> " + nodeList.toString());
         boolean isTestClass = false;
         for (Object node : nodeList) {
             if (node instanceof ClassOrInterfaceDeclaration) {
@@ -323,7 +180,6 @@ public class JNoseCore implements PropertyChangeListener{
     }
 
     public String getFileProduction(String directoryPath, String productionFileName) {
-        LOGGER.log(Level.INFO, "getFileProduction: start");
         final String[] retorno = {""};
         try {
             Path startDir = Paths.get(directoryPath);
@@ -341,8 +197,6 @@ public class JNoseCore implements PropertyChangeListener{
     }
 
     public void getTestSmells(TestClass testClass) {
-        LOGGER.log(Level.INFO, "getTestSmells: start");
-
         TestSmellDetector testSmellDetector = TestSmellDetector.createTestSmellDetector(config);
 
         TestFile testFile = new TestFile(testClass.getProjectName(), testClass.getPathFile(), testClass.getProductionFile(), testClass.getNumberLine(), testClass.getNumberMethods());
@@ -373,16 +227,11 @@ public class JNoseCore implements PropertyChangeListener{
 
         Map<String,Integer> mapaSoma = new HashMap<>();
 
-        List<TestSmell> listTestSmells = testClass.getListTestSmell();
-
-        String[] lista = {"Unknown Test","IgnoredTest","Resource Optimism","Magic Number Test","Redundant Assertion","Sensitive Equality","Verbose Test","Sleepy Test","Lazy Test","Duplicate Assert","Eager Test","Assertion Roulette","Conditional Test Logic","Constructor Initialization","Default Test","EmptyTest","Exception Catching Throwing","General Fixture","Mystery Guest","Print Statement","Dependent Test"};
-        for(String testsmellsName : lista){
-            if(mapaSoma.get(testsmellsName) == null){
-                mapaSoma.put(testsmellsName,0);
-            }
+        for (String smellName : TestSmellDetector.getAllTestSmellNames()) {
+            mapaSoma.put(smellName, 0);
         }
 
-        for(TestSmell testsmells : listTestSmells){
+        for(TestSmell testsmells : testClass.getListTestSmell()){
             if(mapaSoma.get(testsmells.getName()) == null){
                 mapaSoma.put(testsmells.getName(),0);
             }
@@ -394,10 +243,4 @@ public class JNoseCore implements PropertyChangeListener{
         testClass.setLineSumTestSmells(mapaSoma);
     }
 
-
-    @Override
-    public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-
-    }
 }
-

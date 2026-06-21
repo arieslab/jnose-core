@@ -23,7 +23,6 @@ public class TestSmellDetector {
      */
     public TestSmellDetector(Config config) {
         this.config = config;
-        initializeSmells();
     }
 
     private void initializeSmells(){
@@ -67,6 +66,17 @@ public class TestSmellDetector {
      */
     public List<String> getTestSmellNames() {
         return testSmells.stream().map(AbstractSmell::getSmellName).collect(Collectors.toList());
+    }
+
+    public static List<String> getAllTestSmellNames() {
+        return List.of(
+                "Assertion Roulette", "Conditional Test Logic", "Constructor Initialization",
+                "Default Test", "Dependent Test", "Duplicate Assert", "Eager Test",
+                "EmptyTest", "Exception Catching Throwing", "General Fixture",
+                "IgnoredTest", "Lazy Test", "Magic Number Test", "Mystery Guest",
+                "Print Statement", "Redundant Assertion", "Resource Optimism",
+                "Sensitive Equality", "Sleepy Test", "Unknown Test", "Verbose Test"
+        );
     }
 
     /**
