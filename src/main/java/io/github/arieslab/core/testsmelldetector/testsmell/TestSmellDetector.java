@@ -5,9 +5,10 @@ import io.github.arieslab.core.testsmelldetector.testsmell.smell.*;
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -85,13 +86,13 @@ public class TestSmellDetector {
         CompilationUnit testFileCompilationUnit=null, productionFileCompilationUnit=null;
 
         if(!testFile.getTestFilePath().isEmpty()) {
-            try (var testFileInputStream = new FileInputStream(testFile.getTestFilePath())) {
+            try (var testFileInputStream = Files.newInputStream(Path.of(testFile.getTestFilePath()))) {
                 testFileCompilationUnit = JavaParser.parse(testFileInputStream);
             }
         }
 
         if(!testFile.getProductionFilePath().isEmpty()){
-            try (var productionFileInputStream = new FileInputStream(testFile.getProductionFilePath())) {
+            try (var productionFileInputStream = Files.newInputStream(Path.of(testFile.getProductionFilePath()))) {
                 productionFileCompilationUnit = JavaParser.parse(productionFileInputStream);
             }
         }

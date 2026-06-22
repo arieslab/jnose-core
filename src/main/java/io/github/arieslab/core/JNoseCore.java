@@ -18,6 +18,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.regex.Pattern;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.function.Function;
@@ -33,6 +34,13 @@ import java.util.stream.Collectors;
 public class JNoseCore {
 
     private final static Logger LOGGER = Logger.getLogger(JNoseCore.class.getName());
+
+    private static final Pattern TEST_SUFFIX = Pattern.compile("^.*test\\d*$");
+    private static final Pattern TEST_CASE_SUFFIX = Pattern.compile("^.*testcase\\d*$");
+    private static final Pattern TESTS_SUFFIX = Pattern.compile("^.*tests\\d*$");
+    private static final Pattern TEST_PREFIX = Pattern.compile("^test.*");
+    private static final Pattern TEST_CASE_PREFIX = Pattern.compile("^testcase.*");
+    private static final Pattern TESTS_PREFIX = Pattern.compile("^tests.*");
 
     private Config config;
 
@@ -174,12 +182,12 @@ public class JNoseCore {
         var dotIndex = fileName.lastIndexOf(".");
         if (dotIndex == -1) return false;
         var name = fileName.substring(0, dotIndex).toLowerCase();
-        return name.matches("^.*test\\d*$") ||
-               name.matches("^.*testcase\\d*$") ||
-               name.matches("^.*tests\\d*$") ||
-               name.matches("^test.*") ||
-               name.matches("^testcase.*") ||
-               name.matches("^tests.*");
+        return TEST_SUFFIX.matcher(name).matches() ||
+               TEST_CASE_SUFFIX.matcher(name).matches() ||
+               TESTS_SUFFIX.matcher(name).matches() ||
+               TEST_PREFIX.matcher(name).matches() ||
+               TEST_CASE_PREFIX.matcher(name).matches() ||
+               TESTS_PREFIX.matcher(name).matches();
     }
 
     /**

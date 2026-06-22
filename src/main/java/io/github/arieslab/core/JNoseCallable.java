@@ -66,12 +66,12 @@ public class JNoseCallable implements Callable<List<TestClass>> {
             var fileNameWithoutExtension = filePath.getFileName().toString().substring(0, filePath.getFileName().toString().lastIndexOf(".")).toLowerCase();
 
             if (filePath.toString().toLowerCase().endsWith(".java") && (
-                    fileNameWithoutExtension.matches("^.*test\\d*$") ||
-                    fileNameWithoutExtension.matches("^.*testcase\\d*$") ||
-                            fileNameWithoutExtension.matches("^.*tests\\d*$") ||
-                            fileNameWithoutExtension.matches("^test.*") ||
-                            fileNameWithoutExtension.matches("^testcase.*") ||
-                            fileNameWithoutExtension.matches("^tests.*"))) {
+                    TEST_SUFFIX.matcher(fileNameWithoutExtension).matches() ||
+                    TEST_CASE_SUFFIX.matcher(fileNameWithoutExtension).matches() ||
+                    TESTS_SUFFIX.matcher(fileNameWithoutExtension).matches() ||
+                    TEST_PREFIX.matcher(fileNameWithoutExtension).matches() ||
+                    TEST_CASE_PREFIX.matcher(fileNameWithoutExtension).matches() ||
+                    TESTS_PREFIX.matcher(fileNameWithoutExtension).matches())) {
 
                 var testClass = new TestClass();
                 testClass.setProjectName(projectName);

@@ -77,7 +77,7 @@ public class TestSmell implements Serializable {
         try {
             var md5 = MessageDigest.getInstance("MD5");
             md5.update(StandardCharsets.UTF_8.encode(this.method));
-            hash = String.format("%032x", new BigInteger(1, md5.digest()));
+            hash = "%032x".formatted(new BigInteger(1, md5.digest()));
         } catch (Exception _) {
             return "";
         }
@@ -97,7 +97,7 @@ public class TestSmell implements Serializable {
         try {
             var md5 = MessageDigest.getInstance("MD5");
             md5.update(StandardCharsets.UTF_8.encode(baseText));
-            hash = String.format("%032x", new BigInteger(1, md5.digest()));
+            hash = "%032x".formatted(new BigInteger(1, md5.digest()));
         } catch (Exception _) {
         }
         return hash;
