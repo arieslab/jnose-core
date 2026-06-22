@@ -66,13 +66,13 @@ public final class IgnoredTest extends AbstractSmell {
         @Override
         public void visit(MethodDeclaration n, Void arg) {
 
-            //JUnit 4
+            //JUnit 4/5
             //check if test method has Ignore annotation
             if (n.getAnnotationByName("Test").isPresent()) {
                 if (n.getAnnotationByName("Ignore").isPresent() || flag) {
                     instanceIgnored.add(new MethodUsage(n.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
-                    return;
                 }
+                return;
             }
 
             //JUnit 3
@@ -80,7 +80,6 @@ public final class IgnoredTest extends AbstractSmell {
             if (n.getNameAsString().toLowerCase().startsWith("test")) {
                 if (!n.getModifiers().contains(Modifier.PUBLIC)) {
                     instanceIgnored.add(new MethodUsage(n.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
-                    return;
                 }
             }
         }

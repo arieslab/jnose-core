@@ -25,6 +25,7 @@ import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Main entry point for test smell analysis.
@@ -79,7 +80,7 @@ public class JNoseCore {
         var fileMap = new ConcurrentHashMap<String, String>();
         var javaFiles = new ArrayList<Path>();
 
-        try (var paths = Files.walk(startDir).filter(Files::isRegularFile)) {
+        try (Stream<Path> paths = Files.walk(startDir).filter(Files::isRegularFile).filter(JNoseCore::isNotInBuildDir)) {
             paths.forEach(filePath -> {
                 if (filePath.toString().toLowerCase().endsWith(".java")) {
                     fileMap.put(filePath.getFileName().toString().toLowerCase(), filePath.toString());
@@ -101,6 +102,23 @@ public class JNoseCore {
         return files;
     }
 
+
+    /**
+     * Common build/output directory names to skip during file walking.
+     */
+    private static final Set<String> BUILD_DIRS = Set.of("target", "build", "classes", ".git", "node_modules", "out", "bin", "dist");
+
+    /**
+     * Returns true if the path is NOT inside a common build/output directory.
+     */
+    private static boolean isNotInBuildDir(Path path) {
+        for (var i = 0; i < path.getNameCount(); i++) {
+            if (BUILD_DIRS.contains(path.getName(i).toString())) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     /**
      * Determines if a file is a test file by parsing its AST and checking for JUnit annotations.
@@ -205,6 +223,9 @@ public class JNoseCore {
                 isTestClass = flowClass(classAtual.getMembers(), testClass);
                 if(isTestClass)return true;
             } else if (node instanceof MethodDeclaration methodDeclaration) {
+                if (methodDeclaration.getAnnotationByName("Test").isPresent()) {
+                    return true;
+                }
                 isTestClass = flowClass(methodDeclaration.getAnnotations(), testClass);
                 if(isTestClass)return true;
             } else if (node instanceof AnnotationExpr annotationExpr) {
@@ -226,13 +247,13 @@ public class JNoseCore {
         final var retorno = new String[]{""};
         try {
             var startDir = Paths.get(directoryPath);
-            Files.walk(startDir)
-                    .filter(Files::isRegularFile)
-                    .forEach(filePath -> {
-                        if (filePath.getFileName().toString().toLowerCase().equals(productionFileName.toLowerCase())) {
-                            retorno[0] = filePath.toString();
-                        }
-                    });
+            try (var files = Files.walk(startDir).filter(Files::isRegularFile).filter(JNoseCore::isNotInBuildDir)) {
+                files.forEach(filePath -> {
+                    if (filePath.getFileName().toString().toLowerCase().equals(productionFileName.toLowerCase())) {
+                        retorno[0] = filePath.toString();
+                    }
+                });
+            }
         } catch (Exception e) {
             LOGGER.log(Level.WARNING, "getFileProduction: error finding file", e);
         }

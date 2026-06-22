@@ -44,12 +44,14 @@ public final class SensitiveEquality extends AbstractSmell {
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
         private MethodDeclaration currentMethod = null;
         private int sensitiveCount = 0;
+        private final java.util.HashSet<String> reportedMethods = new java.util.HashSet<>();
 
         // examine all methods in the test class
         @Override
         public void visit(MethodDeclaration n, Void arg) {
             if (Util.isValidTestMethod(n)) {
                 currentMethod = n;
+                reportedMethods.clear();
                 super.visit(n, arg);
 
                 //reset values for next method
@@ -64,26 +66,33 @@ public final class SensitiveEquality extends AbstractSmell {
             super.visit(n, arg);
             if (currentMethod != null) {
                 // if the name of a method being called start with 'assert'
-                if (n.getNameAsString().startsWith(("assert"))) {
+                if (n.getNameAsString().startsWith("assert")) {
                     // assert methods that contain toString
                     for (var argument : n.getArguments()) {
                         if (argument.toString().contains("toString")) {
                             sensitiveCount++;
-                            methodSensitiveEquality.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
+                            reportOnce(n);
                         }
                     }
                 }
                 // if the name of a method being called is 'fail' \/ added validation to jUnit3 fail cases
                 else if (n.getNameAsString().equals("fail") || n.getNameAsString().equals("failNotEquals") ||
-                		 n.getNameAsString().equals("failSame") || n.getNameAsString().equals("failNotSame"))  {
+                         n.getNameAsString().equals("failSame") || n.getNameAsString().equals("failNotSame"))  {
                     // fail methods that contain toString
                     for (var argument : n.getArguments()) {
                         if (argument.toString().contains("toString")) {
                             sensitiveCount++;
-                            methodSensitiveEquality.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
+                            reportOnce(n);
                         }
                     }
                 }
+            }
+        }
+
+        private void reportOnce(MethodCallExpr n) {
+            var key = currentMethod.getNameAsString() + "#" + n.getRange().get().begin.line;
+            if (reportedMethods.add(key)) {
+                methodSensitiveEquality.add(new MethodUsage(currentMethod.getNameAsString(), "", n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
             }
         }
     }
