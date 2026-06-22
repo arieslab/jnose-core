@@ -46,7 +46,20 @@ java -jar jnose-core-<version>-jar-with-dependencies.jar <project-path>
 
 ### Maven Dependency
 
-Add the GitHub Packages repository to your `pom.xml`:
+Available on Maven Central and GitHub Packages:
+
+- [Maven Central](https://central.sonatype.com/artifact/io.github.arieslab/jnose-core)
+- [GitHub Packages](https://github.com/orgs/arieslab/packages?repo_name=jnose-core)
+
+```xml
+<dependency>
+    <groupId>io.github.arieslab</groupId>
+    <artifactId>jnose-core</artifactId>
+    <version>0.9.0</version>
+</dependency>
+```
+
+If using GitHub Packages, add the repository:
 
 ```xml
 <repositories>
@@ -55,14 +68,6 @@ Add the GitHub Packages repository to your `pom.xml`:
         <url>https://maven.pkg.github.com/arieslab/jnose-core</url>
     </repository>
 </repositories>
-```
-
-```xml
-<dependency>
-    <groupId>io.github.arieslab</groupId>
-    <artifactId>jnose-core</artifactId>
-    <version>0.9.0</version>
-</dependency>
 ```
 
 ### Programmatic Usage
