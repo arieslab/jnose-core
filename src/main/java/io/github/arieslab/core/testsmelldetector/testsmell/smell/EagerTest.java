@@ -103,12 +103,11 @@ public class EagerTest extends AbstractSmell {
 
                     super.visit(n, arg);
                     if(calledMethods.size()> 1){
-                        ArrayList<String> resultado = new ArrayList<>();
+                        var resultado = new ArrayList<>();
                         for (var entry:calledMethods.entrySet()){
                             resultado.addAll((Collection<? extends String>) entry.getValue());
                         }
-                        var deduped = resultado.stream().distinct().toList();
-                        Collections.sort(deduped);
+                        var deduped = resultado.stream().distinct().sorted().toList();
                         instanceEager.add(new MethodUsage(currentMethod.getNameAsString(),
                                 "",deduped.toString()
                                 .replace("[","").replace("]","")));
