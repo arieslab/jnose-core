@@ -29,7 +29,7 @@ public class IgnoredTest extends AbstractSmell {
         classVisitor = new IgnoredTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
 
-        for (MethodUsage method : instanceIgnored) {
+        for (var method : instanceIgnored) {
             TestMethod testClass = new TestMethod(method.getTestMethodName());
             testClass.setRange(method.getBlock());
 //            testClass.addDataItem("begin", method.getBlock());

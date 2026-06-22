@@ -36,7 +36,7 @@ public class ConditionalTestLogic extends AbstractSmell {
         classVisitor = new ConditionalTestLogic.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
 
-        for (MethodUsage method : methodConditional) {
+        for (var method : methodConditional) {
             TestMethod testClass = new TestMethod(method.getTestMethodName());
             testClass.setRange(method.getBlock());
 //            testClass.addDataItem("begin", method.getBlock());

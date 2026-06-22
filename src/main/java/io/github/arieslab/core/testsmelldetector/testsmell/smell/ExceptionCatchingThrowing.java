@@ -30,7 +30,7 @@ public class ExceptionCatchingThrowing extends AbstractSmell {
         classVisitor = new ExceptionCatchingThrowing.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
 
-        for (MethodUsage method : methodExceptions) {
+        for (var method : methodExceptions) {
             TestMethod testClass = new TestMethod(method.getTestMethodName());
             testClass.setRange(method.getBlock());
 //            testClass.addDataItem("begin", method.getBlock());

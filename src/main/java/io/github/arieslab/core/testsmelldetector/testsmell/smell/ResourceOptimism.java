@@ -34,7 +34,7 @@ public class ResourceOptimism extends AbstractSmell {
         classVisitor = new ResourceOptimism.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
 
-        for (MethodUsage method : instanceResource) {
+        for (var method : instanceResource) {
             TestMethod testClass = new TestMethod(method.getTestMethodName());
             testClass.setRange(method.getBlock());
 //            testClass.addDataItem("begin", method.getBlock ());
@@ -78,7 +78,7 @@ public class ResourceOptimism extends AbstractSmell {
         @Override
         public void visit(VariableDeclarationExpr n, Void arg) {
             if (currentMethod != null) {
-                for (VariableDeclarator variableDeclarator : n.getVariables()) {
+                for (var variableDeclarator : n.getVariables()) {
                     if (variableDeclarator.getType().equals("File")) {
                         methodVariables.add(variableDeclarator.getNameAsString());
                     }
@@ -117,7 +117,7 @@ public class ResourceOptimism extends AbstractSmell {
 
         @Override
         public void visit(FieldDeclaration n, Void arg) {
-            for (VariableDeclarator variableDeclarator : n.getVariables()) {
+            for (var variableDeclarator : n.getVariables()) {
                 if (variableDeclarator.getType().equals("File")) {
                     classVariables.add(variableDeclarator.getNameAsString());
                 }

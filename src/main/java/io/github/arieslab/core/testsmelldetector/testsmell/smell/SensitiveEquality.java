@@ -27,7 +27,7 @@ public class SensitiveEquality extends AbstractSmell {
         classVisitor = new SensitiveEquality.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
         
-        for (MethodUsage method : methodSensitiveEquality) {
+        for (var method : methodSensitiveEquality) {
             TestMethod testClass = new TestMethod(method.getTestMethodName());
             testClass.setRange(method.getRange());
 //            testClass.addDataItem("begin", method.getLine());
@@ -66,7 +66,7 @@ public class SensitiveEquality extends AbstractSmell {
                 // if the name of a method being called start with 'assert'
                 if (n.getNameAsString().startsWith(("assert"))) {
                     // assert methods that contain toString
-                    for (Expression argument : n.getArguments()) {
+                    for (var argument : n.getArguments()) {
                         if (argument.toString().contains("toString")) {
                             sensitiveCount++;
                             methodSensitiveEquality.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
@@ -77,7 +77,7 @@ public class SensitiveEquality extends AbstractSmell {
                 else if (n.getNameAsString().equals("fail") || n.getNameAsString().equals("failNotEquals") ||
                 		 n.getNameAsString().equals("failSame") || n.getNameAsString().equals("failNotSame"))  {
                     // fail methods that contain toString
-                    for (Expression argument : n.getArguments()) {
+                    for (var argument : n.getArguments()) {
                         if (argument.toString().contains("toString")) {
                             sensitiveCount++;
                             methodSensitiveEquality.add(new MethodUsage(currentMethod.getNameAsString(), "",n.getRange().get().begin.line + "-" + n.getRange().get().end.line));

@@ -26,7 +26,7 @@ public class DefaultTest extends AbstractSmell {
         classVisitor = new DefaultTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
 
-        for (MethodUsage method : instanceDefault) {
+        for (var method : instanceDefault) {
             TestMethod testClass = new TestMethod(method.getTestMethodName());
             testClass.setRange(method.getBlock());
 //            testClass.addDataItem("begin", method.getBlock());

@@ -45,7 +45,7 @@ public class LazyTest extends AbstractSmell {
         classVisitor = new LazyTest.ClassVisitor(TEST_FILE);
         classVisitor.visit(testFileCompilationUnit, null);
 
-        for (MethodUsage method : instanceLazy) {
+        for (var method : instanceLazy) {
             TestMethod testClass = new TestMethod(method.getTestMethodName());
             testClass.setRange(method.getRange());
             testClass.setHasSmell(true);
@@ -119,7 +119,7 @@ public class LazyTest extends AbstractSmell {
                     productionVariables = new ArrayList<>();
                 }
             } else { //collect a list of all public/protected members of the production class
-                for (Modifier modifier : n.getModifiers()) {
+                for (var modifier : n.getModifiers()) {
                     if (modifier.name().toLowerCase().equals("public") || modifier.name().toLowerCase().equals("protected")) {
                         productionMethods.add(n);
                     }

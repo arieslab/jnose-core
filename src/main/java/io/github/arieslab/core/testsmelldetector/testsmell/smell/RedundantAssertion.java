@@ -32,7 +32,7 @@ public class RedundantAssertion extends AbstractSmell {
         classVisitor = new RedundantAssertion.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
         
-        for (MethodUsage method : methodPrints) {
+        for (var method : methodPrints) {
             TestMethod testClass = new TestMethod(method.getTestMethodName());
             testClass.setRange(method.getRange());
 //            testClass.addDataItem("begin", method.getLine());

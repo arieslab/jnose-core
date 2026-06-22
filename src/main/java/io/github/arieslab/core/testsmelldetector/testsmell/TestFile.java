@@ -39,24 +39,24 @@ public class TestFile {
     }
 
     public String getTestFileName() {
-        int lastIndex = testFilePath.lastIndexOf(File.separator);
+        var lastIndex = testFilePath.lastIndexOf(File.separator);
         return testFilePath.substring(lastIndex + 1, testFilePath.length());
     }
 
     public String getTestFileNameWithoutExtension() {
-        int lastIndex = getTestFileName().lastIndexOf(".");
+        var lastIndex = getTestFileName().lastIndexOf(".");
         return getTestFileName().substring(0, lastIndex);
     }
 
     public String getProductionFileNameWithoutExtension() {
-        int lastIndex = getProductionFileName().lastIndexOf(".");
+        var lastIndex = getProductionFileName().lastIndexOf(".");
         if (lastIndex == -1)
             return "";
         return getProductionFileName().substring(0, lastIndex);
     }
 
     public String getProductionFileName() {
-        int lastIndex = productionFilePath.lastIndexOf(File.separatorChar);
+        var lastIndex = productionFilePath.lastIndexOf(File.separatorChar);
         if (lastIndex == -1)
             return "";
         return productionFilePath.substring(lastIndex + 1, productionFilePath.length());

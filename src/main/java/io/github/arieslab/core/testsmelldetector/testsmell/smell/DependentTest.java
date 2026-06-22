@@ -29,7 +29,7 @@ public class DependentTest extends AbstractSmell {
         classVisitor = new DependentTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
 
-        for (MethodEntry methodEntry : methodEntries) {
+        for (var methodEntry : methodEntries) {
             boolean callsOtherTestMethod = methodEntry.getCalledMethods().stream()
                 .anyMatch(called -> methodEntries.stream()
                     .anyMatch(tm -> tm.getMethodDeclaration().getNameAsString().equals(called.getName())));

@@ -86,20 +86,20 @@ public class TestSmellDetector {
         CompilationUnit testFileCompilationUnit=null, productionFileCompilationUnit=null;
 
         if(!testFile.getTestFilePath().isEmpty()) {
-            try (FileInputStream testFileInputStream = new FileInputStream(testFile.getTestFilePath())) {
+            try (var testFileInputStream = new FileInputStream(testFile.getTestFilePath())) {
                 testFileCompilationUnit = JavaParser.parse(testFileInputStream);
             }
         }
 
         if(!testFile.getProductionFilePath().isEmpty()){
-            try (FileInputStream productionFileInputStream = new FileInputStream(testFile.getProductionFilePath())) {
+            try (var productionFileInputStream = new FileInputStream(testFile.getProductionFilePath())) {
                 productionFileCompilationUnit = JavaParser.parse(productionFileInputStream);
             }
         }
 
         initializeSmells();
 
-        for (AbstractSmell smell : testSmells) {
+        for (var smell : testSmells) {
             try {
                 smell.runAnalysis(testFileCompilationUnit, productionFileCompilationUnit,testFile.getTestFileNameWithoutExtension(),testFile.getProductionFileNameWithoutExtension());
             } catch (FileNotFoundException e) {

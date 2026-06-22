@@ -65,11 +65,11 @@ public class JNoseCore {
      * @throws Exception if analysis fails
      */
     public List<TestClass> getFilesTest(String directoryPath, ExecutorService threadpool) throws Exception {
-        String projectName = directoryPath.substring(directoryPath.lastIndexOf(File.separatorChar) + 1);
-        Path startDir = Paths.get(directoryPath);
+        var projectName = directoryPath.substring(directoryPath.lastIndexOf(File.separatorChar) + 1);
+        var startDir = Paths.get(directoryPath);
 
-        Map<String, String> fileMap = new ConcurrentHashMap<>();
-        List<Path> javaFiles = new ArrayList<>();
+        var fileMap = new ConcurrentHashMap<String, String>();
+        var javaFiles = new ArrayList<Path>();
 
         try (var paths = Files.walk(startDir).filter(Files::isRegularFile)) {
             paths.forEach(filePath -> {
@@ -80,14 +80,14 @@ public class JNoseCore {
             });
         }
 
-        List<Future<List<TestClass>>> futures = new ArrayList<>();
-        for (Path filePath : javaFiles) {
-            JNoseCallable callable = new JNoseCallable(filePath, projectName, startDir, this, fileMap);
+        var futures = new ArrayList<Future<List<TestClass>>>();
+        for (var filePath : javaFiles) {
+            var callable = new JNoseCallable(filePath, projectName, startDir, this, fileMap);
             futures.add(threadpool.submit(callable));
         }
 
-        List<TestClass> files = new ArrayList<>();
-        for (Future<List<TestClass>> future : futures) {
+        var files = new ArrayList<TestClass>();
+        for (var future : futures) {
             files.addAll(future.get());
         }
         return files;
@@ -101,13 +101,13 @@ public class JNoseCore {
      * @return true if the file is a test file (contains JUnit annotations or @Test methods)
      */
     public boolean isTestFile(TestClass testClass) {
-        boolean isTestFile = false;
-        try (InputStream fileInputStream = Files.newInputStream(Path.of(testClass.getPathFile()))) {
-            CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
+        var isTestFile = false;
+        try (var fileInputStream = Files.newInputStream(Path.of(testClass.getPathFile()))) {
+            var compilationUnit = JavaParser.parse(fileInputStream);
             testClass.setNumberLine(compilationUnit.getRange().get().end.line);
             detectJUnitVersion(compilationUnit.getImports(), testClass);
-            List<NodeList<?>> nodeList = compilationUnit.getNodeLists();
-            for (NodeList<?> node : nodeList) {
+            var nodeList = compilationUnit.getNodeLists();
+            for (var node : nodeList) {
                 isTestFile = flowClass(node, testClass);
             }
 
@@ -126,8 +126,8 @@ public class JNoseCore {
      * @param testClass the test class to update with the detected version
      */
     public void detectJUnitVersion(NodeList<ImportDeclaration> nodeList, TestClass testClass) {
-        for (ImportDeclaration node : nodeList) {
-            String name = node.getNameAsString();
+        for (var node : nodeList) {
+            var name = node.getNameAsString();
             testClass.setJunitVersion(switch (name) {
                 case String s when s.contains("org.junit.jupiter") -> TestClass.JunitVersion.JUnit5;
                 case String s when s.contains("org.junit") -> TestClass.JunitVersion.JUnit4;
@@ -146,9 +146,9 @@ public class JNoseCore {
      * @return the detected JUnit version
      */
     public TestClass.JunitVersion getJUnitVersion(String directoryPath) {
-        String projectName = directoryPath.substring(directoryPath.lastIndexOf(File.separatorChar) + 1);
+        var projectName = directoryPath.substring(directoryPath.lastIndexOf(File.separatorChar) + 1);
 
-        Path startDir = Paths.get(directoryPath);
+        var startDir = Paths.get(directoryPath);
         try (var files = Files.walk(startDir).filter(Files::isRegularFile)) {
             return files
                     .filter(f -> f.toString().toLowerCase().endsWith(".java"))
@@ -171,9 +171,9 @@ public class JNoseCore {
     }
 
     private static boolean isPotentialTestFileName(String fileName) {
-        int dotIndex = fileName.lastIndexOf(".");
+        var dotIndex = fileName.lastIndexOf(".");
         if (dotIndex == -1) return false;
-        String name = fileName.substring(0, dotIndex).toLowerCase();
+        var name = fileName.substring(0, dotIndex).toLowerCase();
         return name.matches("^.*test\\d*$") ||
                name.matches("^.*testcase\\d*$") ||
                name.matches("^.*tests\\d*$") ||
@@ -188,8 +188,8 @@ public class JNoseCore {
      * @return true if a test annotation was found
      */
     private boolean flowClass(NodeList<?> nodeList, TestClass testClass) {
-        boolean isTestClass = false;
-        for (Object node : nodeList) {
+        var isTestClass = false;
+        for (var node : nodeList) {
             if (node instanceof ClassOrInterfaceDeclaration classAtual) {
                 testClass.setName(classAtual.getNameAsString());
                 testClass.setFullName(classAtual.getName().toString());
@@ -215,9 +215,9 @@ public class JNoseCore {
      * @return the full path to the production file, or empty string if not found
      */
     public String getFileProduction(String directoryPath, String productionFileName) {
-        final String[] retorno = {""};
+        final var retorno = new String[]{""};
         try {
-            Path startDir = Paths.get(directoryPath);
+            var startDir = Paths.get(directoryPath);
             Files.walk(startDir)
                     .filter(Files::isRegularFile)
                     .forEach(filePath -> {
@@ -237,17 +237,17 @@ public class JNoseCore {
      * @param testClass the test class to analyze
      */
     public void getTestSmells(TestClass testClass) {
-        TestSmellDetector testSmellDetector = TestSmellDetector.createTestSmellDetector(config);
+        var testSmellDetector = TestSmellDetector.createTestSmellDetector(config);
 
-        TestFile testFile = new TestFile(testClass.getProjectName(), testClass.getPathFile(), testClass.getProductionFile(), testClass.getNumberLine(), testClass.getNumberMethods());
+        var testFile = new TestFile(testClass.getProjectName(), testClass.getPathFile(), testClass.getProductionFile(), testClass.getNumberLine(), testClass.getNumberMethods());
 
         try {
-            TestFile tempFile = testSmellDetector.detectSmells(testFile);
-            for (AbstractSmell smell : tempFile.getTestSmells()) {
+            var tempFile = testSmellDetector.detectSmells(testFile);
+            for (var smell : tempFile.getTestSmells()) {
                 if (smell == null) continue;
-                for (SmellyElement smellyElement : smell.getSmellyElements()) {
+                for (var smellyElement : smell.getSmellyElements()) {
                     if (smellyElement.getHasSmell()) {
-                        TestSmell testSmell = new TestSmell();
+                        var testSmell = new TestSmell();
                         testSmell.setName(smell.getSmellName());
                         testSmell.setMethod(smellyElement.getElementName());
                         testSmell.setRange(smellyElement.getRange());
@@ -268,7 +268,7 @@ public class JNoseCore {
      * @param testClass the test class to summarize
      */
     private void setLineSumTestSmells(TestClass testClass){
-        Map<String,Integer> mapaSoma = TestSmellDetector.getAllTestSmellNames().stream()
+        var mapaSoma = TestSmellDetector.getAllTestSmellNames().stream()
                 .collect(Collectors.toMap(Function.identity(), v -> 0));
 
         testClass.getListTestSmell().stream()

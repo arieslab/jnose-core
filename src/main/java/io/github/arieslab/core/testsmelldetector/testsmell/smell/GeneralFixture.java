@@ -65,12 +65,12 @@ public class GeneralFixture extends AbstractSmell {
             }
         }
 
-        for (MethodDeclaration method : methodList) {
+        for (var method : methodList) {
             //This call will visit each test method to identify the list of variables the method contains [visit(MethodDeclaration n)]
             classVisitor.visit(method, null);
         }
 
-        for (MethodUsage method : instaceGeneral) {
+        for (var method : instaceGeneral) {
             TestMethod testClass = new TestMethod(method.getTestMethodName());
             testClass.setRange(method.getRange());
 //            testClass.addDataItem("begin", method.getLine());
@@ -127,7 +127,7 @@ public class GeneralFixture extends AbstractSmell {
                 super.visit(n, arg);
 
                 // verify against the setup fields and set to the testmehtod
-                for (MethodUsage field : setupFields){
+                for (var field : setupFields){
                     if (!fixtureCount.contains(field.getProductionMethodName())) {
                         if (!instaceGeneral.contains(field)) {
                             instaceGeneral.add(field);
@@ -142,7 +142,7 @@ public class GeneralFixture extends AbstractSmell {
         @Override
         public void visit(NameExpr n, Void arg) {
             if (currentMethod != null) {
-               for (MethodUsage field : setupFields) {
+               for (var field : setupFields) {
                     if (field.getProductionMethodName().equals(n.getNameAsString())) {
                         if(!fixtureCount.contains(n.getNameAsString())){
                             fixtureCount.add(n.getNameAsString());

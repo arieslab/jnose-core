@@ -44,7 +44,7 @@ public class EagerTest extends AbstractSmell {
         classVisitor = new EagerTest.ClassVisitor(TEST_FILE);
         classVisitor.visit(testFileCompilationUnit, null);
 
-        for (MethodUsage method : instanceEager) {
+        for (var method : instanceEager) {
             TestMethod testClass = new TestMethod(method.getTestMethodName());
             testClass.setRange(method.getRange());
 //            testClass.addDataItem("begin", method.getRange ());
@@ -105,7 +105,7 @@ public class EagerTest extends AbstractSmell {
                     super.visit(n, arg);
                     if(calledMethods.size()> 1){
                         ArrayList<String> resultado = new ArrayList<>();
-                        for(Map.Entry entry:calledMethods.entrySet()){
+                        for (var entry:calledMethods.entrySet()){
                             resultado.addAll((Collection<? extends String>) entry.getValue());
                         }
                         List<String> deduped = resultado.stream().distinct().collect(Collectors.toList());
@@ -122,7 +122,7 @@ public class EagerTest extends AbstractSmell {
                     calledMethods.clear();
                 }
             } else { //collect a list of all public/protected members of the production class
-                for (Modifier modifier : n.getModifiers()) {
+                for (var modifier : n.getModifiers()) {
                     if (modifier == Modifier.PUBLIC || modifier == Modifier.PROTECTED) {
                         productionMethods.add(n);
                     }

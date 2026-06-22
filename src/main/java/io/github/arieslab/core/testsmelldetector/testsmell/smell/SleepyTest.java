@@ -31,7 +31,7 @@ public class SleepyTest extends AbstractSmell {
         classVisitor = new SleepyTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
 
-        for (MethodUsage method : spleepyInstance) {
+        for (var method : spleepyInstance) {
             TestMethod testClass = new TestMethod(method.getTestMethodName());
             testClass.setRange(method.getRange());
 //            testClass.addDataItem("begin", method.getLine());

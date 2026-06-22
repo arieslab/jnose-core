@@ -28,7 +28,7 @@ public class MagicNumberTest extends AbstractSmell{
         classVisitor = new MagicNumberTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
 
-        for (MethodUsage method : instances) {
+        for (var method : instances) {
             TestMethod testClass = new TestMethod(method.getTestMethodName());
             testClass.setRange(method.getRange());
 //            testClass.addDataItem("begin", method.getLine());
@@ -68,7 +68,7 @@ public class MagicNumberTest extends AbstractSmell{
                 if (n.getNameAsString().startsWith(("assert"))) {
                     // checks all arguments of the assert method
 
-                    for (Expression argument : n.getArguments()) {
+                    for (var argument : n.getArguments()) {
                         // if the argument is a number
                         if (Util.isNumber(argument.toString())) {
                             MethodUsage verification = new MethodUsage(currentMethod.getNameAsString(),
@@ -96,7 +96,7 @@ public class MagicNumberTest extends AbstractSmell{
 
 
         private boolean checkMethodCall(MethodCallExpr argument){
-            for (Expression objectArguments : argument.getArguments()) {
+            for (var objectArguments : argument.getArguments()) {
                 if (Util.isNumber(objectArguments.toString())) {
                     MethodUsage verification = new MethodUsage(currentMethod.getNameAsString(), "",
                             argument.getRange().get().begin.line+"");
@@ -110,7 +110,7 @@ public class MagicNumberTest extends AbstractSmell{
         }
 
         private boolean checkObject(ObjectCreationExpr argument){
-            for (Expression objectArguments : argument.getArguments()) {
+            for (var objectArguments : argument.getArguments()) {
                 if (Util.isNumber(objectArguments.toString())) {
                     MethodUsage verification = new MethodUsage(currentMethod.getNameAsString(), "",
                             argument.getRange().get().begin.line+"");

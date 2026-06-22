@@ -32,7 +32,7 @@ public class DuplicateAssert extends AbstractSmell {
         classVisitor = new DuplicateAssert.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
 
-        for (MethodUsage method : instanceDuplicate) {
+        for (var method : instanceDuplicate) {
             TestMethod testClass = new TestMethod(method.getTestMethodName());
             testClass.setRange(method.getRange());
 //            testClass.addDataItem("begin", method.getRange ());

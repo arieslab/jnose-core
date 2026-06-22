@@ -38,7 +38,7 @@ public class MysteryGuest extends AbstractSmell {
         classVisitor = new MysteryGuest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
 
-        for (MethodUsage method : mysteryInstance) {
+        for (var method : mysteryInstance) {
             TestMethod testClass = new TestMethod(method.getTestMethodName());
             testClass.setRange(method.getRange());
             testClass.setHasSmell(true);

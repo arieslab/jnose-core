@@ -34,7 +34,7 @@ public class EmptyTest extends AbstractSmell {
         classVisitor = new EmptyTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
 
-        for (MethodUsage method : instanceEmpty) {
+        for (var method : instanceEmpty) {
             TestMethod testClass = new TestMethod(method.getTestMethodName());
             testClass.setRange(method.getBlock());
 //            testClass.addDataItem("begin", method.getBlock());

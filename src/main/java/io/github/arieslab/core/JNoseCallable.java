@@ -59,10 +59,10 @@ public class JNoseCallable implements Callable<List<TestClass>> {
      */
     @Override
     public List<TestClass> call() throws Exception {
-        List<TestClass> files = new ArrayList<>();
+        var files = new ArrayList<TestClass>();
 
         if (filePath.getFileName().toString().lastIndexOf(".") != -1) {
-            String fileNameWithoutExtension = filePath.getFileName().toString().substring(0, filePath.getFileName().toString().lastIndexOf(".")).toLowerCase();
+            var fileNameWithoutExtension = filePath.getFileName().toString().substring(0, filePath.getFileName().toString().lastIndexOf(".")).toLowerCase();
 
             if (filePath.toString().toLowerCase().endsWith(".java") && (
                     fileNameWithoutExtension.matches("^.*test\\d*$") ||
@@ -72,14 +72,14 @@ public class JNoseCallable implements Callable<List<TestClass>> {
                             fileNameWithoutExtension.matches("^testcase.*") ||
                             fileNameWithoutExtension.matches("^tests.*"))) {
 
-                TestClass testClass = new TestClass();
+                var testClass = new TestClass();
                 testClass.setProjectName(projectName);
                 testClass.setPathFile(filePath.toString());
 
                 if (jNoseCore.isTestFile(testClass)) {
                     LOGGER.log(Level.INFO, "getFilesTest: {0}", testClass.getPathFile());
-                    String productionFileName = "";
-                    String lowerName = testClass.getName().toLowerCase();
+                    var productionFileName = "";
+                    var lowerName = testClass.getName().toLowerCase();
 
                     if (lowerName.endsWith("test")) {
                         productionFileName = testClass.getName().substring(0, lowerName.lastIndexOf("test")) + ".java";
@@ -95,7 +95,7 @@ public class JNoseCallable implements Callable<List<TestClass>> {
                         productionFileName = testClass.getName().substring(8) + ".java";
                     }
 
-                    String productionFilePath = fileMap.get(productionFileName.toLowerCase());
+                    var productionFilePath = fileMap.get(productionFileName.toLowerCase());
                     testClass.setProductionFile(productionFilePath != null ? productionFilePath : "");
 
                     jNoseCore.getTestSmells(testClass);

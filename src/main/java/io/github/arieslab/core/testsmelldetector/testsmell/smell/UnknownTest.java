@@ -31,7 +31,7 @@ public class UnknownTest extends AbstractSmell {
         classVisitor = new UnknownTest.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
 
-        for (MethodUsage method : instanceUnkNown) {
+        for (var method : instanceUnkNown) {
             TestMethod testClass = new TestMethod(method.getTestMethodName());
             testClass.setRange(method.getBlock());
 //            testClass.addDataItem("begin", method.getBlock ());

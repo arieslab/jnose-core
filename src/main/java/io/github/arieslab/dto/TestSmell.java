@@ -73,9 +73,9 @@ public class TestSmell implements Serializable {
      * @return 32-character MD5 hex string, or empty string on error
      */
     public String getMethodNameHash(){
-        String hash = "";
+        var hash = "";
         try {
-            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            var md5 = MessageDigest.getInstance("MD5");
             md5.update(StandardCharsets.UTF_8.encode(this.method));
             hash = String.format("%032x", new BigInteger(1, md5.digest()));
         } catch (Exception e) {
@@ -89,13 +89,13 @@ public class TestSmell implements Serializable {
      * @return 32-character MD5 hex string, or empty string on error
      */
     public String getMethodNameFullURIHash(){
-        String nomeProjeto = this.testClass.getProjectName();
-        String nomeClasse = this.testClass.getFullName();
-        String nomeMetodo = this.method;
-        String baseText = nomeProjeto + nomeClasse + nomeMetodo;
-        String hash = "";
+        var nomeProjeto = this.testClass.getProjectName();
+        var nomeClasse = this.testClass.getFullName();
+        var nomeMetodo = this.method;
+        var baseText = nomeProjeto + nomeClasse + nomeMetodo;
+        var hash = "";
         try {
-            MessageDigest md5 = MessageDigest.getInstance("MD5");
+            var md5 = MessageDigest.getInstance("MD5");
             md5.update(StandardCharsets.UTF_8.encode(baseText));
             hash = String.format("%032x", new BigInteger(1, md5.digest()));
         } catch (Exception e) {

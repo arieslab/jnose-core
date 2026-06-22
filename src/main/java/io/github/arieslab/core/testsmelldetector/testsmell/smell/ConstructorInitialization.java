@@ -37,7 +37,7 @@ public class ConstructorInitialization extends AbstractSmell {
         classVisitor = new ConstructorInitialization.ClassVisitor();
         classVisitor.visit(testFileCompilationUnit, null);
 
-        for (MethodUsage method : instanceConstructor) {
+        for (var method : instanceConstructor) {
             TestMethod testClass = new TestMethod(method.getTestMethodName());
             testClass.setRange(method.getBlock());
 //            testClass.addDataItem("begin", method.getBlock());
