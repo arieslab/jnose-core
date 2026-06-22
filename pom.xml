@@ -7,7 +7,7 @@
     <groupId>io.github.arieslab</groupId>
     <artifactId>jnose-core</artifactId>
     <packaging>jar</packaging>
-    <version>0.9.2</version>
+    <version>0.9.3</version>
     <name>jnose-core</name>
     <description>Java library for automatic Test Smells detection in JUnit test code</description>
     <url>https://github.com/arieslab/jnose-core</url>
