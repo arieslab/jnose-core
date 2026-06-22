@@ -123,7 +123,7 @@ public class EagerTest extends AbstractSmell {
                 }
             } else { //collect a list of all public/protected members of the production class
                 for (Modifier modifier : n.getModifiers()) {
-                    if (modifier.name().toLowerCase().equals("public") || modifier.name().toLowerCase().equals("protected")) {
+                    if (modifier == Modifier.PUBLIC || modifier == Modifier.PROTECTED) {
                         productionMethods.add(n);
                     }
                 }
@@ -185,12 +185,12 @@ public class EagerTest extends AbstractSmell {
                 else {
                     if (n.getScope().isPresent()) {
                         //this if statement checks if the method is chained and gets the final scope
-                        if ((n.getScope().get() instanceof MethodCallExpr)) {
+                        if (n.getScope().get() instanceof MethodCallExpr) {
                             getFinalScope(n);
                             nameExpr = tempNameExpr;
                         }
-                        if (n.getScope().get() instanceof NameExpr) {
-                            nameExpr = (NameExpr) n.getScope().get();
+                        if (n.getScope().get() instanceof NameExpr nameExpr2) {
+                            nameExpr = nameExpr2;
                         }
 
                         if (nameExpr != null) {
@@ -225,10 +225,10 @@ public class EagerTest extends AbstractSmell {
          */
         private void getFinalScope(MethodCallExpr n) {
             if (n.getScope().isPresent()) {
-                if ((n.getScope().get() instanceof MethodCallExpr)) {
-                    getFinalScope((MethodCallExpr) n.getScope().get());
-                } else if ((n.getScope().get() instanceof NameExpr)) {
-                    tempNameExpr = ((NameExpr) n.getScope().get());
+                if (n.getScope().get() instanceof MethodCallExpr scopeMethod) {
+                    getFinalScope(scopeMethod);
+                } else if (n.getScope().get() instanceof NameExpr scopeName) {
+                    tempNameExpr = scopeName;
                 }
             }
         }

@@ -19,43 +19,7 @@ public class DuplicateAssert extends AbstractSmell {
         super("Duplicate Assert");
         instanceDuplicate = new ArrayList<> (  );
     }
-    public class DuplicateAssertStructure {
-
-        String text;
-        int line;
-        boolean checked;
-
-        public DuplicateAssertStructure(String text,int line) {
-            super();
-            this.text = text;
-            this.line = line;
-            this.checked = false;
-        }
-
-        public String getText() {
-            return text;
-        }
-
-        public void setText(String text) {
-            this.text = text;
-        }
-
-        public int getLine() {
-            return line;
-        }
-
-        public void setLine(int line) {
-            this.line = line;
-        }
-
-        public boolean isChecked() {
-            return checked;
-        }
-
-        public void setChecked(boolean checked) {
-            this.checked = checked;
-        }
-    }
+    private record DuplicateAssertStructure(String text, int line) {}
     
     public ArrayList<SmellyElement> list(){
     	return (ArrayList<SmellyElement>) smellyElementList;
@@ -83,6 +47,7 @@ public class DuplicateAssert extends AbstractSmell {
         List<String> assertMessage = new ArrayList<>();
         List<String> assertMethod = new ArrayList<>();
         List<DuplicateAssertStructure> assertMethodDA = new ArrayList<>();
+        Set<Integer> checkedIndices = new HashSet<>();
         ArrayList<String> rangeLines = new ArrayList<>();
 //        String rangeLines = "";
 
@@ -99,19 +64,16 @@ public class DuplicateAssert extends AbstractSmell {
                  * */
                 List<DuplicateAssertStructure> teste = assertMethodDA;
                 for (int i = 0; i < teste.size() ; i++ ) {
-                    if (!teste.get(i).isChecked()) {
+                    if (!checkedIndices.contains(i)) {
                         boolean hasSmell = false;
                         for (int j = i + 1; j < teste.size() ; j++ ) {
-                            //Só compara com outros asserts, caso o objeto ainda não tenha sido identificado como outro DA
-                            if ((!teste.get(j).isChecked()) && (teste.get(i).text.equals(teste.get(j).text))) {
+                            if ((!checkedIndices.contains(j)) && (teste.get(i).text().equals(teste.get(j).text()))) {
                                 if (!hasSmell) {
-                                    rangeLines.add(String.valueOf(teste.get(i).line));
-//                                    rangeLines = rangeLines + " , " + teste.get(i).line;
-                                    teste.get(i).setChecked(true);
+                                    rangeLines.add(String.valueOf(teste.get(i).line()));
+                                    checkedIndices.add(i);
                                 }
-                                rangeLines.add(String.valueOf(teste.get(j).line));
-//                                rangeLines = rangeLines + " , " + teste.get(i).line;
-                                teste.get(j).setChecked(true);
+                                rangeLines.add(String.valueOf(teste.get(j).line()));
+                                checkedIndices.add(j);
                                 hasSmell = true;
                             }
                         }
@@ -127,6 +89,7 @@ public class DuplicateAssert extends AbstractSmell {
                 assertMessage = new ArrayList<>();
                 assertMethod = new ArrayList<>();
                 assertMethodDA = new ArrayList<>();
+                checkedIndices = new HashSet<>();
             }
         }
 

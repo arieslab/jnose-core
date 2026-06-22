@@ -8,6 +8,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * "Guess what's wrong?" This smell comes from having a number of assertions in a test method that have no explanation.
@@ -34,8 +35,17 @@ public class AssertionRoulette extends AbstractSmell {
     }
 
     private class ClassVisitor extends VoidVisitorAdapter<Void> {
+        private static final Set<String> ASSERT_METHODS_3_4_PARAMS = Set.of(
+            "assertArrayEquals", "assertEquals", "assertNotEquals",
+            "assertNotSame", "assertSame", "assertThat",
+            "failNotEquals", "failNotSame"
+        );
+        private static final Set<String> ASSERT_METHODS_2_PARAMS = Set.of(
+            "assertFalse", "assertNotNull", "assertNull", "assertTrue"
+        );
         private MethodDeclaration currentMethod = null;
         private int assertNoMessageCount = 0;
+
         private int assertCount = 0;
         String methodName = "";
         TestMethod testMethod;
@@ -58,16 +68,7 @@ public class AssertionRoulette extends AbstractSmell {
             }
         }
         public boolean explanationIsEmpty(String str) {
-            char[] ch = str.toCharArray();
-            String final_string = "";
-
-            //Removes all spaces
-            for(int i = 0; i < ch.length; i++ ){
-                if (ch[i] != ' ') {
-                    final_string += ch[i];
-                }
-            }
-            return final_string.equals("\"\"");
+            return str.strip().equals("\"\"");
         }
 
         // examine the methods being called within the test method
@@ -77,33 +78,16 @@ public class AssertionRoulette extends AbstractSmell {
             super.visit(n, arg);
             if (currentMethod != null) {
                 // if the name of a method being called is an assertion and has 3 or 4 parameters
-                if (n.getNameAsString().equals(("assertArrayEquals")) ||
-                        n.getNameAsString().equals(("assertEquals")) ||
-                        n.getNameAsString().equals(("assertNotEquals")) ||
-                        n.getNameAsString().equals(("assertNotSame")) ||
-                        n.getNameAsString().equals(("assertSame")) ||
-                        n.getNameAsString().equals(("assertThat")) ||
-                        n.getNameAsString().equals(("failNotEquals")) ||
-                        n.getNameAsString().equals(("failNotSame"))) {
+                if (ASSERT_METHODS_3_4_PARAMS.contains(n.getNameAsString())) {
                     assertCount++;
                     // assert methods that do not contain a message
                     if (n.getArguments().size() < 3) {
                         assertNoMessageCount++;
                         hasMissingExplanation = true;
                     }
-//                    else{
-//                        if((!n.getArguments().get(0).getClass().getSimpleName().equals("StringLiteralExpr"))
-//                                || explanationIsEmpty(n.getArgument(0).toString())){
-//                            assertNoMessageCount++;
-//                            hasMissingExplanation = true;
-//                        }
-//                    }
                 }
                 // if the name of a method being called is an assertion and has 2 parameters
-                else if (n.getNameAsString().equals("assertFalse") ||
-                        n.getNameAsString().equals("assertNotNull") ||
-                        n.getNameAsString().equals("assertNull") ||
-                        n.getNameAsString().equals("assertTrue")) {
+                else if (ASSERT_METHODS_2_PARAMS.contains(n.getNameAsString())) {
                     assertCount++;
                     // assert methods that do not contain a message
                     if ((n.getArguments().size() < 2) || (explanationIsEmpty(n.getArgument(0).toString())) ) {
@@ -113,8 +97,7 @@ public class AssertionRoulette extends AbstractSmell {
                 }
 
                 // if the name of a method being called is 'fail'
-                else if (n.getNameAsString().equals("fail")
-                        || n.getNameAsString().equals("failSame") ) {
+                else if (n.getNameAsString().equals("fail") || n.getNameAsString().equals("failSame")) {
                     assertCount++;
                     // fail method does not contain a message
                     if (n.getArguments().size() < 1 || (explanationIsEmpty(n.getArgument(0).toString()))) {

@@ -20,8 +20,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.function.Function;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 /**
  * Main entry point for test smell analysis.
@@ -51,14 +53,8 @@ public class JNoseCore {
      */
     public List<TestClass> getFilesTest(String directoryPath) throws Exception {
         int numberThread = Runtime.getRuntime().availableProcessors() * 2;
-        ExecutorService threadpool = Executors.newFixedThreadPool(numberThread);
-        try {
+        try (var threadpool = Executors.newFixedThreadPool(numberThread)) {
             return getFilesTest(directoryPath, threadpool);
-        } finally {
-            if (!threadpool.isShutdown()) {
-                threadpool.shutdown();
-            }
-            threadpool.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
         }
     }
 
@@ -107,7 +103,7 @@ public class JNoseCore {
      */
     public boolean isTestFile(TestClass testClass) {
         boolean isTestFile = false;
-        try (FileInputStream fileInputStream = new FileInputStream(new File(testClass.getPathFile()))) {
+        try (InputStream fileInputStream = Files.newInputStream(Path.of(testClass.getPathFile()))) {
             CompilationUnit compilationUnit = JavaParser.parse(fileInputStream);
             testClass.setNumberLine(compilationUnit.getRange().get().end.line);
             detectJUnitVersion(compilationUnit.getImports(), testClass);
@@ -132,18 +128,14 @@ public class JNoseCore {
      */
     public void detectJUnitVersion(NodeList<ImportDeclaration> nodeList, TestClass testClass) {
         for (ImportDeclaration node : nodeList) {
-            if (node.getNameAsString().contains("org.junit.jupiter")) {
-                testClass.setJunitVersion(TestClass.JunitVersion.JUnit5);
-                break;
-            } else if (node.getNameAsString().contains("org.junit")) {
-                testClass.setJunitVersion(TestClass.JunitVersion.JUnit4);
-                break;
-            } else if (node.getNameAsString().contains("junit.framework")) {
-                testClass.setJunitVersion(TestClass.JunitVersion.JUnit3);
-                break;
-            } else {
-                testClass.setJunitVersion(TestClass.JunitVersion.None);
-            }
+            String name = node.getNameAsString();
+            testClass.setJunitVersion(switch (name) {
+                case String s when s.contains("org.junit.jupiter") -> TestClass.JunitVersion.JUnit5;
+                case String s when s.contains("org.junit") -> TestClass.JunitVersion.JUnit4;
+                case String s when s.contains("junit.framework") -> TestClass.JunitVersion.JUnit3;
+                default -> TestClass.JunitVersion.None;
+            });
+            if (testClass.getJunitVersion() != TestClass.JunitVersion.None) break;
         }
     }
 
@@ -157,41 +149,38 @@ public class JNoseCore {
     public TestClass.JunitVersion getJUnitVersion(String directoryPath) {
         String projectName = directoryPath.substring(directoryPath.lastIndexOf(File.separatorChar) + 1);
 
-        final TestClass.JunitVersion[] jUnitVersion = {TestClass.JunitVersion.None};
-
         Path startDir = Paths.get(directoryPath);
-        try {
-            Files.walk(startDir)
-                    .filter(Files::isRegularFile)
-                    .forEach(filePath -> {
-                        if (filePath.getFileName().toString().lastIndexOf(".") != -1) {
-                            String fileNameWithoutExtension = filePath.getFileName().toString().substring(0, filePath.getFileName().toString().lastIndexOf(".")).toLowerCase();
-                            if (filePath.toString().toLowerCase().endsWith(".java") && (
-                                    fileNameWithoutExtension.matches("^.*test\\d*$") ||
-                                            fileNameWithoutExtension.matches("^.*testcase\\d*") ||
-                                            fileNameWithoutExtension.matches("^.*tests\\d*$") ||
-                                            fileNameWithoutExtension.matches("^test.*") ||
-                                            fileNameWithoutExtension.matches("^testcase.*") ||
-                                            fileNameWithoutExtension.matches("^tests.*"))) {
-                                TestClass testClass = new TestClass();
-                                testClass.setProjectName(projectName);
-                                testClass.setPathFile(filePath.toString());
-                                if (isTestFile(testClass)) {
-                                    if(testClass.getJunitVersion() == null){
-                                        testClass.setJunitVersion(TestClass.JunitVersion.None);
-                                        jUnitVersion[0] = TestClass.JunitVersion.None;
-                                    }
-                                    if(!testClass.getJunitVersion().equals(TestClass.JunitVersion.None)){
-                                        jUnitVersion[0] = testClass.getJunitVersion();
-                                    }
-                                }
-                            }
-                        }
-                    });
+        try (var files = Files.walk(startDir).filter(Files::isRegularFile)) {
+            return files
+                    .filter(f -> f.toString().toLowerCase().endsWith(".java"))
+                    .filter(f -> isPotentialTestFileName(f.getFileName().toString()))
+                    .map(f -> {
+                        TestClass testClass = new TestClass();
+                        testClass.setProjectName(projectName);
+                        testClass.setPathFile(f.toString());
+                        return testClass;
+                    })
+                    .filter(this::isTestFile)
+                    .map(TestClass::getJunitVersion)
+                    .filter(v -> v != TestClass.JunitVersion.None)
+                    .findFirst()
+                    .orElse(TestClass.JunitVersion.None);
         } catch (IOException e) {
             LOGGER.log(Level.WARNING, "getJUnitVersion: error walking files", e);
+            return TestClass.JunitVersion.None;
         }
-        return jUnitVersion[0];
+    }
+
+    private static boolean isPotentialTestFileName(String fileName) {
+        int dotIndex = fileName.lastIndexOf(".");
+        if (dotIndex == -1) return false;
+        String name = fileName.substring(0, dotIndex).toLowerCase();
+        return name.matches("^.*test\\d*$") ||
+               name.matches("^.*testcase\\d*$") ||
+               name.matches("^.*tests\\d*$") ||
+               name.matches("^test.*") ||
+               name.matches("^testcase.*") ||
+               name.matches("^tests.*");
     }
 
     /**
@@ -202,19 +191,17 @@ public class JNoseCore {
     private boolean flowClass(NodeList<?> nodeList, TestClass testClass) {
         boolean isTestClass = false;
         for (Object node : nodeList) {
-            if (node instanceof ClassOrInterfaceDeclaration) {
-                ClassOrInterfaceDeclaration classAtual = ((ClassOrInterfaceDeclaration) node);
+            if (node instanceof ClassOrInterfaceDeclaration classAtual) {
                 testClass.setName(classAtual.getNameAsString());
                 testClass.setFullName(classAtual.getName().toString());
-                NodeList<?> nodeList_members = classAtual.getMembers();
                 testClass.setNumberMethods(classAtual.getMembers().size());
-                isTestClass = flowClass(nodeList_members, testClass);
+                isTestClass = flowClass(classAtual.getMembers(), testClass);
                 if(isTestClass)return true;
-            } else if (node instanceof MethodDeclaration) {
-                isTestClass = flowClass(((MethodDeclaration) node).getAnnotations(), testClass);
+            } else if (node instanceof MethodDeclaration methodDeclaration) {
+                isTestClass = flowClass(methodDeclaration.getAnnotations(), testClass);
                 if(isTestClass)return true;
-            } else if (node instanceof AnnotationExpr) {
-                if(((AnnotationExpr) node).getNameAsString().toLowerCase().contains("test")){
+            } else if (node instanceof AnnotationExpr annotationExpr) {
+                if(annotationExpr.getNameAsString().toLowerCase().contains("test")){
                     return true;
                 }
             }
@@ -282,21 +269,12 @@ public class JNoseCore {
      * @param testClass the test class to summarize
      */
     private void setLineSumTestSmells(TestClass testClass){
+        Map<String,Integer> mapaSoma = TestSmellDetector.getAllTestSmellNames().stream()
+                .collect(Collectors.toMap(Function.identity(), v -> 0));
 
-        Map<String,Integer> mapaSoma = new HashMap<>();
-
-        for (String smellName : TestSmellDetector.getAllTestSmellNames()) {
-            mapaSoma.put(smellName, 0);
-        }
-
-        for(TestSmell testsmells : testClass.getListTestSmell()){
-            if(mapaSoma.get(testsmells.getName()) == null){
-                mapaSoma.put(testsmells.getName(),0);
-            }
-
-            Integer valorAtual = mapaSoma.get(testsmells.getName());
-            mapaSoma.put(testsmells.getName(),valorAtual+1);
-        }
+        testClass.getListTestSmell().stream()
+                .collect(Collectors.groupingBy(TestSmell::getName, Collectors.summingInt(v -> 1)))
+                .forEach((k, v) -> mapaSoma.merge(k, v, Integer::sum));
 
         testClass.setLineSumTestSmells(mapaSoma);
     }

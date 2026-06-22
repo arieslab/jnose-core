@@ -72,15 +72,6 @@ public class JNoseCallable implements Callable<List<TestClass>> {
                             fileNameWithoutExtension.matches("^testcase.*") ||
                             fileNameWithoutExtension.matches("^tests.*"))) {
 
-                boolean testTrueFinal = TEST_SUFFIX.matcher(fileNameWithoutExtension).matches();
-                boolean testCaseTrueFinal = TEST_CASE_SUFFIX.matcher(fileNameWithoutExtension).matches();
-                boolean testsTrueFinal = TESTS_SUFFIX.matcher(fileNameWithoutExtension).matches();
-
-                boolean testTrueInicio = TEST_PREFIX.matcher(fileNameWithoutExtension).matches();
-                boolean testCaseTrueInicio = TEST_CASE_PREFIX.matcher(fileNameWithoutExtension).matches();
-                boolean testsTrueInicio = TESTS_PREFIX.matcher(fileNameWithoutExtension).matches();
-
-
                 TestClass testClass = new TestClass();
                 testClass.setProjectName(projectName);
                 testClass.setPathFile(filePath.toString());
@@ -88,28 +79,20 @@ public class JNoseCallable implements Callable<List<TestClass>> {
                 if (jNoseCore.isTestFile(testClass)) {
                     LOGGER.log(Level.INFO, "getFilesTest: {0}", testClass.getPathFile());
                     String productionFileName = "";
-                    int index = 0;
-                    if(testTrueInicio) index = 0;
-                    if(testCaseTrueInicio) index = 0;
-                    if(testsTrueInicio) index = 0;
-                    if(testTrueFinal) index = testClass.getName().toLowerCase().lastIndexOf("test");
-                    if(testCaseTrueFinal) index = testClass.getName().toLowerCase().lastIndexOf("testcase");
-                    if(testsTrueFinal) index = testClass.getName().toLowerCase().lastIndexOf("tests");
+                    String lowerName = testClass.getName().toLowerCase();
 
-                    if (index > 0) {
-                        if(testTrueFinal)
-                            productionFileName = testClass.getName().substring(0, testClass.getName().toLowerCase().lastIndexOf("test")) + ".java";
-                        if(testCaseTrueFinal)
-                            productionFileName = testClass.getName().substring(0, testClass.getName().toLowerCase().lastIndexOf("testcase")) + ".java";
-                        if(testsTrueFinal)
-                            productionFileName = testClass.getName().substring(0, testClass.getName().toLowerCase().lastIndexOf("tests")) + ".java";
-                    }else{
-                        if(testTrueInicio)
-                            productionFileName = testClass.getName().substring(4, testClass.getName().length()) + ".java";
-                        if(testCaseTrueInicio)
-                            productionFileName = testClass.getName().substring(8, testClass.getName().length()) + ".java";
-                        if(testsTrueInicio)
-                            productionFileName = testClass.getName().substring(5, testClass.getName().length()) + ".java";
+                    if (lowerName.endsWith("test")) {
+                        productionFileName = testClass.getName().substring(0, lowerName.lastIndexOf("test")) + ".java";
+                    } else if (lowerName.endsWith("tests")) {
+                        productionFileName = testClass.getName().substring(0, lowerName.lastIndexOf("tests")) + ".java";
+                    } else if (lowerName.endsWith("testcase")) {
+                        productionFileName = testClass.getName().substring(0, lowerName.lastIndexOf("testcase")) + ".java";
+                    } else if (lowerName.startsWith("test")) {
+                        productionFileName = testClass.getName().substring(4) + ".java";
+                    } else if (lowerName.startsWith("tests")) {
+                        productionFileName = testClass.getName().substring(5) + ".java";
+                    } else if (lowerName.startsWith("testcase")) {
+                        productionFileName = testClass.getName().substring(8) + ".java";
                     }
 
                     String productionFilePath = fileMap.get(productionFileName.toLowerCase());
