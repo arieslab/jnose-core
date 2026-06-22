@@ -11,7 +11,6 @@ import io.github.arieslab.core.testsmelldetector.testsmell.*;
 
 import java.io.FileNotFoundException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class LazyTest extends AbstractSmell {
     private static final String TEST_FILE = "Test";
@@ -81,9 +80,9 @@ public class LazyTest extends AbstractSmell {
 
             calledMethodsLine.forEach( (key, value ) -> { // forEach() também é novidade Java 8
                 if(calledMethodsLine.get(key).size() > 1){
-                    List<String> names = calledMethodsName.get(key).stream().distinct().collect(Collectors.toList());
-                    if(names.size()>1) {
-                        List<String> lines = calledMethodsLine.get(key).stream().distinct().collect(Collectors.toList());
+                    var names = calledMethodsName.get(key).stream().distinct().toList();
+                    if(names.size() > 1){
+                        var lines = calledMethodsLine.get(key).stream().distinct().toList();
                         instanceLazy.add(new MethodUsage(names.toString()
                                 .replace("[", "").replace("]", ""),
                                 "", lines.toString()

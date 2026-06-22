@@ -11,7 +11,6 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 import java.io.FileNotFoundException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class EagerTest extends AbstractSmell {
 
@@ -108,7 +107,7 @@ public class EagerTest extends AbstractSmell {
                         for (var entry:calledMethods.entrySet()){
                             resultado.addAll((Collection<? extends String>) entry.getValue());
                         }
-                        List<String> deduped = resultado.stream().distinct().collect(Collectors.toList());
+                        var deduped = resultado.stream().distinct().toList();
                         Collections.sort(deduped);
                         instanceEager.add(new MethodUsage(currentMethod.getNameAsString(),
                                 "",deduped.toString()

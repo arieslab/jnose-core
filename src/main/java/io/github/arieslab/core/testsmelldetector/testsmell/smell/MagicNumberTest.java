@@ -126,29 +126,29 @@ public class MagicNumberTest extends AbstractSmell{
         private boolean checkBinary(BinaryExpr argument) {
             if (Util.isNumber(argument.getLeft().toString()) ||
                     Util.isNumber(argument.getRight().toString())) {
-                MethodUsage verification = new MethodUsage(currentMethod.getNameAsString(), "",
+                var verification = new MethodUsage(currentMethod.getNameAsString(), "",
                         argument.getRange().get().begin.line+"");
                 if (!instances.contains(verification)){
                     instances.add(verification);
                     return true;
                 }
             }
-            else if (argument.getRight() instanceof MethodCallExpr && checkMethodCall((MethodCallExpr) argument.getRight())) {
+            else if (argument.getRight() instanceof MethodCallExpr mce && checkMethodCall(mce)) {
                 return true;
             }
-            else if (argument.getLeft() instanceof MethodCallExpr && checkMethodCall((MethodCallExpr) argument.getLeft())) {
+            else if (argument.getLeft() instanceof MethodCallExpr mce && checkMethodCall(mce)) {
                 return true;
             }
-            else if (argument.getRight() instanceof ObjectCreationExpr && checkObject((ObjectCreationExpr) argument.getRight())) {
+            else if (argument.getRight() instanceof ObjectCreationExpr oce && checkObject(oce)) {
                 return true;
             }
-            else if (argument.getLeft() instanceof ObjectCreationExpr && checkObject((ObjectCreationExpr) argument.getLeft())) {
+            else if (argument.getLeft() instanceof ObjectCreationExpr oce && checkObject(oce)) {
                 return true;
             }
-            else if (argument.getRight() instanceof BinaryExpr && checkBinary((BinaryExpr) argument.getRight())) {
+            else if (argument.getRight() instanceof BinaryExpr be && checkBinary(be)) {
                 return true;
             }
-            else if (argument.getLeft() instanceof BinaryExpr && checkBinary((BinaryExpr) argument.getLeft())) {
+            else if (argument.getLeft() instanceof BinaryExpr be && checkBinary(be)) {
                 return true;
             }
             return false;

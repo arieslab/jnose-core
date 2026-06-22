@@ -25,12 +25,12 @@ public abstract class AbstractSmell {
     /**
      * Returns true if any of the elements has a smell
      */
-    public boolean getHasSmell() {return smellyElementList.stream().filter(x -> x.getHasSmell()).count() >= 1;}
+    public boolean getHasSmell() {return smellyElementList.stream().anyMatch(SmellyElement::getHasSmell);}
 
     /**
      * Returns number of smell
      */
-    public long getHasSmellCount() { return smellyElementList.stream().filter(x -> x.getHasSmell()).count();}
+    public long getHasSmellCount() { return smellyElementList.stream().filter(SmellyElement::getHasSmell).count();}
 
     /**
      * Test Smell Name

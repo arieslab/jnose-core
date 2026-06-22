@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -96,7 +97,7 @@ public class JNoseCallable implements Callable<List<TestClass>> {
                     }
 
                     var productionFilePath = fileMap.get(productionFileName.toLowerCase());
-                    testClass.setProductionFile(productionFilePath != null ? productionFilePath : "");
+                    testClass.setProductionFile(Objects.requireNonNullElse(productionFilePath, ""));
 
                     jNoseCore.getTestSmells(testClass);
                     files.add(testClass);

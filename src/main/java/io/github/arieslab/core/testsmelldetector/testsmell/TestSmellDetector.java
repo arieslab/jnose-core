@@ -10,7 +10,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TestSmellDetector {
 
@@ -65,7 +64,7 @@ public class TestSmellDetector {
      * @return list of smell names
      */
     public List<String> getTestSmellNames() {
-        return testSmells.stream().map(AbstractSmell::getSmellName).collect(Collectors.toList());
+        return testSmells.stream().map(AbstractSmell::getSmellName).toList();
     }
 
     public static List<String> getAllTestSmellNames() {

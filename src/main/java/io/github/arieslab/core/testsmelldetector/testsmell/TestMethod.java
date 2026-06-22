@@ -1,6 +1,6 @@
 package io.github.arieslab.core.testsmelldetector.testsmell;
 
-public class TestMethod extends SmellyElement {
+public final class TestMethod extends SmellyElement {
 
     private String methodName;
     private boolean hasSmell;
