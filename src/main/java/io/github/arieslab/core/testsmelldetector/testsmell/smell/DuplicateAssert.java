@@ -11,7 +11,7 @@ import java.io.FileNotFoundException;
 import java.util.*;
 import java.util.ArrayList;
 
-public class DuplicateAssert extends AbstractSmell {
+public final class DuplicateAssert extends AbstractSmell {
 
     private ArrayList<MethodUsage> instanceDuplicate;
 

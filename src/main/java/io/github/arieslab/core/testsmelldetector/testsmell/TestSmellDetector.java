@@ -101,7 +101,7 @@ public class TestSmellDetector {
         for (var smell : testSmells) {
             try {
                 smell.runAnalysis(testFileCompilationUnit, productionFileCompilationUnit,testFile.getTestFileNameWithoutExtension(),testFile.getProductionFileNameWithoutExtension());
-            } catch (FileNotFoundException e) {
+            } catch (FileNotFoundException _) {
                 continue;
             }
             testFile.addSmell(smell);

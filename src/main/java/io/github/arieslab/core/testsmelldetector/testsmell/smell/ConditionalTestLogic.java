@@ -19,7 +19,7 @@ import java.util.List;
 /*
 This class check a test method for the existence of loops and conditional statements in the methods body
  */
-public class ConditionalTestLogic extends AbstractSmell {
+public final class ConditionalTestLogic extends AbstractSmell {
 
     private List<MethodUsage> methodConditional;
 

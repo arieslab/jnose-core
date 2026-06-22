@@ -11,7 +11,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-public class SensitiveEquality extends AbstractSmell {
+public final class SensitiveEquality extends AbstractSmell {
 	ArrayList<MethodUsage> methodSensitiveEquality = null;
 	
     public SensitiveEquality() {

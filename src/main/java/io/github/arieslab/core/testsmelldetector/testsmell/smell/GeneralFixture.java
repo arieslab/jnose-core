@@ -16,7 +16,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-public class GeneralFixture extends AbstractSmell {
+public final class GeneralFixture extends AbstractSmell {
 
     List<MethodDeclaration> methodList;
     MethodDeclaration setupMethod;
@@ -48,10 +48,8 @@ public class GeneralFixture extends AbstractSmell {
             for (int i = 0; i < nodeList.size(); i++) {
                 for (int j = 0; j < fieldList.size(); j++) {
                     for (int k = 0; k < fieldList.get(j).getVariables().size(); k++) {
-                        if (nodeList.get(i) instanceof ExpressionStmt) {
-                            ExpressionStmt expressionStmt = (ExpressionStmt) nodeList.get(i);
-                            if (expressionStmt.getExpression() instanceof AssignExpr) {
-                                AssignExpr assignExpr = (AssignExpr) expressionStmt.getExpression();
+                        if (nodeList.get(i) instanceof ExpressionStmt expressionStmt) {
+                            if (expressionStmt.getExpression() instanceof AssignExpr assignExpr) {
                                 if (fieldList.get(j).getVariable(k).getNameAsString().equals(assignExpr.getTarget().toString())) {
                                     setupFields.add(new MethodUsage(setupMethod.getNameAsString(),
                                             assignExpr.getTarget().toString(),
@@ -93,8 +91,8 @@ public class GeneralFixture extends AbstractSmell {
         public void visit(ClassOrInterfaceDeclaration n, Void arg) {
             NodeList<BodyDeclaration<?>> members = n.getMembers();
             for (int i = 0; i < members.size(); i++) {
-                if (members.get(i) instanceof MethodDeclaration) {
-                    methodDeclaration = (MethodDeclaration) members.get(i);
+                if (members.get(i) instanceof MethodDeclaration md) {
+                    methodDeclaration = md;
 
                     //Get a list of all test methods
                     if (Util.isValidTestMethod(methodDeclaration)) {
@@ -111,8 +109,8 @@ public class GeneralFixture extends AbstractSmell {
                 }
 
                 //Get all fields in the class
-                if (members.get(i) instanceof FieldDeclaration) {
-                    fieldList.add((FieldDeclaration) members.get(i));
+                if (members.get(i) instanceof FieldDeclaration fd) {
+                    fieldList.add(fd);
                 }
             }
         }

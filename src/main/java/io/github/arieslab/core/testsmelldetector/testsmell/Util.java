@@ -37,7 +37,7 @@ public class Util {
         try {
             Integer.parseInt(s);
             return true;
-        } catch (NumberFormatException er) {
+        } catch (NumberFormatException _) {
             return false;
         }
     }
@@ -46,7 +46,7 @@ public class Util {
         try {
             Double.parseDouble(str);
             return true;
-        } catch (NumberFormatException nfe) {
+        } catch (NumberFormatException _) {
         }
         return false;
     }

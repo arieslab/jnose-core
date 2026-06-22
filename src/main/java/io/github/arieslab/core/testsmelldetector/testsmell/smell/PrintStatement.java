@@ -17,7 +17,7 @@ import java.util.List;
 Test methods should not contain print statements as execution of unit tests is an automated process with little to no human intervention. Hence, print statements are redundant.
 This code checks the body of each test method if System.out. print(), println(), printf() and write() methods are called
  */
-public class PrintStatement extends AbstractSmell {
+public final class PrintStatement extends AbstractSmell {
 
     private List<MethodUsage> methodPrints;
 

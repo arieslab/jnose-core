@@ -14,7 +14,7 @@ import java.util.ArrayList;
 Use of Thread.sleep() in test methods can possibly lead to unexpected results as the processing time of tasks on different devices/machines can be different. Use mock objects instead
 This code marks a method as smelly if the method body calls Thread.sleep()
  */
-public class SleepyTest extends AbstractSmell {
+public final class SleepyTest extends AbstractSmell {
 
     private ArrayList<MethodUsage> spleepyInstance;
 
@@ -70,9 +70,9 @@ public class SleepyTest extends AbstractSmell {
                 // if the name of a method being called is 'sleep'
                 if (n.getNameAsString().equals("sleep")) {
                     //check the scope of the method
-                    if ((n.getScope().isPresent() && n.getScope().get() instanceof NameExpr)) {
+                    if ((n.getScope().isPresent() && n.getScope().get() instanceof NameExpr nameExpr)) {
                         //proceed only if the scope is "Thread"
-                        if ((((NameExpr) n.getScope().get()).getNameAsString().equals("Thread"))) {
+                        if ((nameExpr.getNameAsString().equals("Thread"))) {
                             sleepCount++;
                             spleepyInstance.add(new MethodUsage(currentMethod.getNameAsString(), "", n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
                         }

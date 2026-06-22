@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * This class checks if a test method is empty (i.e. the method does not contain statements in its body)
  * If the the number of statements in the body is 0, then the method is smelly
  */
-public class EmptyTest extends AbstractSmell {
+public final class EmptyTest extends AbstractSmell {
 
     private ArrayList<MethodUsage> instanceEmpty;
 

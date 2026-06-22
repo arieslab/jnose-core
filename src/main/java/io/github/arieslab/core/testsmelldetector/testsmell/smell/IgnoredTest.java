@@ -11,7 +11,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 
-public class IgnoredTest extends AbstractSmell {
+public final class IgnoredTest extends AbstractSmell {
 
     private boolean flag = false;
     private ArrayList<MethodUsage> instanceIgnored;

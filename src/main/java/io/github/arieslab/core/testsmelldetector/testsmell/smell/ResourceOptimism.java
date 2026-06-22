@@ -17,7 +17,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResourceOptimism extends AbstractSmell {
+public final class ResourceOptimism extends AbstractSmell {
 
     private ArrayList<MethodUsage> instanceResource;
 
@@ -134,9 +134,9 @@ public class ResourceOptimism extends AbstractSmell {
                         n.getNameAsString().equals("isFile") ||
                         n.getNameAsString().equals("notExists")) {
                     if (n.getScope().isPresent()) {
-                        if(n.getScope().get() instanceof NameExpr) {
-                            if (methodVariables.contains(((NameExpr) n.getScope().get()).getNameAsString())) {
-                                methodVariables.remove(((NameExpr) n.getScope().get()).getNameAsString());
+                        if(n.getScope().get() instanceof NameExpr nameExpr) {
+                            if (methodVariables.contains(nameExpr.getNameAsString())) {
+                                methodVariables.remove(nameExpr.getNameAsString());
                             }
                         }
                     }

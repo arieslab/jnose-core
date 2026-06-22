@@ -16,7 +16,7 @@ import java.util.List;
 /*
 If a test method contains an assert statement that explicitly returns a true or false, the method is marked as smelly
  */
-public class RedundantAssertion extends AbstractSmell {
+public final class RedundantAssertion extends AbstractSmell {
 	ArrayList<MethodUsage> methodPrints = null;
     
 	public RedundantAssertion() {
@@ -73,10 +73,10 @@ public class RedundantAssertion extends AbstractSmell {
                 switch (n.getNameAsString()) {
                     case "assertTrue":
                     case "assertFalse":
-                        if (n.getArguments().size() == 1 && n.getArgument(0) instanceof BooleanLiteralExpr) { // assertTrue(boolean condition) or assertFalse(boolean condition)
-                            argumentValue = Boolean.toString(((BooleanLiteralExpr) n.getArgument(0)).getValue());
-                        } else if (n.getArguments().size() == 2 && n.getArgument(1) instanceof BooleanLiteralExpr) { // assertTrue(java.lang.String message, boolean condition)  or assertFalse(java.lang.String message, boolean condition)
-                            argumentValue = Boolean.toString(((BooleanLiteralExpr) n.getArgument(1)).getValue());
+                        if (n.getArguments().size() == 1 && n.getArgument(0) instanceof BooleanLiteralExpr ble) {
+                            argumentValue = Boolean.toString(ble.getValue());
+                        } else if (n.getArguments().size() == 2 && n.getArgument(1) instanceof BooleanLiteralExpr ble) {
+                            argumentValue = Boolean.toString(ble.getValue());
                         }
 
                         if (argumentValue != null && (argumentValue.toLowerCase().equals("true") || argumentValue.toLowerCase().equals("false"))) {
@@ -87,10 +87,10 @@ public class RedundantAssertion extends AbstractSmell {
 
                     case "assertNotNull":
                     case "assertNull":
-                        if (n.getArguments().size() == 1 && n.getArgument(0) instanceof NullLiteralExpr) { // assertNotNull(java.lang.Object object) or assertNull(java.lang.Object object)
-                            argumentValue = (((NullLiteralExpr) n.getArgument(0)).toString());
-                        } else if (n.getArguments().size() == 2 && n.getArgument(1) instanceof NullLiteralExpr) { // assertNotNull(java.lang.String message, java.lang.Object object) or assertNull(java.lang.String message, java.lang.Object object)
-                            argumentValue = (((NullLiteralExpr) n.getArgument(1)).toString());
+                        if (n.getArguments().size() == 1 && n.getArgument(0) instanceof NullLiteralExpr nle) {
+                            argumentValue = nle.toString();
+                        } else if (n.getArguments().size() == 2 && n.getArgument(1) instanceof NullLiteralExpr nle) {
+                            argumentValue = nle.toString();
                         }
 
                         if (argumentValue != null && (argumentValue.toLowerCase().equals("null"))) {

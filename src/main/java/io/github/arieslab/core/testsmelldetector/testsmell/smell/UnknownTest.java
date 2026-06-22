@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class UnknownTest extends AbstractSmell {
+public final class UnknownTest extends AbstractSmell {
 
     private ArrayList<MethodUsage> instanceUnkNown;
 
@@ -61,8 +61,8 @@ public class UnknownTest extends AbstractSmell {
                     for (int i = 0; i < assertAnnotation.get().getNodeLists().size(); i++) {
                         NodeList<?> c = assertAnnotation.get().getNodeLists().get(i);
                         for (int j = 0; j < c.size(); j++)
-                            if (c.get(j) instanceof MemberValuePair) {
-                                if (((MemberValuePair) c.get(j)).getName().equals("expected") && ((MemberValuePair) c.get(j)).getValue().toString().contains("Exception"))
+                            if (c.get(j) instanceof MemberValuePair mvp) {
+                                if (mvp.getName().equals("expected") && mvp.getValue().toString().contains("Exception"))
                                     ;
                                 hasExceptionAnnotation = true;
                             }

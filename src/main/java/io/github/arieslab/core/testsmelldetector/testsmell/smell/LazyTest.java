@@ -12,7 +12,7 @@ import io.github.arieslab.core.testsmelldetector.testsmell.*;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-public class LazyTest extends AbstractSmell {
+public final class LazyTest extends AbstractSmell {
     private static final String TEST_FILE = "Test";
     private static final String PRODUCTION_FILE = "Production";
     private String productionClassName;
@@ -163,12 +163,12 @@ public class LazyTest extends AbstractSmell {
                     }
                 } else {
                     if (n.getScope().isPresent()) {
-                        if (n.getScope().get() instanceof NameExpr) {
+                        if (n.getScope().get() instanceof NameExpr nameExpr) {
                             //checks if the scope of the method being called is either of production class (e.g. static method)
                             //or
                             ///if the scope matches a variable which, in turn, is of type of the production class
-                            if (((NameExpr) n.getScope().get()).getNameAsString().equals(productionClassName) ||
-                                    productionVariables.contains(((NameExpr) n.getScope().get()).getNameAsString())) {
+                            if (nameExpr.getNameAsString().equals(productionClassName) ||
+                                    productionVariables.contains(nameExpr.getNameAsString())) {
                                 //calledProductionMethods.add(new MethodUsage(currentMethod.getNameAsString(), n.getNameAsString(), n.getRange().get().begin.line + "-" + n.getRange().get().end.line));
                                 String valor = n.getNameAsString();
                                 ArrayList<String> lines = new ArrayList<>();

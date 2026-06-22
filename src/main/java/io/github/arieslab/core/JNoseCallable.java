@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 /**
  * Callable task that analyzes a single Java file for test smells.
- * Implements {@link Callable} to support parallel processing of multiple files.
+ * Implements `Callable` to support parallel processing of multiple files.
  */
 public class JNoseCallable implements Callable<List<TestClass>> {
 

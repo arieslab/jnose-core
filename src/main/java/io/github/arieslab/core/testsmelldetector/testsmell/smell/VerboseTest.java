@@ -11,7 +11,7 @@ import java.util.ArrayList;
 /*
 If a test methods contains a statements that exceeds a certain threshold, the method is marked as smelly
  */
-public class VerboseTest extends AbstractSmell {
+public final class VerboseTest extends AbstractSmell {
 
     private ArrayList<MethodUsage> instanceAbstract;
     public static int MAX_STATEMENTS = 30;

@@ -11,7 +11,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MagicNumberTest extends AbstractSmell{
+public final class MagicNumberTest extends AbstractSmell{
 
     private ArrayList<MethodUsage> instances;
 
@@ -78,16 +78,16 @@ public class MagicNumberTest extends AbstractSmell{
                             }
                         }
                         // if the argument contains an ObjectCreationExpr (e.g. assertEquals(new Integer(2),...)
-                        else if (argument instanceof ObjectCreationExpr) {
-                            checkObject( (ObjectCreationExpr) argument);
+                        else if (argument instanceof ObjectCreationExpr oce) {
+                            checkObject(oce);
                         }
                         // if the argument contains an MethodCallExpr (e.g. assertEquals(someMethod(2),...)
-                        else if (argument instanceof MethodCallExpr) {
-                            checkMethodCall( (MethodCallExpr) argument);
+                        else if (argument instanceof MethodCallExpr mce) {
+                            checkMethodCall(mce);
                         }
                         //if the assertTrue has a number or methodcall with numbers
-                        else if (argument instanceof BinaryExpr) {
-                            checkBinary( (BinaryExpr) argument);
+                        else if (argument instanceof BinaryExpr be) {
+                            checkBinary(be);
                         }
                     }
                 }

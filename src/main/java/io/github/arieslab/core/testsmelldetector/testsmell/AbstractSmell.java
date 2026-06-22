@@ -1,5 +1,7 @@
 package io.github.arieslab.core.testsmelldetector.testsmell;
 
+import io.github.arieslab.core.testsmelldetector.testsmell.smell.*;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
@@ -7,7 +9,12 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractSmell {
+public abstract sealed class AbstractSmell permits
+    AssertionRoulette, ConditionalTestLogic, ConstructorInitialization,
+    DefaultTest, DependentTest, DuplicateAssert, EagerTest, EmptyTest,
+    ExceptionCatchingThrowing, GeneralFixture, IgnoredTest, LazyTest,
+    MagicNumberTest, MysteryGuest, PrintStatement, RedundantAssertion,
+    ResourceOptimism, SensitiveEquality, SleepyTest, UnknownTest, VerboseTest {
     private final String smellName;
     protected final List<SmellyElement> smellyElementList;
     protected VoidVisitorAdapter<Void> classVisitor;

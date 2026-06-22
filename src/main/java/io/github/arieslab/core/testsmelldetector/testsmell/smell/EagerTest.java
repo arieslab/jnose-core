@@ -12,7 +12,7 @@ import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-public class EagerTest extends AbstractSmell {
+public final class EagerTest extends AbstractSmell {
 
     private static final String TEST_FILE = "Test";
     private static final String PRODUCTION_FILE = "Production";

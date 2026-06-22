@@ -15,7 +15,7 @@ import java.util.Set;
  * If one of the assertions fails, you do not know which one it is.
  * A. van Deursen, L. Moonen, A. Bergh, G. Kok, “Refactoring Test Code”, Technical Report, CWI, 2001.
  */
-public class AssertionRoulette extends AbstractSmell {
+public final class AssertionRoulette extends AbstractSmell {
 
     public AssertionRoulette() {
         super("Assertion Roulette");

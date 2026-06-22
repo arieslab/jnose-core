@@ -14,7 +14,7 @@ import java.util.List;
 This class checks if test methods in the class either catch or throw exceptions. Use Junit's exception handling to automatically pass/fail the test
 If this code detects the existence of a catch block or a throw statement in the methods body, the method is marked as smelly
  */
-public class ExceptionCatchingThrowing extends AbstractSmell {
+public final class ExceptionCatchingThrowing extends AbstractSmell {
 
     private List<MethodUsage> methodExceptions;
     public ExceptionCatchingThrowing() {

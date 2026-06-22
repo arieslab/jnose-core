@@ -21,7 +21,7 @@ import java.util.List;
  * Chances for this increase when more tests use the same resource.
  * A. van Deursen, L. Moonen, A. Bergh, G. Kok, “Refactoring Test Code”, Technical Report, CWI, 2001.
  */
-public class MysteryGuest extends AbstractSmell {
+public final class MysteryGuest extends AbstractSmell {
 
     private ArrayList<MethodUsage> mysteryInstance;
 

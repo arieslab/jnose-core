@@ -10,7 +10,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DependentTest extends AbstractSmell {
+public final class DependentTest extends AbstractSmell {
 
     private List<MethodEntry> methodEntries;
 
