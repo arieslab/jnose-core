@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Represents a single test smell detected in a test class.
@@ -73,15 +74,13 @@ public class TestSmell implements Serializable {
      * @return 32-character MD5 hex string, or empty string on error
      */
     public String getMethodNameHash(){
-        var hash = "";
         try {
             var md5 = MessageDigest.getInstance("MD5");
             md5.update(StandardCharsets.UTF_8.encode(this.method));
-            hash = "%032x".formatted(new BigInteger(1, md5.digest()));
-        } catch (Exception _) {
+            return "%032x".formatted(new BigInteger(1, md5.digest()));
+        } catch (NoSuchAlgorithmException _) {
             return "";
         }
-        return hash;
     }
 
     /**
@@ -93,14 +92,13 @@ public class TestSmell implements Serializable {
         var nomeClasse = this.testClass.getFullName();
         var nomeMetodo = this.method;
         var baseText = nomeProjeto + nomeClasse + nomeMetodo;
-        var hash = "";
         try {
             var md5 = MessageDigest.getInstance("MD5");
             md5.update(StandardCharsets.UTF_8.encode(baseText));
-            hash = "%032x".formatted(new BigInteger(1, md5.digest()));
-        } catch (Exception _) {
+            return "%032x".formatted(new BigInteger(1, md5.digest()));
+        } catch (NoSuchAlgorithmException _) {
+            return "";
         }
-        return hash;
     }
 
     @Override
