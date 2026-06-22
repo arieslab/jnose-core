@@ -5,6 +5,10 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 
+/**
+ * Represents a single test smell detected in a test class.
+ * Contains information about the smell type, affected method, and location.
+ */
 public class TestSmell implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -14,46 +18,60 @@ public class TestSmell implements Serializable {
     private TestClass testClass;
     private String code;
 
+    /** @param code the source code snippet related to this smell */
     public void setCode(String code){
         this.code = code;
     }
 
+    /** @return the source code snippet related to this smell */
     public String getCode(){
         return code;
     }
 
+    /** @return the line range where the smell was detected (e.g. "10-15") */
     public String getRange() {
         return range;
     }
 
+    /** @param range the line range */
     public void setRange(String range) {
         this.range = range;
     }
 
+    /** @return the test smell name (e.g. "Assertion Roulette") */
     public String getName() {
         return name;
     }
 
+    /** @param name the test smell name */
     public void setName(String name) {
         this.name = name;
     }
 
+    /** @return the method name where the smell was detected */
     public String getMethod() {
         return method;
     }
 
+    /** @param method the method name */
     public void setMethod(String method) {
         this.method = method;
     }
 
+    /** @param testClass the parent test class */
     public void setTestClass(TestClass testClass){
         this.testClass = testClass;
     }
 
+    /** @return the parent test class */
     public TestClass getTestClass(){
         return this.testClass;
     }
 
+    /**
+     * Generates an MD5 hash of the method name for identification.
+     * @return 32-character MD5 hex string, or empty string on error
+     */
     public String getMethodNameHash(){
         String hash = "";
         try {
@@ -66,6 +84,10 @@ public class TestSmell implements Serializable {
         return hash;
     }
 
+    /**
+     * Generates an MD5 hash combining project name, class name, and method name.
+     * @return 32-character MD5 hex string, or empty string on error
+     */
     public String getMethodNameFullURIHash(){
         String nomeProjeto = this.testClass.getProjectName();
         String nomeClasse = this.testClass.getFullName();

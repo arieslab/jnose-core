@@ -23,17 +23,32 @@ import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Main entry point for test smell analysis.
+ * Orchestrates the detection of test smells across Java projects,
+ * supporting parallel file processing and multiple JUnit versions.
+ */
 public class JNoseCore {
 
     private final static Logger LOGGER = Logger.getLogger(JNoseCore.class.getName());
 
     private Config config;
 
+    /**
+     * Creates a new JNoseCore instance with the given configuration.
+     * @param config detection configuration (which smells to enable, thresholds)
+     */
     public JNoseCore(Config config) {
         this.config = config;
         VerboseTest.MAX_STATEMENTS = config.maxStatements();
     }
 
+    /**
+     * Analyzes all test files in the given directory, using all available processors.
+     * @param directoryPath path to the project root directory
+     * @return list of {@link TestClass} results with detected test smells
+     * @throws Exception if analysis fails
+     */
     public List<TestClass> getFilesTest(String directoryPath) throws Exception {
         int numberThread = Runtime.getRuntime().availableProcessors() * 2;
         ExecutorService threadpool = Executors.newFixedThreadPool(numberThread);
@@ -47,6 +62,13 @@ public class JNoseCore {
         }
     }
 
+    /**
+     * Analyzes all test files in the given directory using the provided thread pool.
+     * @param directoryPath path to the project root directory
+     * @param threadpool    executor service for parallel processing
+     * @return list of {@link TestClass} results with detected test smells
+     * @throws Exception if analysis fails
+     */
     public List<TestClass> getFilesTest(String directoryPath, ExecutorService threadpool) throws Exception {
         String projectName = directoryPath.substring(directoryPath.lastIndexOf(File.separatorChar) + 1);
         Path startDir = Paths.get(directoryPath);
@@ -77,6 +99,12 @@ public class JNoseCore {
     }
 
 
+    /**
+     * Determines if a file is a test file by parsing its AST and checking for JUnit annotations.
+     * Updates the test class with line count and JUnit version information.
+     * @param testClass the test class to check
+     * @return true if the file is a test file (contains JUnit annotations or @Test methods)
+     */
     public boolean isTestFile(TestClass testClass) {
         boolean isTestFile = false;
         try (FileInputStream fileInputStream = new FileInputStream(new File(testClass.getPathFile()))) {
@@ -97,6 +125,11 @@ public class JNoseCore {
         return isTestFile;
     }
 
+    /**
+     * Detects the JUnit version used by a test class based on its imports.
+     * @param nodeList  the list of import declarations
+     * @param testClass the test class to update with the detected version
+     */
     public void detectJUnitVersion(NodeList<ImportDeclaration> nodeList, TestClass testClass) {
         for (ImportDeclaration node : nodeList) {
             if (node.getNameAsString().contains("org.junit.jupiter")) {
@@ -115,6 +148,12 @@ public class JNoseCore {
     }
 
 
+    /**
+     * Scans a project directory to determine the JUnit version used.
+     * Walks through all Java files and checks imports for JUnit references.
+     * @param directoryPath path to the project root directory
+     * @return the detected JUnit version
+     */
     public TestClass.JunitVersion getJUnitVersion(String directoryPath) {
         String projectName = directoryPath.substring(directoryPath.lastIndexOf(File.separatorChar) + 1);
 
@@ -155,6 +194,11 @@ public class JNoseCore {
         return jUnitVersion[0];
     }
 
+    /**
+     * Recursively traverses the AST to find class and method declarations.
+     * Checks if any method has a @Test annotation, indicating a test file.
+     * @return true if a test annotation was found
+     */
     private boolean flowClass(NodeList<?> nodeList, TestClass testClass) {
         boolean isTestClass = false;
         for (Object node : nodeList) {
@@ -178,6 +222,12 @@ public class JNoseCore {
         return isTestClass;
     }
 
+    /**
+     * Finds the production file path corresponding to a test file name.
+     * @param directoryPath     the project root directory
+     * @param productionFileName the production file name to find
+     * @return the full path to the production file, or empty string if not found
+     */
     public String getFileProduction(String directoryPath, String productionFileName) {
         final String[] retorno = {""};
         try {
@@ -195,6 +245,11 @@ public class JNoseCore {
         return retorno[0];
     }
 
+    /**
+     * Runs all enabled test smell detectors on the given test class.
+     * Updates the test class with the list of detected smells.
+     * @param testClass the test class to analyze
+     */
     public void getTestSmells(TestClass testClass) {
         TestSmellDetector testSmellDetector = TestSmellDetector.createTestSmellDetector(config);
 
@@ -222,6 +277,10 @@ public class JNoseCore {
         setLineSumTestSmells(testClass);
     }
 
+    /**
+     * Calculates the total count of each test smell type for the given test class.
+     * @param testClass the test class to summarize
+     */
     private void setLineSumTestSmells(TestClass testClass){
 
         Map<String,Integer> mapaSoma = new HashMap<>();

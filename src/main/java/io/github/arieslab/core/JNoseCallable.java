@@ -11,6 +11,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+/**
+ * Callable task that analyzes a single Java file for test smells.
+ * Implements {@link Callable} to support parallel processing of multiple files.
+ */
 public class JNoseCallable implements Callable<List<TestClass>> {
 
     private static final Logger LOGGER = Logger.getLogger(JNoseCallable.class.getName());
@@ -28,6 +32,14 @@ public class JNoseCallable implements Callable<List<TestClass>> {
     private final JNoseCore jNoseCore;
     private final Map<String, String> fileMap;
 
+    /**
+     * Creates a new callable to analyze a single Java file.
+     * @param filePath    path to the Java file
+     * @param projectName name of the project being analyzed
+     * @param startDir    root directory of the project
+     * @param jNoseCore   core instance for smell detection
+     * @param fileMap     mapping of file names to full paths
+     */
     public JNoseCallable(Path filePath, String projectName, Path startDir, JNoseCore jNoseCore, Map<String, String> fileMap){
         this.filePath = filePath;
         this.projectName = projectName;
@@ -36,6 +48,15 @@ public class JNoseCallable implements Callable<List<TestClass>> {
         this.fileMap = fileMap;
     }
 
+    /**
+     * Analyzes the file and detects test smells.
+     * Determines if the file is a test file by checking naming conventions
+     * (suffixes like "test", "tests", "testcase" or prefixes like "test").
+     * If it is a test file, identifies the corresponding production file
+     * and runs test smell detection.
+     * @return list of {@link TestClass} results (empty if not a test file)
+     * @throws Exception if analysis fails
+     */
     @Override
     public List<TestClass> call() throws Exception {
         List<TestClass> files = new ArrayList<>();
