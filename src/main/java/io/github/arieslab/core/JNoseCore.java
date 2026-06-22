@@ -52,8 +52,7 @@ public class JNoseCore {
      * @throws Exception if analysis fails
      */
     public List<TestClass> getFilesTest(String directoryPath) throws Exception {
-        int numberThread = Runtime.getRuntime().availableProcessors() * 2;
-        try (var threadpool = Executors.newFixedThreadPool(numberThread)) {
+        try (var threadpool = Executors.newVirtualThreadPerTaskExecutor()) {
             return getFilesTest(directoryPath, threadpool);
         }
     }
