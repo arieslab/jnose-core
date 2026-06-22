@@ -48,7 +48,7 @@ public class JNoseCore {
     /**
      * Analyzes all test files in the given directory, using all available processors.
      * @param directoryPath path to the project root directory
-     * @return list of {@link TestClass} results with detected test smells
+     * @return list of `TestClass` results with detected test smells
      * @throws Exception if analysis fails
      */
     public List<TestClass> getFilesTest(String directoryPath) throws Exception {
@@ -61,7 +61,7 @@ public class JNoseCore {
      * Analyzes all test files in the given directory using the provided thread pool.
      * @param directoryPath path to the project root directory
      * @param threadpool    executor service for parallel processing
-     * @return list of {@link TestClass} results with detected test smells
+     * @return list of `TestClass` results with detected test smells
      * @throws Exception if analysis fails
      */
     public List<TestClass> getFilesTest(String directoryPath, ExecutorService threadpool) throws Exception {
